@@ -28,6 +28,7 @@ steps:
     when:
       ref:
         - refs/heads/master
+        - refs/heads/1-add-ci
 
   - name: publish_docker
     image: registry.gitlab.com/vega-protocol/devops-infra/cipipeline-docker:18.09.7
@@ -46,6 +47,7 @@ steps:
     when:
       ref:
         - refs/heads/master
+        - refs/heads/1-add-ci
 
   - name: deploy
     image: registry.gitlab.com/vega-protocol/devops-infra/cipipeline:1.11.13
@@ -80,6 +82,7 @@ steps:
     when:
       ref:
         - refs/heads/master
+        - refs/heads/1-add-ci
 
 volumes:
   - name: dockersock
