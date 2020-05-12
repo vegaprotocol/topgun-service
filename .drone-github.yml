@@ -88,6 +88,12 @@ volumes:
   - name: dockersock
     host:
       path: /run/docker.sock
+  - name: gocache
+    host:
+      path: /var/lib/drone/volumes/topgun-service/gocache
+  - name: gopkg
+    host:
+      path: /var/lib/drone/volumes/topgun-service/gopkg
 
 image_pull_secrets:
   - dockerconfig
