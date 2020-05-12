@@ -2,6 +2,7 @@ package leaderboard
 
 import (
 	"context"
+	"fmt"
 	"sort"
 	"strconv"
 	"sync"
@@ -15,13 +16,18 @@ import (
 	"github.com/vegaprotocol/topgun-service/util"
 )
 
-type Response struct {
+type AllParties struct {
 	Parties []Party `json:"parties"`
 }
 
 type Party struct {
 	ID       string `json:"id"`
 	Accounts []Account
+}
+
+func (p *Party) NotTraded() bool {
+	return p.DeployedBTC() == 0 && p.BalanceBTC() == 10 &&
+		   p.BalanceUSD() == 5000 && p.DeployedUSD() == 0
 }
 
 func (p *Party) DeployedUSD() float64 {
@@ -49,8 +55,7 @@ func (p *Party) TotalUSDWithDeployed(btcPrice float64) float64 {
 }
 
 func (p *Party) calculateDeployed(assetName string, assetType string) float64 {
-	var total float64
-	total = 0
+	var total float64 = 0
 	for _, acc := range p.Accounts {
 		if acc.Asset == assetName && acc.Type == assetType {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
@@ -85,14 +90,46 @@ type Account struct {
 	Asset   string `json:"asset"`
 }
 
+/*
+
+{
+ lastUpdate: 'string',        // Timestamp of last update
+ traders: [
+  {
+    order: 1,                       // Incrementing integer from 1, indicating position in leaderboard,
+    publicKey: 'string',
+    usdDeployed: 'string', // Total of all margin VUSD accounts, formatted with appropriate decimal places
+    usd: 'string',                // Total of all general VUSD accounts, formatted with appropriate decimal places
+    btcDeployed: 'string', // Total of all margin BTC accounts, formatted with appropriate decimal places
+    btc: 'string',                    // Total of all general BTC accounts, formatted with appropriate decimal places
+    totalUsd: 'string',      // Total of non-deployed BTC (in USD) + all non-deployed VUSD
+    totalUsdDeployed: 'string'      // Total of non-deployed BTC (in USD) + Deployed BTC (in USD) all non-deployed VUSD + Deployed VUSD
+  },
+// Repeat for all public keys that have traded
+]}
+
+*/
+
+type Leaderboard struct {
+	LastUpdate string        `json:"lastUpdate"`
+	Traders    []Participant `json:"traders"`
+}
+
 type Participant struct {
-	PartyID              string
-	BalanceUSD           float64
-	BalanceBTC           float64
-	DeployedUSD          float64
-	DeployedBTC          float64
-	TotalUSD             float64
-	TotalUSDWithDeployed float64
+	Order                     uint64  `json:"order"`
+	PublicKey                 string  `json:"publicKey"`
+	BalanceUSD                float64 `json:"usdVal"`
+	BalanceUSDFormatted       string  `json:"usd"`
+	BalanceBTC                float64 `json:"btcVal"`
+	BalanceBTCFormatted       string  `json:"btc"`
+	DeployedUSD               float64 `json:"usdDeployedVal"`
+	DeployedUSDFormatted      string  `json:"usdDeployed"`
+	DeployedBTC               float64 `json:"btcDeployedVal"`
+	DeployedBTCFormatted      string  `json:"btcDeployed"`
+	TotalUSD                  float64 `json:"totalUsdVal"`
+	TotalUSDFormatted         string  `json:"totalUsd"`
+	TotalUSDDeployed          float64 `json:"totalUsdDeployedVal"`
+	TotalUSDDeployedFormatted string  `json:"totalUsdDeployed"`
 }
 
 func NewLeaderboardService(
@@ -104,7 +141,7 @@ func NewLeaderboardService(
 		included: included,
 		endpoint: endpoint,
 		poll:     vegaPoll,
-		table:    []Participant{},
+		board:    Leaderboard{util.UnixTimestampUtcNowFormatted(), []Participant{}},
 	}
 	svc.exchange = exchange.NewExchangeService(assetPoll)
 	return svc
@@ -113,7 +150,7 @@ func NewLeaderboardService(
 type Service struct {
 	endpoint string
 	exchange *exchange.Service
-	table    []Participant
+	board    Leaderboard
 	included map[string]byte
 	timer    *time.Ticker
 	poll     time.Duration
@@ -144,7 +181,7 @@ func (s *Service) update() {
 		return
 	}
 
-	s.table = []Participant{}
+	s.board = Leaderboard{util.UnixTimestampUtcNowFormatted(), []Participant{}}
 
 	// Get latest BTC USD price value
 	btcAsset := s.exchange.GetBtcUsdPrice()
@@ -153,27 +190,48 @@ func (s *Service) update() {
 	for _, p := range res.Parties {
 		// Only include whitelisted partyIDs
 		if _, found := s.included[p.ID]; found {
-			s.table = append(s.table, Participant{
-				PartyID:              p.ID,
-				BalanceUSD:           p.BalanceUSD(),
-				BalanceBTC:           p.BalanceBTC(),
-				DeployedUSD:          p.DeployedUSD(),
-				DeployedBTC:          p.DeployedBTC(),
-				TotalUSD:             p.TotalUSD(btcAssetLastPrice),
-				TotalUSDWithDeployed: p.TotalUSDWithDeployed(btcAssetLastPrice),
+
+			// Requirement from @edd to not included parties with no trading in the leaderboard at the service end
+			// If in the future we want to filter these at the client we can remove this check.
+			if p.NotTraded() {
+				continue
+			}
+
+			s.board.Traders = append(s.board.Traders, Participant{
+				PublicKey:                 p.ID,
+				BalanceUSD:                p.BalanceUSD(),
+				BalanceUSDFormatted:       fmt.Sprintf("%.5f", p.BalanceUSD()),
+				BalanceBTC:                p.BalanceBTC(),
+				BalanceBTCFormatted:       fmt.Sprintf("%.5f", p.BalanceBTC()),
+				DeployedUSD:               p.DeployedUSD(),
+				DeployedUSDFormatted:      fmt.Sprintf("%.5f", p.DeployedUSD()),
+				DeployedBTC:               p.DeployedBTC(),
+				DeployedBTCFormatted:      fmt.Sprintf("%.5f", p.DeployedBTC()),
+				TotalUSD:                  p.TotalUSD(btcAssetLastPrice),
+				TotalUSDFormatted:         fmt.Sprintf("%.5f", p.TotalUSD(btcAssetLastPrice)),
+				TotalUSDDeployed:          p.TotalUSDWithDeployed(btcAssetLastPrice),
+				TotalUSDDeployedFormatted: fmt.Sprintf("%.5f", p.TotalUSDWithDeployed(btcAssetLastPrice)),
 			})
 		}
 	}
 
 	// Sort the leaderboard table
-	sort.Slice(s.table, func(i, j int) bool {
-		return s.table[i].TotalUSDWithDeployed > s.table[j].TotalUSDWithDeployed
+	sort.Slice(s.board.Traders, func(i, j int) bool {
+		return s.board.Traders[i].TotalUSDDeployed > s.board.Traders[j].TotalUSDDeployed
 	})
 
-	log.Infof("Leaderboard updated: %d participants included out of %d available", len(s.table), len(res.Parties))
+	// Set order value
+	var rank uint64 = 1
+	for i := range s.board.Traders {
+		s.board.Traders[i].Order = rank
+		rank++
+	}
+
+	log.Infof("Leaderboard updated [%s]: %d participants out of %d available",
+		s.board.LastUpdate, len(s.board.Traders), len(res.Parties))
 }
 
-func (s *Service) performQuery(ctx context.Context) (*Response, error) {
+func (s *Service) performQuery(ctx context.Context) (*AllParties, error) {
 	client := graphql.NewClient(s.endpoint)
 	req := graphql.NewRequest(`
     query {
@@ -185,15 +243,15 @@ func (s *Service) performQuery(ctx context.Context) (*Response, error) {
 `)
 	req.Header.Set("Cache-Control", "no-cache")
 
-	var resp Response
+	var resp AllParties
 	if err := client.Run(ctx, req, &resp); err != nil {
-		return &Response{}, err
+		return &AllParties{}, err
 	}
 	return &resp, nil
 }
 
-func (s *Service) GetLeaderboard() []Participant {
+func (s *Service) GetLeaderboard() Leaderboard {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	return s.table
+	return s.board
 }
