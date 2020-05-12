@@ -10,9 +10,6 @@ import (
 	"github.com/vegaprotocol/topgun-service/util"
 )
 
-//https://n04.d.vega.xyz/query
-//https://lb.n.vega.xyz/query
-
 var (
 	addr      string
 	whitelist string
