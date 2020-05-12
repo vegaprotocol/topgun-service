@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/vegaprotocol/topgun-service/leaderboard"
@@ -59,7 +60,7 @@ func startServer(
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
-		Handler:      router,
+		Handler:      handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(router),
 	}
 
 	// Run our server in a goroutine so that it doesn't block.

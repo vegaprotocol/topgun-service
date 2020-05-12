@@ -90,26 +90,6 @@ type Account struct {
 	Asset   string `json:"asset"`
 }
 
-/*
-
-{
- lastUpdate: 'string',        // Timestamp of last update
- traders: [
-  {
-    order: 1,                       // Incrementing integer from 1, indicating position in leaderboard,
-    publicKey: 'string',
-    usdDeployed: 'string', // Total of all margin VUSD accounts, formatted with appropriate decimal places
-    usd: 'string',                // Total of all general VUSD accounts, formatted with appropriate decimal places
-    btcDeployed: 'string', // Total of all margin BTC accounts, formatted with appropriate decimal places
-    btc: 'string',                    // Total of all general BTC accounts, formatted with appropriate decimal places
-    totalUsd: 'string',      // Total of non-deployed BTC (in USD) + all non-deployed VUSD
-    totalUsdDeployed: 'string'      // Total of non-deployed BTC (in USD) + Deployed BTC (in USD) all non-deployed VUSD + Deployed VUSD
-  },
-// Repeat for all public keys that have traded
-]}
-
-*/
-
 type Leaderboard struct {
 	LastUpdate string        `json:"lastUpdate"`
 	Traders    []Participant `json:"traders"`
