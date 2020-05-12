@@ -21,8 +21,8 @@ The service is written in Go and is designed to poll a Bitstamp for the latest a
 
 **Queries:**
 
-`/status` - useful for health returns 200 if service is up.
-`/leaderboard` - returns the leaderboard in json format, example below:
+- `/status` - useful for health returns 200 if service is up.
+- `/leaderboard` - returns the leaderboard in json format, example below:
 
 ```
 [...
