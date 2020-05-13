@@ -1,6 +1,6 @@
 # topgun-service
 
-Lightweight API service that provides sorted leaderboard data for topgun.[testnet/stagnet/devnet].vega.[trading/xyz]
+Lightweight API service that provides sorted leaderboard data for topgun.[testnet/stagnet/devnet].vega.xyz
 
 The service is written in Go and is designed to poll a Bitstamp for the latest asset price of BTC (used for converting current value of BTC->USD, and to also poll a Vega API node via GraphQL to retrieve account data for parties. The poll rate for both Bitstamp and Vega API queries are configurable. If Bitstamp is not available a fallback asset price is used, we refer to asset price as the last BTC->USD price from the exchange. The service caches the list of accounts for the `vegapoll` time, it will retry on failure.
 
