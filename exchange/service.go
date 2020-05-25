@@ -81,6 +81,7 @@ func (s *Service) updateBtcPrice() {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.WithError(err).Error("Failed to create new http request")
+		return
 	}
 
 	req.Header.Set("User-Agent", "topgun-maverick")
@@ -88,6 +89,7 @@ func (s *Service) updateBtcPrice() {
 	res, err := client.Do(req)
 	if err != nil {
 		log.WithError(err).Error("Failed to load data from bitstamp price feed")
+		return
 	}
 	if res.Body != nil {
 		defer res.Body.Close()
@@ -96,12 +98,14 @@ func (s *Service) updateBtcPrice() {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.WithError(err).Error("Failed to read the response body from price feed")
+		return
 	}
 
 	price := AssetPrice{}
 	err = json.Unmarshal(body, &price)
 	if err != nil {
 		log.WithError(err).Error("Failed to decode/unmarshal asset price information from response body")
+		return
 	}
 	price.Asset = BtcUsdAssetId
 	s.btcUsdPrice = price
