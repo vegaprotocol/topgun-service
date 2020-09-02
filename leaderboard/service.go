@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/machinebox/graphql"
-
 	log "github.com/sirupsen/logrus"
 
 	"github.com/vegaprotocol/topgun-service/exchange"
@@ -27,7 +26,7 @@ type Party struct {
 
 func (p *Party) NotTraded() bool {
 	return p.DeployedBTC() == 0 && p.BalanceBTC() == 10 &&
-		   p.BalanceUSD() == 5000 && p.DeployedUSD() == 0
+		p.BalanceUSD() == 5000 && p.DeployedUSD() == 0
 }
 
 func (p *Party) DeployedUSD() float64 {
@@ -57,7 +56,7 @@ func (p *Party) TotalUSDWithDeployed(btcPrice float64) float64 {
 func (p *Party) calculateDeployed(assetName string, assetType string) float64 {
 	var total float64 = 0
 	for _, acc := range p.Accounts {
-		if acc.Asset == assetName && acc.Type == assetType {
+		if acc.Asset.Symbol == assetName && acc.Type == assetType {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
@@ -71,7 +70,7 @@ func (p *Party) calculateDeployed(assetName string, assetType string) float64 {
 
 func (p *Party) calculateBalance(assetName string, assetType string) float64 {
 	for _, acc := range p.Accounts {
-		if acc.Asset == assetName && acc.Type == assetType {
+		if acc.Asset.Symbol == assetName && acc.Type == assetType {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
@@ -84,10 +83,14 @@ func (p *Party) calculateBalance(assetName string, assetType string) float64 {
 	return 0
 }
 
+type Asset struct {
+	Symbol string `json:"symbol"`
+}
+
 type Account struct {
 	Type    string `json:"type"`
 	Balance string `json:"balance"`
-	Asset   string `json:"asset"`
+	Asset   Asset  `json:"asset"`
 }
 
 type Leaderboard struct {
@@ -217,7 +220,7 @@ func (s *Service) performQuery(ctx context.Context) (*AllParties, error) {
     query {
        parties {
           id
-          accounts { type, balance, asset }
+          accounts {type balance asset { symbol } }
        }
     }
 `)
