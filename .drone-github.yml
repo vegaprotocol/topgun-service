@@ -73,7 +73,7 @@ steps:
             -v /home/dockerrunner/topgun-service-whitelist.csv:/whitelist.csv
             docker.pkg.github.com/vegaprotocol/topgun-service/topgun-service:latest
               -addr=0.0.0.0:8333
-              -endpoint=https://lb.n.vega.xyz/query
+              -endpoint=https://lb.testnet.vega.xyz/query
               -whitelist=/whitelist.csv'
     depends_on:
       - publish_docker
