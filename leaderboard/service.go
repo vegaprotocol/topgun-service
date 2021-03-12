@@ -171,7 +171,7 @@ func (s *Service) update() {
 	btcAssetLastPrice := btcAsset.LastPriceValue()
 
 	for _, p := range res.Parties {
-		// Only include whitelisted partyIDs
+		// Only include includelisted partyIDs
 		if _, found := s.included[p.ID]; found {
 
 			// Requirement from @edd to not included parties with no trading in the leaderboard at the service end

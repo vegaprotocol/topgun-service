@@ -20,7 +20,7 @@ docker_push: docker_build ## Push docker image to github image registry
 
 #.PHONY: docker_run
 #docker_run: ## Run docker image
-#	@docker run -d --name=${CONTAINER} -p 8333:8333 -v "$${PWD}/whitelist.csv:/whitelist.csv" "${IMAGE}" -addr=0.0.0.0:8333 -endpoint=https://veganode.example.com/query -whitelist=...
+#	@docker run -d --name=${CONTAINER} -p 8333:8333 -v "$${PWD}/includelist.csv:/includelist.csv" "${IMAGE}" -addr=0.0.0.0:8333 -endpoint=https://veganode.example.com/query -includelist=...
 
 .PHONY: docker_stop
 docker_stop: ## Stop docker container

@@ -24,13 +24,12 @@ steps:
       GOOS: linux
     commands:
       - make build-static
-    depends_on: []
     when:
       ref:
         - refs/heads/master
 
   - name: publish_docker
-    image: docker.pkg.github.com/vegaprotocol/devops-infra/cipipeline-docker:18.09.7
+    image: docker.pkg.github.com/vegaprotocol/devops-infra/cipipeline-docker:18.09.9
     volumes:
       - name: dockersock
         path: /run/docker.sock
@@ -48,7 +47,7 @@ steps:
         - refs/heads/master
 
   - name: deploy
-    image: docker.pkg.github.com/vegaprotocol/devops-infra/cipipeline:1.14.4
+    image: docker.pkg.github.com/vegaprotocol/devops-infra/cipipeline:latest
     volumes: []
     environment:
       DEPLOY_SSH_PRIVKEY:
@@ -64,17 +63,7 @@ steps:
       - echo "$${DEPLOY_SSH_PRIVKEY}" >~/.ssh/id_rsa ; chmod 0600 ~/.ssh/id_rsa
       - echo "$${DEPLOY_SSH_KNOWNHOSTS}" >~/.ssh/known_hosts ; chmod 0644 ~/.ssh/known_hosts
       - unset DEPLOY_SSH_KNOWNHOSTS DEPLOY_SSH_PRIVKEY
-      - ssh dockerrunner@rd.vega.xyz '
-          docker pull docker.pkg.github.com/vegaprotocol/topgun-service/topgun-service:latest &&
-          docker ps -q --filter name=topgun-service | xargs -r docker stop &&
-          docker ps -qa --filter name=topgun-service | xargs -r docker rm &&
-          docker run -d --name=topgun-service
-            -p 8333:8333
-            -v /home/dockerrunner/topgun-service-whitelist.csv:/whitelist.csv
-            docker.pkg.github.com/vegaprotocol/topgun-service/topgun-service:latest
-              -addr=0.0.0.0:8333
-              -endpoint=https://lb.testnet.vega.xyz/query
-              -whitelist=/whitelist.csv'
+      - ssh dockerrunner@rd.vega.xyz /home/dockerrunner/bin/topgun-service.sh
     depends_on:
       - publish_docker
     when:

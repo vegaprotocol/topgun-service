@@ -4,17 +4,17 @@ Lightweight API service that provides sorted leaderboard data for topgun.[testne
 
 The service is written in Go and is designed to poll a Bitstamp for the latest asset price of BTC (used for converting current value of BTC->USD, and to also poll a Vega API node via GraphQL to retrieve account data for parties. The poll rate for both Bitstamp and Vega API queries are configurable. If Bitstamp is not available a fallback asset price is used, we refer to asset price as the last BTC->USD price from the exchange. The service caches the list of accounts for the `vegapoll` time, it will retry on failure.
 
-Note: Only parties on Vega that are on a whitelist, and have made a trade (deployed either VBTC or USD from their initial allowance) will appear on the response.
+Note: Only parties on Vega that are on a includelist, and have made a trade (deployed either VBTC or USD from their initial allowance) will appear on the response.
 
 ## How to run the service
 
 **Example:**
 
-`./topgun-service -whitelist=./csv/whitelist-nicenet.csv -endpoint=https://lb.n.vega.xyz/query`
+`./topgun-service -includelist=./csv/includelist-nicenet.csv -endpoint=https://lb.n.vega.xyz/query`
 
 **Arguments:**
 
-- whitelist - the path to the csv file containing partyIDs to whitelist for the leaderboard [required]
+- includelist - the path to the csv file containing partyIDs to includelist for the leaderboard [required]
 - addr - address:port to bind the service to [optional, default: localhost:8000]
 - endpoint - endpoint url to send graphql queries to [required]
 - timeout - the duration for which the server gracefully waits for existing connections to finish [optional, default: 15s]
@@ -85,7 +85,7 @@ Note: Only parties on Vega that are on a whitelist, and have made a trade (deplo
 
 ## Whitelists
 
-Due to Vega using public-key identifiers as parties, we need to specify a 'whitelist' when running the service. This ensures we filter out all the bots that are operating on a network from the leaderboard. Whitelists are a simple list with one pubkey per newline that should be included in the leaderboard.
+Due to Vega using public-key identifiers as parties, we need to specify a 'includelist' when running the service. This ensures we filter out all the bots that are operating on a network from the leaderboard. Whitelists are a simple list with one pubkey per newline that should be included in the leaderboard.
 
 ## How to file an issue or report a problem
 
