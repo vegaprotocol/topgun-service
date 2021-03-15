@@ -11,12 +11,14 @@ import (
 )
 
 var (
-	addr      string
+	addr        string
+	base        string
+	quote       string
 	includelist string
-	timeout   time.Duration
-	endpoint  string
-	assetpoll time.Duration
-	vegapoll  time.Duration
+	timeout     time.Duration
+	endpoint    string
+	assetpoll   time.Duration
+	vegapoll    time.Duration
 )
 
 func init() {
@@ -26,6 +28,8 @@ func init() {
 	flag.DurationVar(&timeout, "timeout", time.Second*15, "the duration for which the server gracefully waits for existing connections to finish - e.g. 15s or 1m")
 	flag.DurationVar(&assetpoll, "assetpoll", time.Second*30, "the duration for which the service will poll the exchange for asset price. Default: 30s")
 	flag.DurationVar(&vegapoll, "vegapoll", time.Second*5, "the duration for which the service will poll the Vega API for accounts. Default: 5s")
+	flag.StringVar(&base, "base", "", "base asset")
+	flag.StringVar(&quote, "quote", "", "quote asset")
 }
 
 func main() {
@@ -36,6 +40,14 @@ func main() {
 
 	// Command line flags
 	flag.Parse()
+	if len(base) <= 0 {
+		log.Printf("Error: missing 'base' flag")
+		return
+	}
+	if len(quote) <= 0 {
+		log.Printf("Error: missing 'quote' flag")
+		return
+	}
 	if len(addr) <= 0 {
 		log.Printf("Error: missing 'addr' flag (the address:port to bind the accounts service to)")
 		return
@@ -55,5 +67,5 @@ func main() {
 		log.WithError(err).Fatal("Fatal error loading excluded parties from csv")
 	}
 
-	startServer(addr, timeout, endpoint, vegapoll, assetpoll, included)
+	startServer(addr, timeout, endpoint, vegapoll, assetpoll, included, base, quote)
 }

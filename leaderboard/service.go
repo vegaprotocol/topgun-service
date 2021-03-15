@@ -2,18 +2,26 @@ package leaderboard
 
 import (
 	"context"
-	"fmt"
+	"net/url"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/vegaprotocol/topgun-service/pricing"
+	"github.com/vegaprotocol/topgun-service/util"
+
+	ppconfig "code.vegaprotocol.io/priceproxy/config"
+	ppservice "code.vegaprotocol.io/priceproxy/service"
 	"github.com/machinebox/graphql"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/vegaprotocol/topgun-service/exchange"
-	"github.com/vegaprotocol/topgun-service/util"
 )
+
+// PricingEngine is the source of price information from the price proxy.
+type PricingEngine interface {
+	GetPrice(pricecfg ppconfig.PriceConfig) (pi ppservice.PriceResponse, err error)
+}
 
 type AllParties struct {
 	Parties []Party `json:"parties"`
@@ -24,57 +32,25 @@ type Party struct {
 	Accounts []Account
 }
 
-func (p *Party) NotTraded() bool {
-	return p.DeployedBTC() == 0 && p.BalanceBTC() == 10 &&
-		p.BalanceUSD() == 5000 && p.DeployedUSD() == 0
+func (p *Party) TotalGeneral(base, quote string, basePrice float64) float64 {
+	return p.Balance(base, "General")*basePrice + p.Balance(quote, "General")
 }
 
-func (p *Party) DeployedUSD() float64 {
-	return p.calculateDeployed("VUSD", "Margin")
+func (p *Party) TotalMargin(base, quote string, basePrice float64) float64 {
+	return p.Balance(base, "Margin")*basePrice + p.Balance(quote, "Margin")
 }
 
-func (p *Party) DeployedBTC() float64 {
-	return p.calculateDeployed("BTC", "Margin")
+func (p *Party) Total(base, quote string, basePrice float64) float64 {
+	return p.TotalGeneral(base, quote, basePrice) + p.TotalMargin(base, quote, basePrice)
 }
 
-func (p *Party) BalanceUSD() float64 {
-	return p.calculateBalance("VUSD", "General")
-}
-
-func (p *Party) BalanceBTC() float64 {
-	return p.calculateBalance("BTC", "General")
-}
-
-func (p *Party) TotalUSD(btcPrice float64) float64 {
-	return (p.BalanceBTC() * btcPrice) + p.BalanceUSD()
-}
-
-func (p *Party) TotalUSDWithDeployed(btcPrice float64) float64 {
-	return (p.BalanceBTC() * btcPrice) + (p.DeployedBTC() * btcPrice) + p.BalanceUSD() + p.DeployedUSD()
-}
-
-func (p *Party) calculateDeployed(assetName string, assetType string) float64 {
-	var total float64 = 0
+func (p *Party) Balance(assetName string, accountType string) float64 {
 	for _, acc := range p.Accounts {
-		if acc.Asset.Symbol == assetName && acc.Type == assetType {
+		if acc.Asset.Symbol == assetName && acc.Type == accountType {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
-					"Failed to parse %s/% balance [calculateDeployed]", assetName, assetType)
-			}
-			total += v / float64(100000)
-		}
-	}
-	return total
-}
-
-func (p *Party) calculateBalance(assetName string, assetType string) float64 {
-	for _, acc := range p.Accounts {
-		if acc.Asset.Symbol == assetName && acc.Type == assetType {
-			v, err := strconv.ParseFloat(acc.Balance, 64)
-			if err != nil {
-				log.WithError(err).Errorf(
-					"Failed to parse %s/% balance [calculateBalance]", assetName, assetType)
+					"Failed to parse %s/%s balance [Balance]", assetName, accountType)
 				return 0
 			}
 			return v / float64(100000)
@@ -99,55 +75,60 @@ type Leaderboard struct {
 }
 
 type Participant struct {
-	Order                     uint64  `json:"order"`
-	PublicKey                 string  `json:"publicKey"`
-	BalanceUSD                float64 `json:"usdVal"`
-	BalanceUSDFormatted       string  `json:"usd"`
-	BalanceBTC                float64 `json:"btcVal"`
-	BalanceBTCFormatted       string  `json:"btc"`
-	DeployedUSD               float64 `json:"usdDeployedVal"`
-	DeployedUSDFormatted      string  `json:"usdDeployed"`
-	DeployedBTC               float64 `json:"btcDeployedVal"`
-	DeployedBTCFormatted      string  `json:"btcDeployed"`
-	TotalUSD                  float64 `json:"totalUsdVal"`
-	TotalUSDFormatted         string  `json:"totalUsd"`
-	TotalUSDDeployed          float64 `json:"totalUsdDeployedVal"`
-	TotalUSDDeployedFormatted string  `json:"totalUsdDeployed"`
+	Order        uint64  `json:"order"`
+	PublicKey    string  `json:"publicKey"`
+	GeneralBase  float64 `json:"generalBase"`
+	GeneralQuote float64 `json:"generalQuote"`
+	MarginBase   float64 `json:"marginBase"`
+	MarginQuote  float64 `json:"marginQuote"`
+	TotalGeneral float64 `json:"totalGeneral"`
+	TotalMargin  float64 `json:"totalMargin"`
+	Total        float64 `json:"total"`
 }
 
 func NewLeaderboardService(
 	endpoint string,
 	vegaPoll time.Duration,
 	assetPoll time.Duration,
-	included map[string]byte) *Service {
+	included map[string]byte,
+	base, quote string,
+) *Service {
 	svc := &Service{
+		base:     base,
+		quote:    quote,
 		included: included,
 		endpoint: endpoint,
 		poll:     vegaPoll,
 		board:    Leaderboard{util.UnixTimestampUtcNowFormatted(), []Participant{}},
 	}
-	svc.exchange = exchange.NewExchangeService(assetPoll)
+	u := url.URL{
+		Scheme: "https",
+		Host:   "prices.ops.vega.xyz",
+		Path:   "/prices",
+	}
+	svc.pricingEngine = pricing.NewEngine(u)
 	return svc
 }
 
 type Service struct {
-	endpoint string
-	exchange *exchange.Service
-	board    Leaderboard
-	included map[string]byte
-	timer    *time.Ticker
-	poll     time.Duration
-	mu       sync.RWMutex
+	base          string
+	quote         string
+	endpoint      string
+	pricingEngine PricingEngine
+	timer         *time.Ticker
+	board         Leaderboard
+	included      map[string]byte
+	poll          time.Duration
+	mu            sync.RWMutex
 }
 
 func (s *Service) Start() {
 	log.Info("Leaderboard service started")
-	s.exchange.Start() // Try and get the latest asset pricing from exchange immediately
+	s.update()
 	s.timer = util.Schedule(s.update, s.poll)
 }
 
 func (s *Service) Stop() {
-	s.exchange.Stop()
 	s.timer.Stop()
 	log.Info("Leaderboard service stopped")
 }
@@ -166,41 +147,40 @@ func (s *Service) update() {
 
 	s.board = Leaderboard{util.UnixTimestampUtcNowFormatted(), []Participant{}}
 
-	// Get latest BTC USD price value
-	btcAsset := s.exchange.GetBtcUsdPrice()
-	btcAssetLastPrice := btcAsset.LastPriceValue()
+	// Get latest Base Quote price value
+	pc := ppconfig.PriceConfig{
+		Base:   s.base,
+		Quote:  s.quote,
+		Wander: true,
+	}
+	if strings.HasPrefix(pc.Quote, "t") {
+		pc.Quote = pc.Quote[1:]
+	}
+	response, err := s.pricingEngine.GetPrice(pc)
+	if err != nil {
+		log.Warnf("Failed to update leaderboard: %s", err.Error())
+	}
+	lastPrice := response.Price
 
 	for _, p := range res.Parties {
 		// Only include includelisted partyIDs
 		if _, found := s.included[p.ID]; found {
-
-			// Requirement from @edd to not included parties with no trading in the leaderboard at the service end
-			// If in the future we want to filter these at the client we can remove this check.
-			if p.NotTraded() {
-				continue
-			}
-
 			s.board.Traders = append(s.board.Traders, Participant{
-				PublicKey:                 p.ID,
-				BalanceUSD:                p.BalanceUSD(),
-				BalanceUSDFormatted:       fmt.Sprintf("%.5f", p.BalanceUSD()),
-				BalanceBTC:                p.BalanceBTC(),
-				BalanceBTCFormatted:       fmt.Sprintf("%.5f", p.BalanceBTC()),
-				DeployedUSD:               p.DeployedUSD(),
-				DeployedUSDFormatted:      fmt.Sprintf("%.5f", p.DeployedUSD()),
-				DeployedBTC:               p.DeployedBTC(),
-				DeployedBTCFormatted:      fmt.Sprintf("%.5f", p.DeployedBTC()),
-				TotalUSD:                  p.TotalUSD(btcAssetLastPrice),
-				TotalUSDFormatted:         fmt.Sprintf("%.5f", p.TotalUSD(btcAssetLastPrice)),
-				TotalUSDDeployed:          p.TotalUSDWithDeployed(btcAssetLastPrice),
-				TotalUSDDeployedFormatted: fmt.Sprintf("%.5f", p.TotalUSDWithDeployed(btcAssetLastPrice)),
+				PublicKey:    p.ID,
+				GeneralBase:  p.Balance(s.base, "General"),
+				GeneralQuote: p.Balance(s.quote, "General"),
+				MarginBase:   p.Balance(s.base, "Margin"),
+				MarginQuote:  p.Balance(s.quote, "Margin"),
+				TotalGeneral: p.TotalGeneral(s.base, s.quote, lastPrice),
+				TotalMargin:  p.TotalMargin(s.base, s.quote, lastPrice),
+				Total:        p.Total(s.base, s.quote, lastPrice),
 			})
 		}
 	}
 
 	// Sort the leaderboard table
 	sort.Slice(s.board.Traders, func(i, j int) bool {
-		return s.board.Traders[i].TotalUSDDeployed > s.board.Traders[j].TotalUSDDeployed
+		return s.board.Traders[i].Total > s.board.Traders[j].Total
 	})
 
 	// Set order value

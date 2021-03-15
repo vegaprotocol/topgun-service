@@ -9,8 +9,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/vegaprotocol/topgun-service/leaderboard"
@@ -22,10 +22,12 @@ func startServer(
 	endpoint string,
 	vegaPoll time.Duration,
 	assetPoll time.Duration,
-	included map[string]byte) {
+	included map[string]byte,
+	base, quote string,
+) {
 	log.Info("Starting up API server")
 
-	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included)
+	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included, base, quote)
 	router := mux.NewRouter()
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		quotes := []string{
