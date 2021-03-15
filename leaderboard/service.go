@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"sort"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -71,6 +70,9 @@ type Account struct {
 
 type Leaderboard struct {
 	LastUpdate string        `json:"lastUpdate"`
+	Base       string        `json:"base"`
+	Quote      string        `json:"quote"`
+	Asset      string        `json:"asset"`
 	Traders    []Participant `json:"traders"`
 }
 
@@ -91,15 +93,22 @@ func NewLeaderboardService(
 	vegaPoll time.Duration,
 	assetPoll time.Duration,
 	included map[string]byte,
-	base, quote string,
+	base, quote, vegaAsset string,
 ) *Service {
 	svc := &Service{
-		base:     base,
-		quote:    quote,
-		included: included,
-		endpoint: endpoint,
-		poll:     vegaPoll,
-		board:    Leaderboard{util.UnixTimestampUtcNowFormatted(), []Participant{}},
+		base:      base,
+		quote:     quote,
+		vegaAsset: vegaAsset,
+		included:  included,
+		endpoint:  endpoint,
+		poll:      vegaPoll,
+		board: Leaderboard{
+			Base:       base,
+			Quote:      quote,
+			Asset:      vegaAsset,
+			LastUpdate: util.UnixTimestampUtcNowFormatted(),
+			Traders:    []Participant{},
+		},
 	}
 	u := url.URL{
 		Scheme: "https",
@@ -113,6 +122,7 @@ func NewLeaderboardService(
 type Service struct {
 	base          string
 	quote         string
+	vegaAsset     string
 	endpoint      string
 	pricingEngine PricingEngine
 	timer         *time.Ticker
@@ -145,16 +155,19 @@ func (s *Service) update() {
 		return
 	}
 
-	s.board = Leaderboard{util.UnixTimestampUtcNowFormatted(), []Participant{}}
+	s.board = Leaderboard{
+		LastUpdate: util.UnixTimestampUtcNowFormatted(),
+		Base:       s.base,
+		Quote:      s.quote,
+		Asset:      s.vegaAsset,
+		Traders:    []Participant{},
+	}
 
 	// Get latest Base Quote price value
 	pc := ppconfig.PriceConfig{
 		Base:   s.base,
-		Quote:  s.quote,
+		Quote:  s.quote, // not s.vegaAsset
 		Wander: true,
-	}
-	if strings.HasPrefix(pc.Quote, "t") {
-		pc.Quote = pc.Quote[1:]
 	}
 	response, err := s.pricingEngine.GetPrice(pc)
 	if err != nil {
@@ -168,12 +181,12 @@ func (s *Service) update() {
 			s.board.Traders = append(s.board.Traders, Participant{
 				PublicKey:    p.ID,
 				GeneralBase:  p.Balance(s.base, "General"),
-				GeneralQuote: p.Balance(s.quote, "General"),
+				GeneralQuote: p.Balance(s.vegaAsset, "General"),
 				MarginBase:   p.Balance(s.base, "Margin"),
-				MarginQuote:  p.Balance(s.quote, "Margin"),
-				TotalGeneral: p.TotalGeneral(s.base, s.quote, lastPrice),
-				TotalMargin:  p.TotalMargin(s.base, s.quote, lastPrice),
-				Total:        p.Total(s.base, s.quote, lastPrice),
+				MarginQuote:  p.Balance(s.vegaAsset, "Margin"),
+				TotalGeneral: p.TotalGeneral(s.base, s.vegaAsset, lastPrice),
+				TotalMargin:  p.TotalMargin(s.base, s.vegaAsset, lastPrice),
+				Total:        p.Total(s.base, s.vegaAsset, lastPrice),
 			})
 		}
 	}

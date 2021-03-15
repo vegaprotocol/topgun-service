@@ -23,11 +23,11 @@ func startServer(
 	vegaPoll time.Duration,
 	assetPoll time.Duration,
 	included map[string]byte,
-	base, quote string,
+	base, quote, vegaAsset string,
 ) {
 	log.Info("Starting up API server")
 
-	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included, base, quote)
+	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included, base, quote, vegaAsset)
 	router := mux.NewRouter()
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		quotes := []string{
