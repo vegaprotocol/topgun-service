@@ -27,16 +27,22 @@ type Party struct {
 	Accounts []Account
 }
 
-func (p *Party) TotalGeneral(base, quote string, basePrice float64) float64 {
-	return p.Balance(base, "General")*basePrice + p.Balance(quote, "General")
+// Guide to the base/quote/asset vars
+// ==================================
+// base => BTC (for price provider)
+// quote => USD (for price provider/calculation)
+// vegaAsset => tDAI (for asset balance calculation only)
+
+func (p *Party) TotalGeneral(asset string, assetPrice float64) float64 {
+	return p.Balance(asset, "General") * assetPrice
 }
 
-func (p *Party) TotalMargin(base, quote string, basePrice float64) float64 {
-	return p.Balance(base, "Margin")*basePrice + p.Balance(quote, "Margin")
+func (p *Party) TotalMargin(asset string, assetPrice float64) float64 {
+	return p.Balance(asset, "Margin") * assetPrice
 }
 
-func (p *Party) Total(base, quote string, basePrice float64) float64 {
-	return p.TotalGeneral(base, quote, basePrice) + p.TotalMargin(base, quote, basePrice)
+func (p *Party) Total(asset string, assetPrice float64) float64 {
+	return p.TotalGeneral(asset, assetPrice) + p.TotalMargin(asset, assetPrice)
 }
 
 func (p *Party) Balance(assetName string, accountType string) float64 {
@@ -78,16 +84,15 @@ type Leaderboard struct {
 }
 
 type Participant struct {
-	Order         uint64  `json:"order"`
-	PublicKey     string  `json:"publicKey"`
-	TwitterHandle string  `json:"twitterHandle"`
-	GeneralBase   float64 `json:"generalBase"`
-	GeneralQuote  float64 `json:"generalQuote"`
-	MarginBase    float64 `json:"marginBase"`
-	MarginQuote   float64 `json:"marginQuote"`
-	TotalGeneral  float64 `json:"totalGeneral"`
-	TotalMargin   float64 `json:"totalMargin"`
-	Total         float64 `json:"total"`
+	Order                   uint64  `json:"order"`
+	PublicKey               string  `json:"publicKey"`
+	TwitterHandle           string  `json:"twitterHandle"`
+	BalanceGeneral          float64 `json:"balanceGeneral"`
+	BalanceMargin           float64 `json:"balanceMargin"`
+	BalanceTotal            float64 `json:"balanceTotal"`
+	QuoteGeneral            float64 `json:"quoteGeneral"`
+	QuoteMargin             float64 `json:"quoteMargin"`
+	QuoteTotal              float64 `json:"quoteTotal"`
 }
 
 func NewLeaderboardService(
@@ -191,23 +196,26 @@ func (s *Service) update() {
 	for _, p := range res.Parties {
 		// Only include verified pub-keys from the external verifier API service
 		if social, found := included[p.ID]; found {
+
+			balanceGeneral := p.Balance(s.vegaAsset, "General")
+			balanceMargin := p.Balance(s.vegaAsset, "Margin")
+
 			s.board.Traders = append(s.board.Traders, Participant{
-				PublicKey:     p.ID,
-				TwitterHandle: social.Handle,
-				GeneralBase:   p.Balance(s.base, "General"),
-				GeneralQuote:  p.Balance(s.vegaAsset, "General"),
-				MarginBase:    p.Balance(s.base, "Margin"),
-				MarginQuote:   p.Balance(s.vegaAsset, "Margin"),
-				TotalGeneral:  p.TotalGeneral(s.base, s.vegaAsset, lastPrice),
-				TotalMargin:   p.TotalMargin(s.base, s.vegaAsset, lastPrice),
-				Total:         p.Total(s.base, s.vegaAsset, lastPrice),
+				PublicKey:      p.ID,
+				TwitterHandle:  social.Handle,
+				BalanceGeneral: balanceGeneral,
+				BalanceMargin:  balanceMargin,
+				QuoteGeneral:   p.TotalGeneral( s.vegaAsset, lastPrice),
+				QuoteMargin:    p.TotalMargin(s.vegaAsset, lastPrice),
+				QuoteTotal:     p.Total(s.vegaAsset, lastPrice),
+				BalanceTotal:   balanceMargin + balanceGeneral,
 			})
 		}
 	}
 
 	// Sort the leaderboard table
 	sort.Slice(s.board.Traders, func(i, j int) bool {
-		return s.board.Traders[i].Total > s.board.Traders[j].Total
+		return s.board.Traders[i].BalanceTotal > s.board.Traders[j].BalanceTotal
 	})
 
 	// Set order value
@@ -227,7 +235,7 @@ func (s *Service) performQuery(ctx context.Context) (*AllParties, error) {
     query {
        parties {
           id
-          accounts {type balance asset { symbol } }
+          accounts { type balance asset { symbol } }
        }
     }
 `)
