@@ -17,11 +17,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// PricingEngine is the source of price information from the price proxy.
-type PricingEngine interface {
-	GetPrice(pricecfg ppconfig.PriceConfig) (pi ppservice.PriceResponse, err error)
-}
-
 type AllParties struct {
 	Parties []Party `json:"parties"`
 }
@@ -58,6 +53,11 @@ func (p *Party) Balance(assetName string, accountType string) float64 {
 	return 0
 }
 
+// PricingEngine is the source of price information from the price proxy.
+type PricingEngine interface {
+	GetPrice(pricecfg ppconfig.PriceConfig) (pi ppservice.PriceResponse, err error)
+}
+
 type Asset struct {
 	Symbol string `json:"symbol"`
 }
@@ -91,7 +91,6 @@ type Participant struct {
 func NewLeaderboardService(
 	endpoint string,
 	vegaPoll time.Duration,
-	assetPoll time.Duration,
 	included map[string]byte,
 	base, quote, vegaAsset string,
 ) *Service {
@@ -166,7 +165,7 @@ func (s *Service) update() {
 	// Get latest Base Quote price value
 	pc := ppconfig.PriceConfig{
 		Base:   s.base,
-		Quote:  s.quote, // not s.vegaAsset
+		Quote:  s.quote,
 		Wander: true,
 	}
 	response, err := s.pricingEngine.GetPrice(pc)
@@ -176,7 +175,7 @@ func (s *Service) update() {
 	lastPrice := response.Price
 
 	for _, p := range res.Parties {
-		// Only include includelisted partyIDs
+		// Only include verified pub-keys
 		if _, found := s.included[p.ID]; found {
 			s.board.Traders = append(s.board.Traders, Participant{
 				PublicKey:    p.ID,

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
@@ -29,23 +28,12 @@ func startServer(
 
 	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included, base, quote, vegaAsset)
 	router := mux.NewRouter()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		quotes := []string{
-			"Sorry, Goose, but it's time to buzz the tower.",
-			"You’re everyone’s problem. That’s because every time you go up in the air you’re unsafe." +
-				" I don’t like you because you’re dangerous.",
-			"That's right, Iceman. I am dangerous.",
-			"It's classified. I could tell you, but then I'd have to kill you.",
-			"Because I was inverted.",
-			"Son, your ego is writing checks your body can't cash.",
-			"I feel the need -- the need for speed.",
-			"You can be my wing-man any time.",
-			"This could be complicated. You know on the first one I crashed and burned.",
-		}
-		rand.Seed(time.Now().Unix())
-		w.Write([]byte(quotes[rand.Intn(len(quotes))]))
-	})
+
+	// Status/Default handlers
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
 	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {})
+
+	// Asset ranking leaderboard
 	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		lb := svc.GetLeaderboard()
@@ -56,6 +44,11 @@ func startServer(
 			w.Write(payload)
 		}
 	})
+
+	// Additional metrics required (binary Y/N voting on proposals, binary Y/N provided liquidity commitment)
+	router.HandleFunc("/governance", func(w http.ResponseWriter, r *http.Request) {})
+	router.HandleFunc("/liquidity", func(w http.ResponseWriter, r *http.Request) {})
+
 
 	srv := &http.Server{
 		Addr:         addr,
