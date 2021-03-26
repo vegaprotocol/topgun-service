@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"math/rand"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/vegaprotocol/topgun-service/leaderboard"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
 func startServer(
@@ -21,30 +21,18 @@ func startServer(
 	wait time.Duration,
 	endpoint string,
 	vegaPoll time.Duration,
-	assetPoll time.Duration,
-	included map[string]byte,
-	base, quote, vegaAsset string,
+	base string,
+	quote string,
+	vegaAsset string,
+	verifierUrl string,
 ) {
 	log.Info("Starting up API server")
 
-	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included, base, quote, vegaAsset)
+	vfs := verifier.NewVerifierService(verifierUrl)
+	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, base, quote, vegaAsset, vfs)
+
 	router := mux.NewRouter()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		quotes := []string{
-			"Sorry, Goose, but it's time to buzz the tower.",
-			"You’re everyone’s problem. That’s because every time you go up in the air you’re unsafe." +
-				" I don’t like you because you’re dangerous.",
-			"That's right, Iceman. I am dangerous.",
-			"It's classified. I could tell you, but then I'd have to kill you.",
-			"Because I was inverted.",
-			"Son, your ego is writing checks your body can't cash.",
-			"I feel the need -- the need for speed.",
-			"You can be my wing-man any time.",
-			"This could be complicated. You know on the first one I crashed and burned.",
-		}
-		rand.Seed(time.Now().Unix())
-		w.Write([]byte(quotes[rand.Intn(len(quotes))]))
-	})
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
 	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {})
 	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
