@@ -10,6 +10,7 @@ import (
 
 	"github.com/vegaprotocol/topgun-service/pricing"
 	"github.com/vegaprotocol/topgun-service/util"
+	"github.com/vegaprotocol/topgun-service/verifier"
 
 	ppconfig "code.vegaprotocol.io/priceproxy/config"
 	ppservice "code.vegaprotocol.io/priceproxy/service"
@@ -77,30 +78,33 @@ type Leaderboard struct {
 }
 
 type Participant struct {
-	Order        uint64  `json:"order"`
-	PublicKey    string  `json:"publicKey"`
-	GeneralBase  float64 `json:"generalBase"`
-	GeneralQuote float64 `json:"generalQuote"`
-	MarginBase   float64 `json:"marginBase"`
-	MarginQuote  float64 `json:"marginQuote"`
-	TotalGeneral float64 `json:"totalGeneral"`
-	TotalMargin  float64 `json:"totalMargin"`
-	Total        float64 `json:"total"`
+	Order         uint64  `json:"order"`
+	PublicKey     string  `json:"publicKey"`
+	TwitterHandle string  `json:"twitterHandle"`
+	GeneralBase   float64 `json:"generalBase"`
+	GeneralQuote  float64 `json:"generalQuote"`
+	MarginBase    float64 `json:"marginBase"`
+	MarginQuote   float64 `json:"marginQuote"`
+	TotalGeneral  float64 `json:"totalGeneral"`
+	TotalMargin   float64 `json:"totalMargin"`
+	Total         float64 `json:"total"`
 }
 
 func NewLeaderboardService(
 	endpoint string,
 	vegaPoll time.Duration,
-	included map[string]byte,
-	base, quote, vegaAsset string,
+	base string,
+	quote string,
+	vegaAsset string,
+	verifier *verifier.Service,
 ) *Service {
 	svc := &Service{
 		base:      base,
 		quote:     quote,
 		vegaAsset: vegaAsset,
-		included:  included,
 		endpoint:  endpoint,
 		poll:      vegaPoll,
+		verifier:  verifier,
 		board: Leaderboard{
 			Base:       base,
 			Quote:      quote,
@@ -126,9 +130,9 @@ type Service struct {
 	pricingEngine PricingEngine
 	timer         *time.Ticker
 	board         Leaderboard
-	included      map[string]byte
 	poll          time.Duration
 	mu            sync.RWMutex
+	verifier      *verifier.Service
 }
 
 func (s *Service) Start() {
@@ -145,6 +149,16 @@ func (s *Service) Stop() {
 func (s *Service) update() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	// Attempt to update parties from external social verifier service
+	// Safe approach, will only overwrite internal collection if successful
+	s.verifier.UpdateVerifiedParties()
+	// Grab a map of the verified pub-key->social-handle for leaderboard
+	included := s.verifier.Dictionary()
+	// If no verified pub-key->social-handles found, no need to query Vega
+	if len(included) == 0 {
+		return
+	}
 
 	// Load all parties with accounts from GraphQL end-point
 	ctx := context.Background()
@@ -175,17 +189,18 @@ func (s *Service) update() {
 	lastPrice := response.Price
 
 	for _, p := range res.Parties {
-		// Only include verified pub-keys
-		if _, found := s.included[p.ID]; found {
+		// Only include verified pub-keys from the external verifier API service
+		if social, found := included[p.ID]; found {
 			s.board.Traders = append(s.board.Traders, Participant{
-				PublicKey:    p.ID,
-				GeneralBase:  p.Balance(s.base, "General"),
-				GeneralQuote: p.Balance(s.vegaAsset, "General"),
-				MarginBase:   p.Balance(s.base, "Margin"),
-				MarginQuote:  p.Balance(s.vegaAsset, "Margin"),
-				TotalGeneral: p.TotalGeneral(s.base, s.vegaAsset, lastPrice),
-				TotalMargin:  p.TotalMargin(s.base, s.vegaAsset, lastPrice),
-				Total:        p.Total(s.base, s.vegaAsset, lastPrice),
+				PublicKey:     p.ID,
+				TwitterHandle: social.Handle,
+				GeneralBase:   p.Balance(s.base, "General"),
+				GeneralQuote:  p.Balance(s.vegaAsset, "General"),
+				MarginBase:    p.Balance(s.base, "Margin"),
+				MarginQuote:   p.Balance(s.vegaAsset, "Margin"),
+				TotalGeneral:  p.TotalGeneral(s.base, s.vegaAsset, lastPrice),
+				TotalMargin:   p.TotalMargin(s.base, s.vegaAsset, lastPrice),
+				Total:         p.Total(s.base, s.vegaAsset, lastPrice),
 			})
 		}
 	}

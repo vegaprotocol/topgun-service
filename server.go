@@ -13,6 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/vegaprotocol/topgun-service/leaderboard"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
 func startServer(
@@ -20,20 +21,19 @@ func startServer(
 	wait time.Duration,
 	endpoint string,
 	vegaPoll time.Duration,
-	assetPoll time.Duration,
-	included map[string]byte,
-	base, quote, vegaAsset string,
+	base string,
+	quote string,
+	vegaAsset string,
+	verifierUrl string,
 ) {
 	log.Info("Starting up API server")
 
-	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, assetPoll, included, base, quote, vegaAsset)
-	router := mux.NewRouter()
+	vfs := verifier.NewVerifierService(verifierUrl)
+	svc := leaderboard.NewLeaderboardService(endpoint, vegaPoll, base, quote, vegaAsset, vfs)
 
-	// Status/Default handlers
+	router := mux.NewRouter()
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
 	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {})
-
-	// Asset ranking leaderboard
 	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		lb := svc.GetLeaderboard()
@@ -44,11 +44,6 @@ func startServer(
 			w.Write(payload)
 		}
 	})
-
-	// Additional metrics required (binary Y/N voting on proposals, binary Y/N provided liquidity commitment)
-	router.HandleFunc("/governance", func(w http.ResponseWriter, r *http.Request) {})
-	router.HandleFunc("/liquidity", func(w http.ResponseWriter, r *http.Request) {})
-
 
 	srv := &http.Server{
 		Addr:         addr,
