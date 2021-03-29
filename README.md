@@ -65,6 +65,10 @@ The service is written in Go.
 
 ```
 
+## Verified socials
+
+A mapping of public key to social handle (Twitter) is provided by an external service, please see the file `verified_example.txt` for an example of the format returned. An attempt to update this list from the 3rd party server happens on each reload of the data from Vega, see `vegapoll` time parameter above.
+
 ## How to file an issue or report a problem
 
 Please use the Issues tab in the topgun-service repository in GitHub.
