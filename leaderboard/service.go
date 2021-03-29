@@ -158,8 +158,8 @@ func (s *Service) update() {
 	// Attempt to update parties from external social verifier service
 	// Safe approach, will only overwrite internal collection if successful
 	s.verifier.UpdateVerifiedParties()
-	// Grab a map of the verified pub-key->social-handle for leaderboard
-	included := s.verifier.Dictionary()
+	// Grab a map of the verified pub-key->twitter-handle for leaderboard
+	included := s.verifier.PubKeysToTwitterHandles()
 	// If no verified pub-key->social-handles found, no need to query Vega
 	if len(included) == 0 {
 		return
@@ -195,14 +195,15 @@ func (s *Service) update() {
 
 	for _, p := range res.Parties {
 		// Only include verified pub-keys from the external verifier API service
-		if social, found := included[p.ID]; found {
+		// Return their twitter handle if they exist
+		if twitterHandle, found := included[p.ID]; found {
 
 			balanceGeneral := p.Balance(s.vegaAsset, "General")
 			balanceMargin := p.Balance(s.vegaAsset, "Margin")
 
 			s.board.Traders = append(s.board.Traders, Participant{
 				PublicKey:      p.ID,
-				TwitterHandle:  social.Handle,
+				TwitterHandle:  twitterHandle,
 				BalanceGeneral: balanceGeneral,
 				BalanceMargin:  balanceMargin,
 				QuoteGeneral:   p.TotalGeneral( s.vegaAsset, lastPrice),
