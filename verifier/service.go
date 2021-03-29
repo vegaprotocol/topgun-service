@@ -11,23 +11,19 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type QueryResult struct {
-	Parties []Social `json:"parties"`
-}
-
-type Social struct {
-	Party  string `json:"party"`
-	Handle string `json:"handle"`
+type Socials []struct {
+	PartyID       string `json:"party_id"`
+	TwitterHandle string `json:"twitter_handle"`
 }
 
 type Service struct {
 	mu        sync.RWMutex
-	socials   *[]Social
+	socials   *Socials
 	verifyUrl string
 }
 
 func NewVerifierService(verifyUrl string) *Service {
-	socials := make([]Social, 0)
+	socials := make(Socials, 0)
 	s := Service{
 		verifyUrl: verifyUrl,
 		socials:   &socials,
@@ -53,19 +49,19 @@ func (s *Service) UpdateVerifiedParties() {
 	log.Infof("Parties found: %d, last total: %d", len(*s.socials), foundTotal)
 }
 
-func (s *Service) List() *[]Social {
+func (s *Service) List() *Socials {
 	return s.socials
 }
 
-func (s *Service) Dictionary() map[string]Social {
-	result := map[string]Social{}
+func (s *Service) PubKeysToTwitterHandles() map[string]string {
+	result := map[string]string{}
 	for _, m := range *s.socials {
-		result[m.Party] = m
+		result[m.PartyID] = m.TwitterHandle
 	}
 	return result
 }
 
-func (s *Service) loadVerifiedParties() (*[]Social, error) {
+func (s *Service) loadVerifiedParties() (*Socials, error) {
 	if s.verifyUrl == "" {
 		return nil, errors.New("social verifier URL not specified or empty")
 	}
@@ -82,12 +78,12 @@ func (s *Service) loadVerifiedParties() (*[]Social, error) {
 			return nil, err
 		}
 		// Decode the result
-		var res QueryResult
+		var res Socials
 		err = json.Unmarshal(body, &res)
 		if err != nil {
 			return nil, errors.Wrap(err, "unable to unmarshal the mapping returned from verifier service")
 		}
-		found := res.Parties
+		found := res
 		return &found, nil
 	} else {
 		return nil, errors.New(fmt.Sprintf("wrong status code returned from verifier service: %d", resp.StatusCode))
