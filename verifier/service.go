@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -19,13 +20,13 @@ type Socials []struct {
 type Service struct {
 	mu        sync.RWMutex
 	socials   *Socials
-	verifyUrl string
+	verifyURL url.URL
 }
 
-func NewVerifierService(verifyUrl string) *Service {
+func NewVerifierService(verifyURL url.URL) *Service {
 	socials := make(Socials, 0)
 	s := Service{
-		verifyUrl: verifyUrl,
+		verifyURL: verifyURL,
 		socials:   &socials,
 	}
 	return &s
@@ -62,11 +63,7 @@ func (s *Service) PubKeysToTwitterHandles() map[string]string {
 }
 
 func (s *Service) loadVerifiedParties() (*Socials, error) {
-	if s.verifyUrl == "" {
-		return nil, errors.New("social verifier URL not specified or empty")
-	}
-
-	resp, err := http.Get(s.verifyUrl)
+	resp, err := http.Get(s.verifyURL.String())
 	if err != nil {
 		return nil, err
 	}

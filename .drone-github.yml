@@ -9,25 +9,6 @@ platform:
   os: linux
 
 steps:
-  - name: build
-    image: docker.pkg.github.com/vegaprotocol/devops-infra/cipipeline:1.14.4
-    pull: always
-    volumes:
-      - name: gocache
-        path: /go/cache
-      - name: gopkg
-        path: /go/pkg
-    environment:
-      GO111MODULE: "on"
-      GOARCH: amd64
-      GOCACHE: /go/cache
-      GOOS: linux
-    commands:
-      - make build-static
-    when:
-      ref:
-        - refs/heads/master
-
   - name: publish_docker
     image: docker.pkg.github.com/vegaprotocol/devops-infra/cipipeline-docker:18.09.9
     volumes:
@@ -40,8 +21,7 @@ steps:
     commands:
       - mkdir -p "$$HOME/.docker" ; echo "$$DOCKER_CONFIG_JSON" >"$$HOME/.docker/config.json" ; unset DOCKER_CONFIG_JSON
       - make docker_push
-    depends_on:
-      - build
+    depends_on: []
     when:
       ref:
         - refs/heads/master
@@ -74,12 +54,6 @@ volumes:
   - name: dockersock
     host:
       path: /run/docker.sock
-  - name: gocache
-    host:
-      path: /var/lib/drone/volumes/topgun-service/gocache
-  - name: gopkg
-    host:
-      path: /var/lib/drone/volumes/topgun-service/gopkg
 
 image_pull_secrets:
   - dockerconfig

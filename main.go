@@ -1,67 +1,111 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"flag"
+	"fmt"
+	"net/http"
 	"os"
+	"os/signal"
+	"strings"
 	"time"
 
+	"github.com/vegaprotocol/topgun-service/config"
+	"github.com/vegaprotocol/topgun-service/leaderboard"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/configor"
 	log "github.com/sirupsen/logrus"
 )
 
-var (
-	addr        string
-	base        string
-	quote       string
-	vegaasset   string
-	verify      string
-	timeout     time.Duration
-	endpoint    string
-	vegapoll    time.Duration
-)
-
-func init() {
-	flag.StringVar(&verify, "verifyurl", "", "the http/web URL for the 3rd party social handle to pubkey verifier API service")
-	flag.StringVar(&addr, "addr", "localhost:8000", "address:port to bind the service to")
-	flag.StringVar(&endpoint, "endpoint", "", "endpoint url to send graphql queries to")
-	flag.DurationVar(&timeout, "timeout", time.Second*15, "the duration for which the server gracefully waits for existing connections to finish - e.g. 15s or 1m")
-	flag.DurationVar(&vegapoll, "vegapoll", time.Second*5, "the duration for which the service will poll the Vega API for accounts. Default: 5s")
-	flag.StringVar(&vegaasset, "vegaasset", "", "Vega asset, e.g. tDAI")
-	flag.StringVar(&base, "base", "", "base for prices")
-	flag.StringVar(&quote, "quote", "", "quote for prices")
-}
-
 func main() {
-	// Logger config
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetOutput(os.Stdout)
-	log.SetLevel(log.InfoLevel)
-
 	// Command line flags
+	var configName string
+	flag.StringVar(&configName, "config", "", "Configuration YAML file")
 	flag.Parse()
-	if len(base) <= 0 {
-		log.Printf("Error: missing 'base' flag")
-		return
-	}
-	if len(quote) <= 0 {
-		log.Printf("Error: missing 'quote' flag")
-		return
-	}
-	if len(vegaasset) <= 0 {
-		log.Printf("Error: missing 'vegaasset' flag")
-		return
-	}
-	if len(addr) <= 0 {
-		log.Printf("Error: missing 'addr' flag (the address:port to bind the accounts service to)")
-		return
-	}
-	if len(endpoint) <= 0 {
-		log.Printf("Error: missing 'endpoint' flag (endpoint url to send graphql queries to)")
-		return
-	}
-	if len(verify) <= 0 {
-		log.Printf("Error: missing 'verifier' flag (url to download verified social->pubkey mapping from)")
-		return
+	if len(configName) == 0 {
+		fmt.Println("Missing commandline argument: -config configfile.yaml")
+		os.Exit(1)
 	}
 
-	startServer(addr, timeout, endpoint, vegapoll, base, quote, vegaasset, verify)
+	var cfg config.Config
+	err := configor.Load(&cfg, configName)
+	// https://github.com/jinzhu/configor/issues/40
+	if err != nil && !strings.Contains(err.Error(), "should be struct") {
+		fmt.Printf("Failed to read config: %v", err)
+		os.Exit(1)
+	}
+
+	err = config.CheckConfig(cfg)
+	if err != nil && !strings.Contains(err.Error(), "should be struct") {
+		fmt.Printf("Invalid config: %v", err)
+		os.Exit(1)
+	}
+
+	// Logger config
+	err = config.ConfigureLogging(cfg)
+	if err != nil && !strings.Contains(err.Error(), "should be struct") {
+		fmt.Printf("Invalid logging config: %v", err)
+		os.Exit(1)
+	}
+	log.WithFields(cfg.LogFields()).Info("Starting server")
+
+	svc := leaderboard.NewLeaderboardService(cfg)
+
+	router := mux.NewRouter()
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
+	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {})
+	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		lb := svc.GetLeaderboard()
+		payload, err := json.Marshal(lb)
+		if err != nil {
+			log.WithError(err).Error("Error marshaling response")
+			return
+		}
+		w.Write(payload)
+	})
+
+	srv := &http.Server{
+		Addr:         cfg.Listen,
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 60,
+		Handler:      handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(router),
+	}
+
+	// Run our server in a goroutine so that it doesn't block.
+	go func() {
+		svc.Start()
+		if err := srv.ListenAndServe(); err != nil {
+			log.WithError(err).Warn("Failed to serve")
+		}
+	}()
+
+	c := make(chan os.Signal, 1)
+	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
+	signal.Notify(c, os.Interrupt)
+
+	// Block until we receive our signal.
+	<-c
+
+	// Create a deadline to wait for.
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.GracefulShutdownTimeout)
+	defer cancel()
+
+	// Signal to stop the leaderboard service
+	svc.Stop()
+
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	srv.Shutdown(ctx)
+
+	// Optionally, you could run srv.Shutdown in a goroutine and block on
+	// <-ctx.Done() if your application should wait for other services
+	// to finalize based on context cancellation.
+	log.Info("Stopping server")
+	os.Exit(0)
 }
