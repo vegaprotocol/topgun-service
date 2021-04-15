@@ -144,9 +144,9 @@ func (s *Service) update() {
 	// Safe approach, will only overwrite internal collection if successful
 	s.verifier.UpdateVerifiedParties()
 	// Grab a map of the verified pub-key->twitter-handle for leaderboard
-	included := s.verifier.PubKeysToTwitterHandles()
+	socials := s.verifier.PubKeysToTwitterHandles()
 	// If no verified pub-key->social-handles found, no need to query Vega
-	if len(included) == 0 {
+	if len(socials) == 0 {
 		return
 	}
 
@@ -157,6 +157,38 @@ func (s *Service) update() {
 		log.WithError(err).Error("Failed to get list of parties")
 		return
 	}
+
+	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
+	socialParties := make([]Party, 0, len(socials))
+	for partyID, social := range socials {
+		found := false
+		for _, p := range parties {
+			if p.ID == partyID {
+				log.WithFields(log.Fields{
+					"partyID":       partyID,
+					"social":        social,
+					"account_count": len(p.Accounts),
+				}).Debug("Social (found)")
+				p.social = social
+				socialParties = append(socialParties, p)
+				found = true
+				break
+			}
+		}
+		if !found {
+			socialParties = append(socialParties, Party{
+				ID:     partyID,
+				social: social,
+				// no accounts
+			})
+			log.WithFields(log.Fields{
+				"partyID":       partyID,
+				"social":        social,
+				"account_count": "zero",
+			}).Debug("Social (not found)")
+		}
+	}
+	parties = socialParties
 
 	newBoard := Leaderboard{
 		Version:        1,
@@ -181,8 +213,6 @@ func (s *Service) update() {
 	// 	log.Warnf("Failed to update leaderboard: %s", err.Error())
 	// }
 	// lastPrice := response.Price
-
-	parties = filterParties(parties, included)
 
 	switch s.cfg.Algorithm {
 	case "ByAsset":
@@ -214,17 +244,4 @@ func (s *Service) GetLeaderboard() Leaderboard {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.board
-}
-
-// filterParties filters the parties list and returns only those listed in the
-// social map, which has been fetched from the external verifier service
-func filterParties(parties []Party, socials map[string]string) []Party {
-	filteredParties := []Party{}
-	for _, party := range parties {
-		if social, found := socials[party.ID]; found {
-			party.social = social
-			filteredParties = append(filteredParties, party)
-		}
-	}
-	return filteredParties
 }
