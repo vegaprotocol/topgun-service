@@ -1,7 +1,7 @@
 package leaderboard
 
 import (
-	"context"
+	"fmt"
 	"net/url"
 	"strconv"
 	"sync"
@@ -14,32 +14,10 @@ import (
 
 	ppconfig "code.vegaprotocol.io/priceproxy/config"
 	ppservice "code.vegaprotocol.io/priceproxy/service"
-	"github.com/machinebox/graphql"
 	log "github.com/sirupsen/logrus"
 )
 
 // GraphQL query response structs
-
-type Asset struct {
-	Symbol string `json:"symbol"`
-}
-
-type Account struct {
-	Type    string `json:"type"`
-	Balance string `json:"balance"`
-	Asset   Asset  `json:"asset"`
-}
-
-type Party struct {
-	ID       string    `json:"id"`
-	Accounts []Account `json:"accounts"`
-
-	social string
-}
-
-type AllParties struct {
-	Parties []Party `json:"parties"`
-}
 
 // // Guide to the base/quote/asset vars
 // // ==================================
@@ -150,46 +128,6 @@ func (s *Service) update() {
 		return
 	}
 
-	// Load all parties with accounts from GraphQL end-point
-	ctx := context.Background()
-	parties, err := s.getParties(ctx)
-	if err != nil {
-		log.WithError(err).Error("Failed to get list of parties")
-		return
-	}
-
-	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
-	socialParties := make([]Party, 0, len(socials))
-	for partyID, social := range socials {
-		found := false
-		for _, p := range parties {
-			if p.ID == partyID {
-				log.WithFields(log.Fields{
-					"partyID":       partyID,
-					"social":        social,
-					"account_count": len(p.Accounts),
-				}).Debug("Social (found)")
-				p.social = social
-				socialParties = append(socialParties, p)
-				found = true
-				break
-			}
-		}
-		if !found {
-			socialParties = append(socialParties, Party{
-				ID:     partyID,
-				social: social,
-				// no accounts
-			})
-			log.WithFields(log.Fields{
-				"partyID":       partyID,
-				"social":        social,
-				"account_count": "zero",
-			}).Debug("Social (not found)")
-		}
-	}
-	parties = socialParties
-
 	newBoard := Leaderboard{
 		Version:        1,
 		Base:           s.cfg.Base,
@@ -214,30 +152,23 @@ func (s *Service) update() {
 	// }
 	// lastPrice := response.Price
 
+	var p []Participant
+	var err error
 	switch s.cfg.Algorithm {
-	case "ByAsset":
-		newBoard.Participants = s.sortByAsset(parties)
+	case "ByPartyAccountGeneralBalance":
+		p, err = s.sortByPartyAccountGeneralBalance(socials)
+	case "ByPartyGovernanceVotes":
+		p, err = s.sortByPartyGovernanceVotes(socials)
 	default:
-		log.WithFields(log.Fields{"algorithm": s.cfg.Algorithm}).Warn("Invalid algorithm")
-		newBoard.Participants = []Participant{}
+		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
-
+	if err != nil {
+		log.WithError(err).Warn("Failed to sort")
+		p = []Participant{}
+	}
+	newBoard.Participants = p
 	s.board = newBoard
-
-	log.Infof("Leaderboard updated [%s]: %d participants out of %d available",
-		s.board.LastUpdate, len(s.board.Participants), len(parties))
-}
-
-func (s *Service) getParties(ctx context.Context) ([]Party, error) {
-	client := graphql.NewClient(s.cfg.VegaGraphQLURL.String())
-	req := graphql.NewRequest("query {parties {id accounts {type balance asset {symbol}}}}")
-	req.Header.Set("Cache-Control", "no-cache")
-
-	var response AllParties
-	if err := client.Run(ctx, req, &response); err != nil {
-		return nil, err
-	}
-	return response.Parties, nil
+	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
 }
 
 func (s *Service) GetLeaderboard() Leaderboard {

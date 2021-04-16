@@ -30,6 +30,9 @@ type Config struct {
 	// Algorithm describes the sorting method for ordering participants
 	Algorithm string `yaml:"algorithm"`
 
+	// AlgorithmConfig describes any algorithm-specific config for filtering/sorting participants.
+	AlgorithmConfig map[string]string `yaml:"algorithmConfig"`
+
 	// Description describes the competition
 	Description string `yaml:"description"`
 
@@ -109,6 +112,7 @@ func (c *Config) String() string {
 		"base:%s, " +
 		"quote:%s, " +
 		"algorithm:%s" +
+		"algorithmConfig:%v" +
 		"description:%s, " +
 		"gracefulShutdownTimeout:%s, " +
 		"headers:%v" +
@@ -123,6 +127,7 @@ func (c *Config) String() string {
 		c.Base,
 		c.Quote,
 		c.Algorithm,
+		c.AlgorithmConfig,
 		c.Description,
 		c.GracefulShutdownTimeout,
 		c.Headers,
@@ -142,6 +147,7 @@ func (c *Config) LogFields() log.Fields {
 		"base":                    c.Base,
 		"quote":                   c.Quote,
 		"algorithm":               c.Algorithm,
+		"algorithmConfig":         c.AlgorithmConfig,
 		"description":             c.Description,
 		"defaultDisplay":          c.DefaultDisplay,
 		"defaultSort":             c.DefaultSort,
