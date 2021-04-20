@@ -1,0 +1,12 @@
+---
+algorithm: ByPartyGovernanceVotes
+
+algorithmConfig:
+  since: "2020-12-31T23:45:56Z"
+
+defaultDisplay: Vote Count
+
+defaultSort: Vote Count
+
+headers:
+  - Vote Count

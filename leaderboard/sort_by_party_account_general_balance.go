@@ -9,7 +9,6 @@ import (
 )
 
 func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([]Participant, error) {
-	// Load all parties with accounts from GraphQL end-point
 	gqlQuery := "query {parties {id accounts {type balance asset {symbol}}}}"
 	ctx := context.Background()
 	parties, err := getParties(ctx, s.cfg.VegaGraphQLURL.String(), gqlQuery)

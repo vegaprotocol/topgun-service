@@ -2,9 +2,11 @@ package leaderboard
 
 import (
 	"context"
+	"strconv"
 	"time"
 
 	"github.com/machinebox/graphql"
+	log "github.com/sirupsen/logrus"
 )
 
 type Asset struct {
@@ -35,6 +37,21 @@ type Party struct {
 	social string
 }
 
+func (p *Party) Balance(assetName string, accountType string) float64 {
+	for _, acc := range p.Accounts {
+		if acc.Asset.Symbol == assetName && acc.Type == accountType {
+			v, err := strconv.ParseFloat(acc.Balance, 64)
+			if err != nil {
+				log.WithError(err).Errorf(
+					"Failed to parse %s/%s balance [Balance]", assetName, accountType)
+				return 0
+			}
+			return v / float64(100000)
+		}
+	}
+	return 0
+}
+
 type PartyList struct {
 	Parties []Party `json:"parties"`
 }
@@ -58,11 +75,11 @@ func socialParties(socials map[string]string, parties []Party) []Party {
 		found := false
 		for _, p := range parties {
 			if p.ID == partyID {
-				// log.WithFields(log.Fields{
-				// 	"partyID":       partyID,
-				// 	"social":        social,
-				// 	"account_count": len(p.Accounts),
-				// }).Debug("Social (found)")
+				log.WithFields(log.Fields{
+					"partyID":       partyID,
+					"social":        social,
+					"account_count": len(p.Accounts),
+				}).Debug("Social (found)")
 				p.social = social
 				sp = append(sp, p)
 				found = true
@@ -74,11 +91,11 @@ func socialParties(socials map[string]string, parties []Party) []Party {
 				ID:     partyID,
 				social: social,
 			})
-			// log.WithFields(log.Fields{
-			// 	"partyID":       partyID,
-			// 	"social":        social,
-			// 	"account_count": "zero",
-			// }).Debug("Social (not found)")
+			log.WithFields(log.Fields{
+				"partyID":       partyID,
+				"social":        social,
+				"account_count": "zero",
+			}).Debug("Social (not found)")
 		}
 	}
 	return sp
