@@ -3,7 +3,6 @@ package leaderboard
 import (
 	"fmt"
 	"net/url"
-	"strconv"
 	"sync"
 	"time"
 
@@ -16,41 +15,6 @@ import (
 	ppservice "code.vegaprotocol.io/priceproxy/service"
 	log "github.com/sirupsen/logrus"
 )
-
-// GraphQL query response structs
-
-// // Guide to the base/quote/asset vars
-// // ==================================
-// // base => BTC (for price provider)
-// // quote => USD (for price provider/calculation)
-// // vegaAsset => tDAI (for asset balance calculation only)
-
-// func (p *Party) TotalGeneral(asset string, assetPrice float64) float64 {
-// 	return p.Balance(asset, "General") * assetPrice
-// }
-
-// func (p *Party) TotalMargin(asset string, assetPrice float64) float64 {
-// 	return p.Balance(asset, "Margin") * assetPrice
-// }
-
-// func (p *Party) Total(asset string, assetPrice float64) float64 {
-// 	return p.TotalGeneral(asset, assetPrice) + p.TotalMargin(asset, assetPrice)
-// }
-
-func (p *Party) Balance(assetName string, accountType string) float64 {
-	for _, acc := range p.Accounts {
-		if acc.Asset.Symbol == assetName && acc.Type == accountType {
-			v, err := strconv.ParseFloat(acc.Balance, 64)
-			if err != nil {
-				log.WithError(err).Errorf(
-					"Failed to parse %s/%s balance [Balance]", assetName, accountType)
-				return 0
-			}
-			return v / float64(100000)
-		}
-	}
-	return 0
-}
 
 // PricingEngine is the source of price information from the price proxy.
 type PricingEngine interface {
@@ -159,6 +123,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyAccountGeneralBalance(socials)
 	case "ByPartyGovernanceVotes":
 		p, err = s.sortByPartyGovernanceVotes(socials)
+	case "ByLPEquitylikeShare":
+		p, err = s.sortByLPEquitylikeShare(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}

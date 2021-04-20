@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"sort"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -19,13 +18,9 @@ func (s *Service) sortByPartyGovernanceVotes(socials map[string]string) ([]Parti
 
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
-	sinceStr, found := s.cfg.AlgorithmConfig["since"]
-	if !found {
-		return nil, fmt.Errorf("missing algorithmConfig: since")
-	}
-	since, err := time.Parse("2006-01-02T15:04:05Z", sinceStr)
-	if !found {
-		return nil, fmt.Errorf("failed to parse datetime: %w", err)
+	since, err := s.getAlgorithmConfigTime("since")
+	if err != nil {
+		return nil, err
 	}
 	log.WithFields(log.Fields{"since ": since.String()}).Info("Algo cfg")
 	for _, party := range sParties {

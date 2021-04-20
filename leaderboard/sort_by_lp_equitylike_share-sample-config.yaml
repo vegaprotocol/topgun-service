@@ -1,0 +1,16 @@
+---
+algorithm: ByLPEquitylikeShare
+
+algorithmConfig:
+  marketID: your_market_ID_here
+  since: "2020-12-31T23:45:56Z"
+
+defaultDisplay: Equity-like Share
+
+defaultSort: Equity-like Share
+
+headers:
+  - Commitment Amount
+  - Average Entry Valuation
+  - Equity-like Share
+  - Fee

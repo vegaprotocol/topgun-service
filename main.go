@@ -79,7 +79,7 @@ func main() {
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
 		svc.Start()
-		if err := srv.ListenAndServe(); err != nil {
+		if err := srv.ListenAndServe(); err != nil && err.Error() != "http: Server closed" {
 			log.WithError(err).Warn("Failed to serve")
 		}
 	}()
