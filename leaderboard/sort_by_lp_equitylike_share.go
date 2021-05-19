@@ -48,10 +48,6 @@ func (s *Service) sortByLPEquitylikeShare(socials map[string]string) ([]Particip
 	if err != nil {
 		return nil, err
 	}
-	since, err := s.getAlgorithmConfigTime("since")
-	if err != nil {
-		return nil, err
-	}
 
 	gqlQuery := `query ($marketID: ID!) {
 		market(id:$marketID) {
@@ -94,7 +90,7 @@ func (s *Service) sortByLPEquitylikeShare(socials map[string]string) ([]Particip
 		if lp.Status != "Active" {
 			continue
 		}
-		if !lp.CreatedAt.After(since) {
+		if lp.CreatedAt.Before(s.cfg.StartTime) || lp.CreatedAt.After(s.cfg.EndTime) {
 			continue
 		}
 

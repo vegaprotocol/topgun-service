@@ -17,4 +17,5 @@
 .DS_Store
 *.csv
 .idea
+snapshot*.json
 topgun-service

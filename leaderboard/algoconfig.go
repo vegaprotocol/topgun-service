@@ -18,9 +18,13 @@ func (s *Service) getAlgorithmConfigTime(key string) (time.Time, error) {
 	if err != nil {
 		return time.Time{}, err
 	}
-	value, err := time.Parse("2006-01-02T15:04:05Z", valueStr)
+	return parseTime(valueStr)
+}
+
+func parseTime(timeStr string) (time.Time, error) {
+	t, err := time.Parse("2006-01-02T15:04:05Z", timeStr)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("failed to parse datetime: %w", err)
 	}
-	return value, nil
+	return t, nil
 }
