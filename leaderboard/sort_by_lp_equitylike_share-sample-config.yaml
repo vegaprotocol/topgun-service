@@ -1,0 +1,15 @@
+---
+algorithm: ByLPEquitylikeShare
+
+algorithmConfig:
+  marketID: your_market_ID_here
+
+defaultDisplay: Equity-like Share
+
+defaultSort: Equity-like Share
+
+headers:
+  - Commitment Amount
+  - Average Entry Valuation
+  - Equity-like Share
+  - Fee

@@ -1,0 +1,11 @@
+---
+algorithm: ByPartyAccountGeneralBalance
+
+algorithmConfig: {}
+
+defaultDisplay: Balance
+
+defaultSort: Balance
+
+headers:
+  - Balance

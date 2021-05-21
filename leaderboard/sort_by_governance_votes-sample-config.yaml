@@ -1,0 +1,11 @@
+---
+algorithm: ByPartyGovernanceVotes
+
+algorithmConfig: {}
+
+defaultDisplay: Vote Count
+
+defaultSort: Vote Count
+
+headers:
+  - Vote Count
