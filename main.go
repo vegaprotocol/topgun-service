@@ -55,17 +55,10 @@ func main() {
 	svc := leaderboard.NewLeaderboardService(cfg)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
-	router.HandleFunc("/status", func(w http.ResponseWriter, r *http.Request) {})
+	router.HandleFunc("/", EndpointRoot)
+	router.HandleFunc("/status", EndpointStatus)
 	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		lb := svc.GetLeaderboard()
-		payload, err := json.Marshal(lb)
-		if err != nil {
-			log.WithError(err).Error("Error marshaling response")
-			return
-		}
-		w.Write(payload)
+		EndpointLeaderboard(w, r, svc)
 	})
 
 	srv := &http.Server{
@@ -108,4 +101,54 @@ func main() {
 	// to finalize based on context cancellation.
 	log.Info("Stopping server")
 	os.Exit(0)
+}
+
+type ErrorObject struct {
+	Error string `json:"error"`
+}
+
+func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboard.Service) {
+	w.Header().Set("Content-Type", "application/json")
+	payload, err := svc.MarshalLeaderboard()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err.Error(),
+		}).Error("Error marshaling leaderboard")
+
+		payload, err = json.Marshal(ErrorObject{Error: err.Error()})
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error": err.Error(),
+			}).Error("Error marshaling error message during marshaling of leaderboard")
+			payload = []byte("{\"error\":\"\"}")
+		}
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+	w.Write(payload)
+}
+
+func EndpointStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("{\"success\":true}"))
+}
+
+func EndpointRoot(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	content := `<!doctype html>
+<head>
+<title>Topgun Service</title>
+</head>
+<body>
+<h1>Topgun Service</h1>
+<ul>
+<li><a href="/status">Status</a></li>
+<li><a href="/leaderboard">Leaderboard</a></li>
+</ul>
+</body>
+</html>`
+	w.Write([]byte(content))
 }

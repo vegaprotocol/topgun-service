@@ -1,8 +1,7 @@
 ---
 algorithm: ByPartyGovernanceVotes
 
-algorithmConfig:
-  since: "2020-12-31T23:45:56Z"
+algorithmConfig: {}
 
 defaultDisplay: Vote Count
 

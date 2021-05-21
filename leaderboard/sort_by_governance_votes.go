@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"sort"
-
-	log "github.com/sirupsen/logrus"
 )
 
 func (s *Service) sortByPartyGovernanceVotes(socials map[string]string) ([]Participant, error) {
@@ -18,15 +16,10 @@ func (s *Service) sortByPartyGovernanceVotes(socials map[string]string) ([]Parti
 
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
-	since, err := s.getAlgorithmConfigTime("since")
-	if err != nil {
-		return nil, err
-	}
-	log.WithFields(log.Fields{"since ": since.String()}).Info("Algo cfg")
 	for _, party := range sParties {
 		voteCount := 0
 		for _, v := range party.Votes {
-			if v.Vote.Datetime.After(since) {
+			if v.Vote.Datetime.After(s.cfg.StartTime) && v.Vote.Datetime.Before(s.cfg.EndTime) {
 				voteCount++
 			}
 		}

@@ -21,12 +21,6 @@ type Config struct {
 	LogLevel      string `yaml:"logLevel"`
 	LogMethodName bool   `yaml:"logMethodName"`
 
-	// Base asset (for fetching price from external source)
-	Base string `yaml:"base"`
-
-	// Quote asset (for fetching price from external source)
-	Quote string `yaml:"quote"`
-
 	// Algorithm describes the sorting method for ordering participants
 	Algorithm string `yaml:"algorithm"`
 
@@ -52,6 +46,9 @@ type Config struct {
 	VegaGraphQLURL *url.URL `yaml:"vegaGraphQLURL"`
 
 	VegaPoll time.Duration `yaml:"vegaPoll"`
+
+	StartTime time.Time `yaml:"startTime"`
+	EndTime   time.Time `yaml:"endTime"`
 }
 
 func CheckConfig(cfg Config) error {
@@ -65,12 +62,6 @@ func CheckConfig(cfg Config) error {
 	}
 	if len(cfg.LogLevel) == 0 {
 		e = multierror.Append(e, errors.New("missing: logLevel"))
-	}
-	if len(cfg.Base) == 0 {
-		e = multierror.Append(e, errors.New("missing: base"))
-	}
-	if len(cfg.Quote) == 0 {
-		e = multierror.Append(e, errors.New("missing: quote"))
 	}
 	if len(cfg.Algorithm) == 0 {
 		e = multierror.Append(e, errors.New("missing: algorithm"))
@@ -102,6 +93,12 @@ func CheckConfig(cfg Config) error {
 	if cfg.VegaPoll <= 0 {
 		e = multierror.Append(e, errors.New("invalid: vegaPoll (should be greater than 0)"))
 	}
+	if cfg.StartTime.Before(time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)) {
+		e = multierror.Append(e, errors.New("missing/invalid: startTime"))
+	}
+	if cfg.EndTime.Before(time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)) {
+		e = multierror.Append(e, errors.New("missing/invalid: endTime"))
+	}
 
 	return e.ErrorOrNil()
 }
@@ -109,8 +106,6 @@ func CheckConfig(cfg Config) error {
 func (c *Config) String() string {
 	fmtStr := "Config{ " +
 		"listen:%s, " +
-		"base:%s, " +
-		"quote:%s, " +
 		"algorithm:%s" +
 		"algorithmConfig:%v" +
 		"description:%s, " +
@@ -120,12 +115,12 @@ func (c *Config) String() string {
 		"vegaAsset:%s, " +
 		"vegaGraphQLURL:%s, " +
 		"vegaPoll:%s" +
+		"startTime:%s" +
+		"endTime:%s" +
 		"}"
 	return fmt.Sprintf(
 		fmtStr,
 		c.Listen,
-		c.Base,
-		c.Quote,
 		c.Algorithm,
 		c.AlgorithmConfig,
 		c.Description,
@@ -135,6 +130,8 @@ func (c *Config) String() string {
 		c.VegaAsset,
 		c.VegaGraphQLURL.String(),
 		c.VegaPoll.String(),
+		c.StartTime,
+		c.EndTime,
 	)
 }
 
@@ -144,8 +141,6 @@ func (c *Config) LogFields() log.Fields {
 		"logFormat":               c.LogFormat,
 		"logLevel":                c.LogLevel,
 		"logMethodName":           c.LogMethodName,
-		"base":                    c.Base,
-		"quote":                   c.Quote,
 		"algorithm":               c.Algorithm,
 		"algorithmConfig":         c.AlgorithmConfig,
 		"description":             c.Description,
@@ -157,6 +152,8 @@ func (c *Config) LogFields() log.Fields {
 		"vegaAsset":               c.VegaAsset,
 		"vegaGraphQLURL":          c.VegaGraphQLURL.String(),
 		"vegaPoll":                c.VegaPoll.String(),
+		"startTime":               c.StartTime,
+		"endTime":                 c.EndTime,
 	}
 }
 
