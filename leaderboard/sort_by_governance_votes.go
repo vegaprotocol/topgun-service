@@ -9,7 +9,7 @@ import (
 func (s *Service) sortByPartyGovernanceVotes(socials map[string]string) ([]Participant, error) {
 	gqlQuery := "query {parties {id votes {proposalId vote {value datetime}}}}"
 	ctx := context.Background()
-	parties, err := getParties(ctx, s.cfg.VegaGraphQLURL.String(), gqlQuery)
+	parties, err := getParties(ctx, s.cfg.VegaGraphQLURL.String(), gqlQuery, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get list of parties: %w", err)
 	}

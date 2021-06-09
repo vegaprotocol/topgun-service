@@ -1,7 +1,8 @@
 ---
 algorithm: ByPartyAccountGeneralBalance
 
-algorithmConfig: {}
+algorithmConfig:
+  marketID: "0011223344556677"
 
 defaultDisplay: Balance
 
