@@ -216,8 +216,11 @@ func (s *Service) update() {
 		log.WithError(err).Warn("Failed to sort")
 		p = []Participant{}
 	}
-	for i, participant := range p {
-		participant.Position = i + 1 // humans want 1-indexed lists :-|
+	i := 0
+	for range p {
+		p[i].Position = i + 1 // humans want 1-indexed lists :-|
+		log.WithFields(log.Fields{"i": i, "twit": p[i].TwitterHandle}).Debug("Set pos")
+		i++
 	}
 	newBoard.Participants = p
 	s.board = newBoard
