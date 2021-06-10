@@ -219,7 +219,6 @@ func (s *Service) update() {
 	i := 0
 	for range p {
 		p[i].Position = i + 1 // humans want 1-indexed lists :-|
-		log.WithFields(log.Fields{"i": i, "twit": p[i].TwitterHandle}).Debug("Set pos")
 		i++
 	}
 	newBoard.Participants = p
