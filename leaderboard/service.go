@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/url"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -25,6 +26,7 @@ type PricingEngine interface {
 }
 
 type Participant struct {
+	Position      int      `json:"position`
 	PublicKey     string   `json:"publicKey"`
 	TwitterHandle string   `json:"twitterHandle"`
 	Data          []string `json:"data"`
@@ -165,7 +167,7 @@ func copyParticipants(src []Participant) ([]Participant, error) {
 	dst := make([]Participant, l)
 	count := copy(dst, src)
 	if count < l {
-		return nil, fmt.Errorf("failed to copy all participants (%d<%d", count, l)
+		return nil, fmt.Errorf("failed to copy all participants (%d<%d)", count, l)
 	}
 	return dst, nil
 }
@@ -213,6 +215,9 @@ func (s *Service) update() {
 	if err != nil {
 		log.WithError(err).Warn("Failed to sort")
 		p = []Participant{}
+	}
+	for i, participant := range p {
+		participant.Position = i + 1 // humans want 1-indexed lists :-|
 	}
 	newBoard.Participants = p
 	s.board = newBoard
@@ -263,8 +268,34 @@ func (s *Service) update() {
 	}
 }
 
-func (s *Service) MarshalLeaderboard() ([]byte, error) {
+func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	return json.Marshal(s.board)
+
+	if q == "" {
+		// Return standard leaderboard
+		return json.Marshal(s.board)
+	}
+
+	participants := []Participant{}
+
+	for _, p := range s.board.Participants {
+		if p.PublicKey == q || p.TwitterHandle == q || strings.Contains(p.PublicKey, q) || strings.Contains(p.TwitterHandle, q) {
+			participants = append(participants, p)
+		}
+	}
+
+	board := Leaderboard{
+		Version:              s.board.Version,
+		Asset:                s.board.Asset,
+		LastUpdate:           s.board.LastUpdate,
+		Headers:              s.board.Headers,
+		Description:          s.board.Description,
+		DefaultSort:          s.board.DefaultSort,
+		DefaultDisplay:       s.board.DefaultDisplay,
+		Status:               s.board.Status,
+		Participants:         participants,
+		ParticipantsSnapshot: nil,
+	}
+	return json.Marshal(board)
 }
