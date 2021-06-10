@@ -60,6 +60,9 @@ func main() {
 	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
 		EndpointLeaderboard(w, r, svc)
 	})
+	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
+		EndpointLeaderboard(w, r, svc)
+	}).Queries("q", "{q}")
 
 	srv := &http.Server{
 		Addr:         cfg.Listen,
@@ -109,7 +112,8 @@ type ErrorObject struct {
 
 func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboard.Service) {
 	w.Header().Set("Content-Type", "application/json")
-	payload, err := svc.MarshalLeaderboard()
+	q := r.URL.Query().Get("q")
+	payload, err := svc.MarshalLeaderboard(q)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err.Error(),
