@@ -26,7 +26,7 @@ type PricingEngine interface {
 }
 
 type Participant struct {
-	Position      int      `json:"position`
+	Position      int      `json:"position"`
 	PublicKey     string   `json:"publicKey"`
 	TwitterHandle string   `json:"twitterHandle"`
 	Data          []string `json:"data"`
