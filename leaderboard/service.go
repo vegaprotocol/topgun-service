@@ -219,7 +219,6 @@ func (s *Service) update() {
 	i := 0
 	for range p {
 		p[i].Position = i + 1 // humans want 1-indexed lists :-|
-		log.WithFields(log.Fields{"i": i, "twit": p[i].TwitterHandle}).Debug("Set pos")
 		i++
 	}
 	newBoard.Participants = p
@@ -279,11 +278,15 @@ func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
 		// Return standard leaderboard
 		return json.Marshal(s.board)
 	}
+	q = strings.ToLower(q)
 
 	participants := []Participant{}
 
 	for _, p := range s.board.Participants {
-		if p.PublicKey == q || p.TwitterHandle == q || strings.Contains(p.PublicKey, q) || strings.Contains(p.TwitterHandle, q) {
+		pubKey := strings.ToLower(p.PublicKey)
+		twitterHandle := strings.ToLower(p.TwitterHandle)
+		// case insensitive comparison
+		if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
 			participants = append(participants, p)
 		}
 	}
