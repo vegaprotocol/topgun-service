@@ -82,6 +82,24 @@ type Service struct {
 
 func (s *Service) Start() {
 	log.Info("Leaderboard service started")
+
+	// The first time we start the service it will be
+	// in a status of "loading" as it waits for first data
+	// from the Vega API
+	newBoard := Leaderboard{
+		Version:              1,
+		Asset:                s.cfg.VegaAsset,
+		DefaultDisplay:       s.cfg.DefaultDisplay,
+		DefaultSort:          s.cfg.DefaultSort,
+		Description:          s.cfg.Description,
+		Headers:              s.cfg.Headers,
+		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
+		Status:               competitionLoading,
+		ParticipantsSnapshot: s.participantSnapshot,
+		Participants:         []Participant{},
+	}
+	s.board = newBoard
+
 	s.update()
 	s.timer = util.Schedule(s.update, s.cfg.VegaPoll)
 }
@@ -94,6 +112,7 @@ func (s *Service) Stop() {
 }
 
 const (
+	competitionLoading    = "loading"
 	competitionNotStarted = "notStarted"
 	competitionActive     = "active"
 	competitionEnded      = "ended"
@@ -173,9 +192,6 @@ func copyParticipants(src []Participant) ([]Participant, error) {
 }
 
 func (s *Service) update() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
 	status := s.Status()
 
 	// Attempt to update parties from external social verifier service
@@ -183,23 +199,13 @@ func (s *Service) update() {
 	s.verifier.UpdateVerifiedParties()
 	// Grab a map of the verified pub-key->twitter-handle for leaderboard
 	socials := s.verifier.PubKeysToTwitterHandles()
+
 	// If no verified pub-key->social-handles found, no need to query Vega
 	if len(socials) == 0 {
 		return
 	}
 
-	newBoard := Leaderboard{
-		Version:              1,
-		Asset:                s.cfg.VegaAsset,
-		DefaultDisplay:       s.cfg.DefaultDisplay,
-		DefaultSort:          s.cfg.DefaultSort,
-		Description:          s.cfg.Description,
-		Headers:              s.cfg.Headers,
-		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
-		Status:               status,
-		ParticipantsSnapshot: s.participantSnapshot,
-	}
-
+	log.Infof("Algo start: %s", s.cfg.Algorithm)
 	var p []Participant
 	var err error
 	switch s.cfg.Algorithm {
@@ -221,8 +227,23 @@ func (s *Service) update() {
 		p[i].Position = i + 1 // humans want 1-indexed lists :-|
 		i++
 	}
+	log.Infof("Algo finish: %s", s.cfg.Algorithm)
+
+	s.mu.Lock()
+	newBoard := Leaderboard{
+		Version:              1,
+		Asset:                s.cfg.VegaAsset,
+		DefaultDisplay:       s.cfg.DefaultDisplay,
+		DefaultSort:          s.cfg.DefaultSort,
+		Description:          s.cfg.Description,
+		Headers:              s.cfg.Headers,
+		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
+		Status:               status,
+		ParticipantsSnapshot: s.participantSnapshot,
+	}
 	newBoard.Participants = p
 	s.board = newBoard
+	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
 
 	_, startSnapshotTaken := s.participantSnapshot[snapshotStart]
@@ -303,5 +324,6 @@ func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
 		Participants:         participants,
 		ParticipantsSnapshot: nil,
 	}
+
 	return json.Marshal(board)
 }
