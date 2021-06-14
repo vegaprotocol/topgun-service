@@ -72,9 +72,12 @@ func main() {
 		Handler:      handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(router),
 	}
 
-	// Run our server in a goroutine so that it doesn't block.
+	// Run the leaderboard service in its own goroutine
 	go func() {
 		svc.Start()
+	}()
+	// Run the web server in its own goroutine
+	go func() {
 		if err := srv.ListenAndServe(); err != nil && err.Error() != "http: Server closed" {
 			log.WithError(err).Warn("Failed to serve")
 		}
