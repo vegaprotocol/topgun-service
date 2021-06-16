@@ -59,6 +59,49 @@ func hasString(ss []string, s string) bool {
 	return false
 }
 
+// this is not the optimal solution but with the
+// game being restarted we have no other way to know
+// than checking if the general account balance is exactly
+// 10K, there's also quite few changes for the party to
+// have traded and close the position to 10K exactly
+// again, so we should be OK.
+func (p *Party) HasTraded(assetName string) bool {
+	var hasMargin, has10KGeneral bool
+	for _, acc := range p.Accounts {
+		if acc.Asset.Symbol == assetName {
+			v, err := strconv.ParseFloat(acc.Balance, 64)
+			if err != nil {
+				log.WithError(err).Errorf(
+					"Failed to parse %s/%s balance [Balance]", assetName, acc.Type)
+				return false
+
+			}
+
+			if acc.Type == "General" {
+				if v == 1000000000 {
+					has10KGeneral = true
+				}
+			}
+
+			if acc.Type == "Margin" {
+				if v != 0 {
+					hasMargin = true
+				}
+			}
+
+		}
+	}
+
+	// not 10K in general = some has been used / lost whatever
+	if !has10KGeneral {
+		return true
+	}
+
+	// maybe 10K in general but also in margin
+	// so there's some trading going on
+	return has10KGeneral && hasMargin
+}
+
 func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
 	var accu float64
 	for _, acc := range p.Accounts {

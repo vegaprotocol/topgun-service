@@ -83,17 +83,18 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		// }
 
 		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General", "Margin")
+		hasTraded := party.HasTraded(s.cfg.VegaAsset)
 		var sortNum float64
-		// var balanceGeneralStr string
+		var balanceGeneralStr string
 		// if tradeCount > 0 {
-		// if len(party.Trades) > 0 {
-		balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', 5, 32)
-		sortNum = balanceGeneral
-		// } else {
-		// 	// Untraded folks have not participated in the competition.
-		// 	balanceGeneralStr = "n/a"
-		// 	sortNum = -1.0e20
-		// }
+		if hasTraded {
+			balanceGeneralStr = strconv.FormatFloat(balanceGeneral, 'f', 5, 32)
+			sortNum = balanceGeneral
+		} else {
+			// Untraded folks have not participated in the competition.
+			balanceGeneralStr = "n/a"
+			sortNum = -1.0e20
+		}
 		participants = append(participants, Participant{
 			PublicKey:     party.ID,
 			TwitterHandle: party.social,
