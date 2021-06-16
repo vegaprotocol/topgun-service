@@ -82,7 +82,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 			}
 		}
 
-		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General")
+		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General", "Margin")
 		var sortNum float64
 		var balanceGeneralStr string
 		if tradeCount > 0 {
