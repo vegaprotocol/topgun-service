@@ -241,7 +241,15 @@ func (s *Service) update() {
 		Status:               status,
 		ParticipantsSnapshot: s.participantSnapshot,
 	}
-	newBoard.Participants = p
+	// Seems like sometime the participants list is empty
+	// (see line 223) in what case we just reuse the previous
+	// board participants
+	if len(p) > 0 {
+		newBoard.Participants = p
+	} else {
+		newBoard.Participants = s.board.Participants
+	}
+
 	s.board = newBoard
 	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
