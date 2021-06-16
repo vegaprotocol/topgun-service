@@ -29,7 +29,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 	}`
 	gqlQueryPartiesTrades := `query($marketId: ID!, $partyId: ID!) {
 		parties(id: $partyId) {
-			trades(marketId: $marketId, first: 1, last: 100) {
+			trades(marketId: $marketId, first: 1, last: 2) {
 				id
 				createdAt
 			}
@@ -75,17 +75,18 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		log.WithFields(log.Fields{"partyID": party.ID, "trades": len(party.Trades)}).Debug("Got trades for party")
 
 		// Count only trades that happened during the competition.
-		tradeCount := 0
-		for _, t := range party.Trades {
-			if t.CreatedAt.After(s.cfg.StartTime) && t.CreatedAt.Before(s.cfg.EndTime) {
-				tradeCount++
-			}
-		}
+		// tradeCount := 0
+		// for _, t := range party.Trades {
+		// 	if t.CreatedAt.After(s.cfg.StartTime) && t.CreatedAt.Before(s.cfg.EndTime) {
+		// 		tradeCount++
+		// 	}
+		// }
 
 		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General", "Margin")
 		var sortNum float64
 		var balanceGeneralStr string
-		if tradeCount > 0 {
+		// if tradeCount > 0 {
+		if len(party.Trades) > 0 {
 			balanceGeneralStr = strconv.FormatFloat(balanceGeneral, 'f', 5, 32)
 			sortNum = balanceGeneral
 		} else {
