@@ -50,19 +50,33 @@ type Party struct {
 	social string
 }
 
-func (p *Party) Balance(assetName string, accountType string) float64 {
+func hasString(ss []string, s string) bool {
+	for _, v := range ss {
+		if s == v {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
+	var accu float64
 	for _, acc := range p.Accounts {
-		if acc.Asset.Symbol == assetName && acc.Type == accountType {
+		if acc.Asset.Symbol == assetName && hasString(accountTypes, acc.Type) {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
-					"Failed to parse %s/%s balance [Balance]", assetName, accountType)
+					"Failed to parse %s/%s balance [Balance]", assetName, accountTypes)
 				return 0
 			}
-			return v / float64(100000)
+			accu += v
 		}
 	}
-	return 0
+	if accu != 0 {
+		accu = accu / float64(100000)
+	}
+
+	return accu
 }
 
 type PartyList struct {
