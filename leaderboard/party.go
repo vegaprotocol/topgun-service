@@ -65,41 +65,42 @@ func hasString(ss []string, s string) bool {
 // 10K, there's also quite few changes for the party to
 // have traded and close the position to 10K exactly
 // again, so we should be OK.
-func (p *Party) HasTraded(assetName string) bool {
-	var hasMargin, has10KGeneral bool
+func (p *Party) HasTraded(assetName string, topupAssetTotal float64) bool {
+	var hasAsset, hasMargin, hasGeneral bool
 	for _, acc := range p.Accounts {
 		if acc.Asset.Symbol == assetName {
+			hasAsset = true
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
 					"Failed to parse %s/%s balance [Balance]", assetName, acc.Type)
 				return false
-
 			}
-
-			if acc.Type == "General" {
-				if v == 1000000000 {
-					has10KGeneral = true
-				}
+			if acc.Type == "General" && v != topupAssetTotal {
+				hasGeneral = true
 			}
-
-			if acc.Type == "Margin" {
-				if v != 0 {
-					hasMargin = true
-				}
+			if acc.Type == "Margin" && v != 0 {
+				hasMargin = true
 			}
-
 		}
 	}
 
-	// not 10K in general = some has been used / lost whatever
-	if !has10KGeneral {
-		return true
+	if !hasAsset {
+		// requested asset not found in party accounts
+		return false
 	}
 
-	// maybe 10K in general but also in margin
-	// so there's some trading going on
-	return has10KGeneral && hasMargin
+	return hasGeneral || hasMargin
+}
+
+func (p *Party) HasAccounts(assetName string, accountTypes ...string) bool {
+	var total int
+	for _, acc := range p.Accounts {
+		if acc.Asset.Symbol == assetName && hasString(accountTypes, acc.Type) {
+			total++
+		}
+	}
+	return total > 0
 }
 
 func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
@@ -118,7 +119,6 @@ func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
 	if accu != 0 {
 		accu = accu / float64(100000)
 	}
-
 	return accu
 }
 

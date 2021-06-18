@@ -10,10 +10,9 @@ import (
 )
 
 func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([]Participant, error) {
-	// marketID, err := s.getAlgorithmConfig("marketID")
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to get algorithm config: %w", err)
-	// }
+
+	// Warning the change to use accounts only removes the ability to check that
+	// a user has traded inside (or outside) the time window via checking their trades.
 
 	gqlQueryPartiesAccounts := `query($assetId: String!) {
 		parties {
@@ -27,14 +26,6 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 			}
 		}
 	}`
-	// gqlQueryPartiesTrades := `query($marketId: ID!, $partyId: ID!) {
-	// 	parties(id: $partyId) {
-	// 		trades(marketId: $marketId, first: 1, last: 2) {
-	// 			id
-	// 			createdAt
-	// 		}
-	// 	}
-	// }`
 
 	ctx := context.Background()
 	parties, err := getParties(
@@ -51,47 +42,43 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 	// filter parties and add social handles
 	sParties := socialParties(socials, parties)
 
+	// xyzAsset top up amount formatted to x DP of market e.g. 1000000000
+	// Please set to 0 before asset has been
+	topupAssetTotal, err := strconv.ParseFloat(s.cfg.TopupAssetTotal, 64)
+	if err != nil {
+		log.WithError(err).Fatal(
+			"Failed to parse top-up asset total from config, is it missing?")
+	}
+
+	var totalTraded, totalNoAccounts int
 	participants := []Participant{}
 	for _, party := range sParties {
-		// Add trades for each party, one by one, to avoid GraphQL query timeouts.
-		log.WithFields(log.Fields{"partyID": party.ID}).Debug("Getting trades for party")
-		// partyTrades, err := getParties(
-		// 	ctx,
-		// 	s.cfg.VegaGraphQLURL.String(),
-		// 	gqlQueryPartiesTrades,
-		// 	map[string]string{
-		// 		"marketId": marketID,
-		// 		"partyId":  party.ID,
-		// 	},
-		// 	nil,
-		// )
-		// if err != nil {
-		// 	return nil, fmt.Errorf("failed to get list of trades for parties: %w", err)
-		// }
-		// if len(partyTrades) == 1 {
-		// 	// Party exists on Vega
-		// 	party.Trades = partyTrades[0].Trades
-		// }
-		// log.WithFields(log.Fields{"partyID": party.ID, "trades": len(party.Trades)}).Debug("Got trades for party")
+		log.WithFields(log.Fields{"partyID": party.ID}).Debug("Getting balances for party")
 
-		// Count only trades that happened during the competition.
-		// tradeCount := 0
-		// for _, t := range party.Trades {
-		// 	if t.CreatedAt.After(s.cfg.StartTime) && t.CreatedAt.Before(s.cfg.EndTime) {
-		// 		tradeCount++
-		// 	}
-		// }
+		// Observed that parties that are completely wiped out can have no General balance of xyzAsset and no margin
+		// So in addition to hasTraded logic we need to capture those on social list who have neither account
+		// and therefore zero balance in general for asset
+		var balanceGeneral float64
+		var hasNoAccounts, hasTraded bool
+		if topupAssetTotal > 0 && !party.HasAccounts(s.cfg.VegaAsset,"General", "Margin") {
+			fmt.Println(party.social, "has no accounts")
+			totalNoAccounts++
+			balanceGeneral = 0
+			hasNoAccounts = true
+		} else {
+			balanceGeneral = party.Balance(s.cfg.VegaAsset,"General", "Margin")
+			hasTraded = party.HasTraded(s.cfg.VegaAsset, topupAssetTotal)
+		}
 
-		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General", "Margin")
-		hasTraded := party.HasTraded(s.cfg.VegaAsset)
 		var sortNum float64
 		var balanceGeneralStr string
-		// if tradeCount > 0 {
-		if hasTraded {
+		if  hasNoAccounts || hasTraded {
+			// Parties that have traded or have no xyzAsset accounts any more
+			totalTraded++
 			balanceGeneralStr = strconv.FormatFloat(balanceGeneral, 'f', 5, 32)
 			sortNum = balanceGeneral
 		} else {
-			// Untraded folks have not participated in the competition.
+			// Parties that have not participated in the competition
 			balanceGeneralStr = "n/a"
 			sortNum = -1.0e20
 		}
@@ -103,10 +90,23 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		})
 	}
 
+	fmt.Println("")
+	fmt.Println("Total parties traded: ", totalTraded)
+
 	sortFunc := func(i, j int) bool {
 		return participants[i].sortNum > participants[j].sortNum
 	}
 	sort.Slice(participants, sortFunc)
+
+	fmt.Println("")
+	fmt.Println("-----------")
+	fmt.Println("Leaderboard")
+	fmt.Println("-----------")
+	for _, p := range participants {
+		fmt.Println(p.TwitterHandle, " - ", p.Data[0])
+	}
+	fmt.Println("-----------")
+
 
 	return participants, nil
 }

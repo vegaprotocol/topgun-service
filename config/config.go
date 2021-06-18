@@ -49,6 +49,8 @@ type Config struct {
 
 	StartTime time.Time `yaml:"startTime"`
 	EndTime   time.Time `yaml:"endTime"`
+
+	TopupAssetTotal string `yaml:"topupAssetTotal"`
 }
 
 func CheckConfig(cfg Config) error {
@@ -99,6 +101,9 @@ func CheckConfig(cfg Config) error {
 	if cfg.EndTime.Before(time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)) {
 		e = multierror.Append(e, errors.New("missing/invalid: endTime"))
 	}
+	if len(cfg.VegaAsset) == 0 {
+		e = multierror.Append(e, errors.New("missing: topupAssetTotal"))
+	}
 
 	return e.ErrorOrNil()
 }
@@ -117,6 +122,7 @@ func (c *Config) String() string {
 		"vegaPoll:%s" +
 		"startTime:%s" +
 		"endTime:%s" +
+		"topupAssetTotal:%s" +
 		"}"
 	return fmt.Sprintf(
 		fmtStr,
@@ -132,6 +138,7 @@ func (c *Config) String() string {
 		c.VegaPoll.String(),
 		c.StartTime,
 		c.EndTime,
+		c.TopupAssetTotal,
 	)
 }
 
@@ -154,6 +161,7 @@ func (c *Config) LogFields() log.Fields {
 		"vegaPoll":                c.VegaPoll.String(),
 		"startTime":               c.StartTime,
 		"endTime":                 c.EndTime,
+		"topupAssetTotal":         c.TopupAssetTotal,
 	}
 }
 
