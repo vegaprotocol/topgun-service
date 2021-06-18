@@ -2,7 +2,6 @@ package leaderboard
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -94,6 +93,16 @@ func (p *Party) HasTraded(assetName string, topupAssetTotal float64) bool {
 	return hasGeneral || hasMargin
 }
 
+func (p *Party) HasAccounts(assetName string, accountTypes ...string) bool {
+	var total int
+	for _, acc := range p.Accounts {
+		if acc.Asset.Symbol == assetName && hasString(accountTypes, acc.Type) {
+			total++
+		}
+	}
+	return total > 0
+}
+
 func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
 	var accu float64
 	for _, acc := range p.Accounts {
@@ -107,15 +116,9 @@ func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
 			accu += v
 		}
 	}
-
-	if len(p.Accounts) == 0 {
-		fmt.Println(p.social," has no accounts - ", p.ID)
-	}
-
 	if accu != 0 {
 		accu = accu / float64(100000)
 	}
-
 	return accu
 }
 

@@ -205,6 +205,12 @@ func (s *Service) update() {
 		return
 	}
 
+	// Only process leaderboard between competition start and end times
+	timeNow := time.Now().UTC()
+	if timeNow.Before(s.cfg.StartTime) || timeNow.After(s.cfg.EndTime) {
+		return
+	}
+
 	log.Infof("Algo start: %s", s.cfg.Algorithm)
 	var p []Participant
 	var err error
