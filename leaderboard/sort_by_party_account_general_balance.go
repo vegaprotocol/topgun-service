@@ -51,43 +51,21 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 	// filter parties and add social handles
 	sParties := socialParties(socials, parties)
 
+	var totalTraded int
 	participants := []Participant{}
 	for _, party := range sParties {
-		// Add trades for each party, one by one, to avoid GraphQL query timeouts.
-		log.WithFields(log.Fields{"partyID": party.ID}).Debug("Getting trades for party")
-		// partyTrades, err := getParties(
-		// 	ctx,
-		// 	s.cfg.VegaGraphQLURL.String(),
-		// 	gqlQueryPartiesTrades,
-		// 	map[string]string{
-		// 		"marketId": marketID,
-		// 		"partyId":  party.ID,
-		// 	},
-		// 	nil,
-		// )
-		// if err != nil {
-		// 	return nil, fmt.Errorf("failed to get list of trades for parties: %w", err)
-		// }
-		// if len(partyTrades) == 1 {
-		// 	// Party exists on Vega
-		// 	party.Trades = partyTrades[0].Trades
-		// }
-		// log.WithFields(log.Fields{"partyID": party.ID, "trades": len(party.Trades)}).Debug("Got trades for party")
-
-		// Count only trades that happened during the competition.
-		// tradeCount := 0
-		// for _, t := range party.Trades {
-		// 	if t.CreatedAt.After(s.cfg.StartTime) && t.CreatedAt.Before(s.cfg.EndTime) {
-		// 		tradeCount++
-		// 	}
-		// }
-
-		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General", "Margin")
-		hasTraded := party.HasTraded(s.cfg.VegaAsset)
+		log.WithFields(log.Fields{"partyID": party.ID}).Debug("Getting balances for party")
+		var topupAssetTotal float64 = 1000000000 // xyzAsset top up amount (todo: add to config)
+		balanceGeneral := party.Balance(s.cfg.VegaAsset,"General", "Margin")
+		hasTraded := party.HasTraded(s.cfg.VegaAsset, topupAssetTotal)
 		var sortNum float64
 		var balanceGeneralStr string
-		// if tradeCount > 0 {
-		if hasTraded {
+		// Observed that parties that are completely wiped out can have no General balance of xyzAsset and no margin
+		// So in addition to hasTraded logic we need to capture those on social list who have neither account
+		// and therefore zero balance in general for asset
+		if hasTraded || balanceGeneral == 0 {
+			// Traded parties
+			totalTraded++
 			balanceGeneralStr = strconv.FormatFloat(balanceGeneral, 'f', 5, 32)
 			sortNum = balanceGeneral
 		} else {
@@ -103,10 +81,23 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		})
 	}
 
+	fmt.Println("")
+	fmt.Println("Total parties traded: ", totalTraded)
+
 	sortFunc := func(i, j int) bool {
 		return participants[i].sortNum > participants[j].sortNum
 	}
 	sort.Slice(participants, sortFunc)
+
+	fmt.Println("")
+	fmt.Println("-----------")
+	fmt.Println("Leaderboard")
+	fmt.Println("-----------")
+	for _, p := range participants {
+		fmt.Println(p.TwitterHandle, " - ", p.Data[0])
+	}
+	fmt.Println("-----------")
+
 
 	return participants, nil
 }
