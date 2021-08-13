@@ -11,13 +11,35 @@ import (
 )
 
 type Asset struct {
+	Id     string `json:"id"`
 	Symbol string `json:"symbol"`
+	Source AssetSource `json:"source"`
+}
+
+type AssetSource struct {
+	Name string `json:"__typename"`
 }
 
 type Account struct {
 	Type    string `json:"type"`
 	Balance string `json:"balance"`
 	Asset   Asset  `json:"asset"`
+}
+
+type Deposit struct {
+	Amount     string `json:"amount"`
+	Asset      Asset  `json:"asset"`
+	CreatedAt  time.Time `json:"createdTimestamp"`
+	CreditedAt time.Time `json:"creditedTimestamp"`
+	Status     string `json:"status"`
+}
+
+type Withdrawal struct {
+	Amount     string `json:"amount"`
+	Asset      Asset  `json:"asset"`
+	CreatedAt  time.Time `json:"createdTimestamp"`
+	CreditedAt time.Time `json:"creditedTimestamp"`
+	Status     string `json:"status"`
 }
 
 type Order struct {
@@ -41,11 +63,13 @@ type PartyVote struct {
 }
 
 type Party struct {
-	ID       string      `json:"id"`
-	Accounts []Account   `json:"accounts"`
-	Orders   []Order     `json:"orders"`
-	Trades   []Trade     `json:"trades"`
-	Votes    []PartyVote `json:"votes"`
+	ID          string       `json:"id"`
+	Accounts    []Account    `json:"accounts"`
+	Deposits    []Deposit    `json:"deposits"`
+	Orders      []Order      `json:"orders"`
+	Trades      []Trade      `json:"trades"`
+	Votes       []PartyVote  `json:"votes"`
+	Withdrawals []Withdrawal `json:"withdrawals"`
 
 	social string
 }
@@ -92,7 +116,7 @@ func getParties(
 ) ([]Party, error) {
 
 	if cli == nil {
-		cli = &http.Client{Timeout: time.Second * 10}
+		cli = &http.Client{Timeout: time.Second * 180}
 	}
 	client := graphql.NewClient(gqlURL, graphql.WithHTTPClient(cli))
 	req := graphql.NewRequest(gqlQuery)

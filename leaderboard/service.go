@@ -205,6 +205,13 @@ func (s *Service) update() {
 		return
 	}
 
+	// Only process leaderboard between competition start and end times
+	//timeNow := time.Now().UTC()
+	//if timeNow.Before(s.cfg.StartTime) || timeNow.After(s.cfg.EndTime) {
+	//	log.Info("Current date/time outside of leaderboard start/end time")
+	//	return
+	//}
+
 	log.Infof("Algo start: %s", s.cfg.Algorithm)
 	var p []Participant
 	var err error
@@ -215,6 +222,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyGovernanceVotes(socials)
 	case "ByLPEquitylikeShare":
 		p, err = s.sortByLPEquitylikeShare(socials)
+	case "ByAssetDepositWithdrawal":
+		p, err = s.sortByAssetDepositWithdrawal(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
