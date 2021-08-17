@@ -215,6 +215,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyGovernanceVotes(socials)
 	case "ByLPEquitylikeShare":
 		p, err = s.sortByLPEquitylikeShare(socials)
+	case "BySocialRegistration":
+		p, err = s.sortBySocialRegistration(s.verifier.List())
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
