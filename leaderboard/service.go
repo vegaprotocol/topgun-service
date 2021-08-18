@@ -226,6 +226,8 @@ func (s *Service) update() {
 		p, err = s.sortByLPEquitylikeShare(socials)
 	case "ByAssetDepositWithdrawal":
 		p, err = s.sortByAssetDepositWithdrawal(socials)
+	case "BySocialRegistration":
+		p, err = s.sortBySocialRegistration(s.verifier.List())
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
