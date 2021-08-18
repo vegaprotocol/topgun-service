@@ -40,7 +40,6 @@ type Config struct {
 
 	SocialURL *url.URL `yaml:"socialURL"`
 
-	// VegaAsset ...
 	VegaAsset string `yaml:"vegaAsset"`
 
 	VegaGraphQLURL *url.URL `yaml:"vegaGraphQLURL"`
@@ -49,6 +48,14 @@ type Config struct {
 
 	StartTime time.Time `yaml:"startTime"`
 	EndTime   time.Time `yaml:"endTime"`
+
+	// Optional mongo database vars, set fields to '-' or similar if not required in config
+	MongoConnectionString string `yaml:"mongoConnectionString"`
+	MongoCollectionName   string `yaml:"mongoCollectionName"`
+	MongoDatabaseName     string `yaml:"mongoDatabaseName"`
+
+	// Set to false to disable creation of snapshot json files
+	SnapshotEnabled bool   `yaml:"snapshotEnabled"`
 }
 
 func CheckConfig(cfg Config) error {
@@ -99,6 +106,15 @@ func CheckConfig(cfg Config) error {
 	if cfg.EndTime.Before(time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC)) {
 		e = multierror.Append(e, errors.New("missing/invalid: endTime"))
 	}
+	if len(cfg.MongoConnectionString) == 0 {
+		e = multierror.Append(e, errors.New("missing: mongoConnectionString"))
+	}
+	if len(cfg.MongoConnectionString) > 0 && len(cfg.MongoCollectionName) == 0 {
+		e = multierror.Append(e, errors.New("missing: mongoCollectionName"))
+	}
+	if len(cfg.MongoDatabaseName) > 0 && len(cfg.MongoDatabaseName) == 0 {
+		e = multierror.Append(e, errors.New("missing: mongoDatabaseName"))
+	}
 
 	return e.ErrorOrNil()
 }
@@ -117,6 +133,10 @@ func (c *Config) String() string {
 		"vegaPoll:%s" +
 		"startTime:%s" +
 		"endTime:%s" +
+		"mongoConnectionString:%s" +
+		"mongoCollectionName:%s" +
+		"mongoDatabaseName:%s" +
+		"snapshotEnabled:%v" +
 		"}"
 	return fmt.Sprintf(
 		fmtStr,
@@ -132,6 +152,10 @@ func (c *Config) String() string {
 		c.VegaPoll.String(),
 		c.StartTime,
 		c.EndTime,
+		c.MongoConnectionString,
+		c.MongoCollectionName,
+		c.MongoDatabaseName,
+		c.SnapshotEnabled,
 	)
 }
 
@@ -142,7 +166,7 @@ func (c *Config) LogFields() log.Fields {
 		"logLevel":                c.LogLevel,
 		"logMethodName":           c.LogMethodName,
 		"algorithm":               c.Algorithm,
-		"algorithmConfig":         c.AlgorithmConfig,
+		"algorithmConfig":          c.AlgorithmConfig,
 		"description":             c.Description,
 		"defaultDisplay":          c.DefaultDisplay,
 		"defaultSort":             c.DefaultSort,
@@ -154,6 +178,10 @@ func (c *Config) LogFields() log.Fields {
 		"vegaPoll":                c.VegaPoll.String(),
 		"startTime":               c.StartTime,
 		"endTime":                 c.EndTime,
+		"mongoConnectionString":   c.MongoConnectionString,
+		"mongoCollectionName":     c.MongoCollectionName,
+		"mongoDatabaseName":       c.MongoDatabaseName,
+		"snapshotEnabled":         c.SnapshotEnabled,
 	}
 }
 
