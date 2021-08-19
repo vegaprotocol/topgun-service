@@ -1,0 +1,30 @@
+listen: 127.0.0.1:8000  # ip:port
+logFormat: text  # json, text (default), textcolour, textnocolour
+logLevel: Info
+LogMethodName: false
+base: XXX
+quote: XYZalpha
+vegaAsset: XYZalpha
+algorithm: ByPartyAccountGeneralBalance
+algorithmConfig:
+  marketID: f9c9727a2ba5afddb1037add9f69e500b4a52455dc1bffc46af345c9a474f4c1
+defaultDisplay: Balance
+defaultSort: Balance
+description: A trading competition
+gracefulShutdownTimeout: 5s
+headers:
+  - Balance
+socialURL:
+  scheme: https
+  host: my-host-server.cloudfunctions.net
+  path: /social-parties
+vegaGraphQLURL:
+  scheme: https
+  host: lb.testnet.vega.xyz
+  path: /query
+vegaPoll: 120s
+startTime: 2021-06-15T09:00:00Z
+endTime: 2021-06-21T09:00:00Z
+mongoConnectionString: mongodb+srv://not-required
+mongoCollectionName: not-required
+mongoDatabaseName: not-required

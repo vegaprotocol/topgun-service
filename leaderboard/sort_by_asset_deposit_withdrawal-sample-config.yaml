@@ -1,0 +1,11 @@
+---
+algorithm: ByAssetDepositWithdrawal
+
+algorithmConfig: {}
+
+defaultDisplay: Participated
+
+defaultSort: Participated
+
+headers:
+  - Participated
