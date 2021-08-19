@@ -41,6 +41,17 @@ The application requires a custom configuration file passed in the argument name
 - startTime - the start time for the incentive period
 - endTime - the end time for the incentive period
 
+**MongoDB:**
+
+- mongoConnectionString - the full connection string for the optional mongodb database
+- mongoCollectionName - the collection name for the leaderboard data to be stored
+- mongoDatabaseName - the database name for the leaderboard collection
+
+Optionally, algorithms can make use of persisting and sharing data collections stored in MongoDB, useful to preserve 
+state of incentives throughout resets and other events like restarts. Currently only the `ByAssetDepositWithdrawal` 
+algorithm makes use of mongodb, other algos should set these fields to the value `NA` or similar as shown in the example 
+config file.
+
 **Queries:**
 
 - `/status` - useful for health returns 200 if service is up
