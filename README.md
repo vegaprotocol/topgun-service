@@ -22,16 +22,20 @@ The service is written in Go and more recent algorithms use MongoDB as a perisis
 
 The application requires a custom configuration file passed in the argument named `-config`, an example can be found here. Details of the config variables are detailed below:
 
-**Config vars:**
+**Config:**
 
-- verifyurl - the http/web URL for the 3rd party social handle to pubkey verifier API service [required]
-- addr - address:port to bind the service to [optional, default: localhost:8000]
-- endpoint - endpoint url to send graphql queries to [required]
-- timeout - the duration for which the server gracefully waits for existing connections to finish [optional, default: 15s]
-- vegapoll - the duration for which the service will poll the Vega API for accounts [optional, default: 5s]
-- vegaasset - Vega asset, e.g. tDAI [required]
-- base - Base for price fetching e.g. BTC [optional, recommended]
-- quote - Quote for price fetching e.g. USD [optional, recommended]
+- listen - the address:port for the service to bind to e.g. 127.0.0.1:8000]
+- logFormat - format for logging e.g. text
+- logLevel - level of logging e.g. Info
+- LogMethodName - logging displays method name e.g. False
+- socialURL - the http/web URL for the 3rd party social handle to pubkey verifier API service
+- vegaGraphQLUrl - endpoint url to send graphql queries to
+- gracefulShutdownTimeout - the duration for which the server gracefully waits for existing connections to finish e.g. 15s
+- vegapoll - the duration for which the service will poll the Vega API for accounts e.g. 5s
+- vegaasset - Vega asset, e.g. tDAI
+- base - Base for price fetching e.g. BTC
+- quote - Quote for price fetching e.g. USD
+- headers - A collection of custom headers returned with the data in a leaderboard e.g. Asset Total
 
 **Queries:**
 
