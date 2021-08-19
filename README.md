@@ -24,7 +24,7 @@ The application requires a custom configuration file passed in the argument name
 
 **Config:**
 
-- listen - the address:port for the service to bind to e.g. 127.0.0.1:8000]
+- listen - the address:port for the service to bind to e.g. 127.0.0.1:8000
 - logFormat - format for logging e.g. text
 - logLevel - level of logging e.g. Info
 - LogMethodName - logging displays method name e.g. False
@@ -35,47 +35,16 @@ The application requires a custom configuration file passed in the argument name
 - vegaasset - Vega asset, e.g. tDAI
 - base - Base for price fetching e.g. BTC
 - quote - Quote for price fetching e.g. USD
+- defaultDisplay - the default display name/data for the leaderboard
+- defaultSort - the default sort name/data for the leaderboard
 - headers - A collection of custom headers returned with the data in a leaderboard e.g. Asset Total
+- startTime - the start time for the incentive period
+- endTime - the end time for the incentive period
 
 **Queries:**
 
-- `/status` - useful for health returns 200 if service is up.
-- `/leaderboard` - returns the leaderboard in json format, example below:
-
-```
-{
-  "lastUpdate": "1616774855",
-  "base": "BTC",
-  "quote": "USD",
-  "asset": "tDAI",
-  "traders": [
-    {
-      "order": 1,
-      "publicKey": "ac9d9fe2e5904308d9c0f6fe758f8a4f4dd9636ab35584f95909010b7ec7edc9",
-      "twitterHandle": "fuzzydunlop99",
-      "balanceGeneral": 96665.03674,
-      "balanceMargin": 1183.04528,
-      "balanceTotal": 97848.08202,
-      "quoteGeneral": 5133820937.179082,
-      "quoteMargin": 62830810.73491857,
-      "quoteTotal": 5196651747.9140005
-    },
-    {
-      "order": 2,
-      "publicKey": "6e0c7741220ba99187b59a0b52271b16e02dabd4e38c75e7cfa128f0f784e8a7",
-      "twitterHandle": "crypt0wenm00n",
-      "balanceGeneral": 56665.03674,
-      "balanceMargin": 2183.04528,
-      "balanceTotal": 58848.08202,
-      "quoteGeneral": 4333820937.179082,
-      "quoteMargin": 23830810.73491857,
-      "quoteTotal": 4496651747.9140005
-    },
-    ...
-  ]
-}
-
-```
+- `/status` - useful for health returns 200 if service is up
+- `/leaderboard` - returns the leaderboard in json format
 
 ## Verified socials
 
