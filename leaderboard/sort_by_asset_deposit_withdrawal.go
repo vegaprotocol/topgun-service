@@ -14,6 +14,11 @@ import (
 )
 
 func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Participant, error) {
+
+	// The minimum number of unique deposits and withdrawals needed to achieve this reward
+	minDepositAndWithdrawals := 2
+	// Default: 2 unique asset deposits and 2 unique withdrawals from the erc20 bridge
+
 	gqlQuery := `query {
 	  parties{
 		id
@@ -42,36 +47,18 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 	  }
 	}`
 
+	log.Info("Vega query starting...")
+
+	startedAt := time.Now()
 	ctx := context.Background()
 	parties, err := getParties(ctx, s.cfg.VegaGraphQLURL.String(), gqlQuery, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get list of parties: %w", err)
 	}
 
-	//parties = make([]Party, 0)
-
-	//for _, p := range parties {
-	//	if len(p.Deposits) > 0 {
-	//		for _, d := range p.Deposits {
-	//			if d.Asset.Source.Name == "ERC20" &&
-	//				d.Status == "Finalized" &&
-	//				d.CreatedAt.After(s.cfg.StartTime) &&
-	//				d.CreatedAt.Before(s.cfg.EndTime) {
-	//				log.Infof("Party %s has deposited %s ERC20 asset %s %s", p.ID, d.Amount, d.Asset.Symbol, d.Status)
-	//			}
-	//		}
-	//	}
-	//	if len(p.Withdrawals) > 0 {
-	//		for _, w := range p.Withdrawals {
-	//			if w.Asset.Source.Name == "ERC20" &&
-	//				w.Status == "Finalized" &&
-	//				w.CreatedAt.After(s.cfg.StartTime) &&
-	//				w.CreatedAt.Before(s.cfg.EndTime) {
-	//				log.Infof("Party %s has withdrawn %s ERC20 asset %s %s", p.ID, w.Amount, w.Asset.Symbol, w.Status)
-	//			}
-	//		}
-	//	}
-	//}
+	completedAt := time.Now()
+	diff := completedAt.Sub(startedAt)
+	log.Infof("Vega query completed in %s", diff)
 
 	dbCtx, dbCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer dbCancel()
@@ -83,9 +70,10 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 		return nil, err
 	}
 
+	startedAt = time.Now()
 	log.Info("DB participants loading...")
 
-	// Find all participants in the given collection (configurable for each incentive run)
+	// Find all participants in the given collection (configurable for each incentive)
 	dbParticipantsCollection := svc.LoadDocumentCollection(s.cfg.MongoDatabaseName, s.cfg.MongoCollectionName)
 
 	var dbParticipants []Participant
@@ -98,9 +86,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 		log.WithError(err).Error("Error querying MongoDB datastore [2]")
 	}
 
-	minDepositAndWithdrawals := 2
 	participationCount := 0
-
 	dbParticipantsMap := make(map[string]*Participant,len(dbParticipants))
 	for _, dbParticipant := range dbParticipants {
 		participationCount++
@@ -108,7 +94,9 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 		dbParticipantsMap[strings.ToLower(dbParticipant.TwitterHandle)] = &dbParticipant
 	}
 
-	log.Infof("DB participants found: %d", len(dbParticipants))
+	completedAt = time.Now()
+	diff = completedAt.Sub(startedAt)
+	log.Infof("DB participants found %d in %s", len(dbParticipants), diff)
 
 	sParties := socialParties(socials, parties)
 	participants := dbParticipants
@@ -142,7 +130,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 				}
 			}
 		} else {
-			log.Infof("Found db participant: %s %s", party.social, party.ID)
+			log.Debugf("Found db participant: %s %s", party.social, party.ID)
 		}
 	}
 
@@ -161,14 +149,16 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 func (s *Service) hasDepositedErc20Assets(min int, deposits []Deposit) bool {
 	totalDepositsForParty := 0
 	if len(deposits) > 0 {
+		foundAssets := make(map[string]bool,0)
 		for _, d := range deposits {
 			if d.Asset.Source.Name == "ERC20" &&
 				d.Status == "Finalized" &&
 				d.CreatedAt.After(s.cfg.StartTime) &&
 				d.CreatedAt.Before(s.cfg.EndTime) {
+				foundAssets[d.Asset.Symbol] = true
 				totalDepositsForParty++
 			}
-			if totalDepositsForParty >= min {
+			if totalDepositsForParty >= min && len(foundAssets) >= min {
 				return true
 			}
 		}
@@ -179,31 +169,19 @@ func (s *Service) hasDepositedErc20Assets(min int, deposits []Deposit) bool {
 func (s *Service) hasWithdrawnErc20Assets(min int, withdrawals []Withdrawal) bool {
 	totalWithdrawalsForParty := 0
 	if len(withdrawals) > 0 {
+		foundAssets := make(map[string]bool,0)
 		for _, w := range withdrawals {
 			if w.Asset.Source.Name == "ERC20" &&
 				w.Status == "Finalized" &&
 				w.CreatedAt.After(s.cfg.StartTime) &&
 				w.CreatedAt.Before(s.cfg.EndTime) {
+				foundAssets[w.Asset.Symbol] = true
 				totalWithdrawalsForParty++
 			}
-			if totalWithdrawalsForParty >= min {
+			if totalWithdrawalsForParty >= min && len(foundAssets) >= min {
 				return true
 			}
 		}
 	}
 	return false
-}
-
-// Loads existing participants from datastore (from the given mongodb collection)
-func (s *Service) loadParticipantsFromDatastore(mongocollectionName string) (participants []Participant) {
-
-	return nil
-}
-
-// Saves new participants to datastore (to the given mongodb collection)
-func (s *Service) saveParticipantsToDatastore(collectionName string, participants []Participant) error {
-
-
-
-	return nil
 }
