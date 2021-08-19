@@ -4,7 +4,15 @@ API service that provides a **sorted leaderboard for incentives/games operating 
 
 The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration".
 
-The service is written in Go.
+When running an incentive/game the configuration file for the topgun-service can be configured with the appropriate 'algorithm' to serve up a list of participants on a leaderboard. The choices of algorithm currently includes:
+
+* `ByPartyAccountGeneralBalance`
+* `ByPartyGovernanceVotes`
+* `ByLPEquitylikeShare`
+* `ByAssetDepositWithdrawal`
+* `BySocialRegistration`
+
+The service is written in Go and more recent algorithms use MongoDB as a perisistence layer.
 
 ## How to run the service
 
