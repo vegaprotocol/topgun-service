@@ -1,12 +1,10 @@
-# topgun-service
+# Leaderboard API service for Fairground incentives (code name TOPGUN)
 
-API service that provides a **sorted leaderboard for a single Vega Asset** e.g. `tDAI` or `xyzAlpha`, it also provides a quote value that is retrieved via the Vega price proxy if a base/quote pair (e.g. `BTC/USD`) are provided. The price is then used to generate a total quote value for the underlying Vega Asset (e.g. `USD`).
+API service that provides a **sorted leaderboard for incentives/games supporting the Fairground testnet**
 
-The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter.
+The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration".
 
 The service is written in Go.
-
-**Important: The design of this service was updated in March 2021 to match requirements for Fairground internal games. Service should be run with different configuration settings, in multiple instances, behind a caddy proxy to provide multiple leaderboards for a single Vega Asset e.g. xyzAlpha, xyzBeta, etc.**
 
 ## How to run the service
 
