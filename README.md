@@ -20,7 +20,7 @@ The service is written in Go and more recent algorithms use MongoDB as a perisis
 
 `./topgun-service -config custom-config-file.yaml`
 
-The application requires a custom configuration file passed in the argument named `-config`, an example can be found [here](./blob/develop/example-custom-config-file.yaml). Details of the config variables are detailed below:
+The application requires a custom configuration file passed in the argument named `-config`, an example can be found [here](./example-custom-config-file.yaml). Details of the config variables are detailed below:
 
 **Config:**
 
