@@ -6,11 +6,11 @@ The leaderboard is filtered to include ONLY participants that are found on a ver
 
 When running an incentive/game the configuration file for the topgun-service can be configured with the appropriate 'algorithm' to serve up a list of participants on a leaderboard. The choices of algorithm currently includes:
 
-* `ByPartyAccountGeneralBalance`
-* `ByPartyGovernanceVotes`
-* `ByLPEquitylikeShare`
-* `ByAssetDepositWithdrawal`
-* `BySocialRegistration`
+* `ByPartyAccountGeneralBalance` - Sorted by trading account total general balance of given asset
+* `ByPartyGovernanceVotes` - Sorted by trading account governance votes
+* `ByLPEquitylikeShare` - Sorted by LP equity like share
+* `ByAssetDepositWithdrawal` - Sorted by ERC20 assets deposited and withdrawn (achieved when user deposits and withdraws 2 unique assets) 
+* `BySocialRegistration` - Sorted by latest Twitter registrations (used to check that a twitter handle is verified/signed up for incentives)
 
 The service is written in Go and more recent algorithms use MongoDB as a perisistence layer.
 
@@ -18,9 +18,11 @@ The service is written in Go and more recent algorithms use MongoDB as a perisis
 
 **Example:**
 
-`./topgun-service -verifyurl=https://twitter-verifier.vega.trading/pubkeys.json -endpoint=https://lb.testnet.vega.xyz/query -base=BTC -quote=USD -vegaasset=tDAI `
+`./topgun-service -config custom-config-file.yaml`
 
-**Arguments:**
+The application requires a custom configuration file passed in the argument named `-config`, an example can be found here. Details of the config variables are detailed below:
+
+**Config vars:**
 
 - verifyurl - the http/web URL for the 3rd party social handle to pubkey verifier API service [required]
 - addr - address:port to bind the service to [optional, default: localhost:8000]
