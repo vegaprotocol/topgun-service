@@ -1,6 +1,6 @@
 # Leaderboard API service for Fairground incentives (code name TOPGUN)
 
-API service that provides a **sorted leaderboard for incentives/games supporting the Fairground testnet**
+API service that provides a **sorted leaderboard for incentives/games operating on the Fairground testnet.**
 
 The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration".
 
@@ -65,7 +65,7 @@ The service is written in Go.
 
 ## Verified socials
 
-A mapping of public key to social handle (Twitter) is provided by an external service, please see the file `verified_example.txt` for an example of the format returned. An attempt to update this list from the 3rd party server happens on each reload of the data from Vega, see `vegapoll` time parameter above.
+A mapping of public key to social handle (Twitter) is provided by an external service, please see the file `verified_example.txt` for an example of the format returned. An attempt to update this list from the 3rd party server happens on each reload of the data from Vega, see `vegapoll` time parameter above. This service is operated by Vega and is known internally as **Social Media Verification** or "Twitter Registration".
 
 ## How to file an issue or report a problem
 
