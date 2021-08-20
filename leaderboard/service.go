@@ -315,25 +315,27 @@ func (s *Service) update() {
 	}
 }
 
-func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
+func (s *Service) MarshalLeaderboard(q string, skip int64, size int64) ([]byte, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	if q == "" {
-		// Return standard leaderboard
-		return json.Marshal(s.board)
-	}
-	q = strings.ToLower(q)
-
 	participants := []Participant{}
-
-	for _, p := range s.board.Participants {
-		pubKey := strings.ToLower(p.PublicKey)
-		twitterHandle := strings.ToLower(p.TwitterHandle)
-		// case insensitive comparison
-		if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
-			participants = append(participants, p)
+	if q == "" {
+		// No search query filter found
+		// Full data set required
+		participants = s.board.Participants
+	} else {
+		// Search query has been passed with request
+		q = strings.ToLower(q)
+		for _, p := range s.board.Participants {
+			pubKey := strings.ToLower(p.PublicKey)
+			twitterHandle := strings.ToLower(p.TwitterHandle)
+			// case insensitive comparison
+			if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
+				participants = append(participants, p)
+			}
 		}
+		// Filtered data set with search query
 	}
 
 	board := Leaderboard{
@@ -345,9 +347,26 @@ func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
 		DefaultSort:          s.board.DefaultSort,
 		DefaultDisplay:       s.board.DefaultDisplay,
 		Status:               s.board.Status,
-		Participants:         participants,
+		Participants:         s.paginate(participants, skip, size),
 		ParticipantsSnapshot: nil,
 	}
 
 	return json.Marshal(board)
+}
+
+func (s *Service) paginate(p []Participant, skip int64, size int64) []Participant {
+	if skip < 1 {
+		skip = 0
+	}
+	if size < 1 {
+		size = 999999
+	}
+	if skip > int64(len(p)) {
+		skip = int64(len(p))
+	}
+	end := skip + size
+	if end > int64(len(p)) {
+		end = int64(len(p))
+	}
+	return p[skip:end]
 }
