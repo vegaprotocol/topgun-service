@@ -11,16 +11,16 @@ import (
 )
 
 type Service struct {
-	mu        sync.RWMutex
-	cli       *mongo.Client
-	ctx       context.Context
-	connStr   string
+	mu          sync.RWMutex
+	cli         *mongo.Client
+	ctx         context.Context
+	connStr     string
 	isConnected bool
 }
 
 func NewMongoDbDatastore(ctx context.Context, connStr string) *Service {
 	s := Service{
-		ctx: ctx,
+		ctx:     ctx,
 		connStr: connStr,
 	}
 	return &s
