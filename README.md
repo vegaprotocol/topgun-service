@@ -56,6 +56,9 @@ config file.
 
 - `/status` - useful for health returns 200 if service is up
 - `/leaderboard` - returns the leaderboard in json format
+   -  `?q={social_handle}` - search query to filter for a specific social handle, case insensitive
+   -  `?skip={n}` - skip `n` leaderboard results (pagination)
+   -  `?size={n}` - page size `n` leaderboard results (pagination)
 
 ## Verified socials
 
