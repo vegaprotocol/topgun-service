@@ -26,10 +26,12 @@ type PricingEngine interface {
 }
 
 type Participant struct {
-	Position      int      `json:"position"`
-	PublicKey     string   `json:"publicKey"`
-	TwitterHandle string   `json:"twitterHandle"`
-	Data          []string `json:"data"`
+	Position      int       `json:"position" bson:"position,omitempty"`
+	PublicKey     string    `json:"publicKey" bson:"pub_key,omitempty"`
+	TwitterHandle string    `json:"twitterHandle" bson:"twitter_handle,omitempty"`
+	CreatedAt     time.Time `json:"createdAt" bson:"created,omitempty"`
+	UpdatedAt     time.Time `json:"updatedAt" bson:"last_modified,omitempty"`
+	Data          []string  `json:"data" bson:"data,omitempty"`
 
 	sortNum float64
 }
@@ -205,6 +207,13 @@ func (s *Service) update() {
 		return
 	}
 
+	// Only process leaderboard between competition start and end times
+	//timeNow := time.Now().UTC()
+	//if timeNow.Before(s.cfg.StartTime) || timeNow.After(s.cfg.EndTime) {
+	//	log.Info("Current date/time outside of leaderboard start/end time")
+	//	return
+	//}
+
 	log.Infof("Algo start: %s", s.cfg.Algorithm)
 	var p []Participant
 	var err error
@@ -215,6 +224,10 @@ func (s *Service) update() {
 		p, err = s.sortByPartyGovernanceVotes(socials)
 	case "ByLPEquitylikeShare":
 		p, err = s.sortByLPEquitylikeShare(socials)
+	case "ByAssetDepositWithdrawal":
+		p, err = s.sortByAssetDepositWithdrawal(socials)
+	case "BySocialRegistration":
+		p, err = s.sortBySocialRegistration(s.verifier.List())
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
@@ -242,7 +255,7 @@ func (s *Service) update() {
 		ParticipantsSnapshot: s.participantSnapshot,
 	}
 	// Seems like sometime the participants list is empty
-	// (see line 223) in what case we just reuse the previous
+	// in that case we just reuse the previous
 	// board participants
 	if len(p) > 0 {
 		newBoard.Participants = p
@@ -254,70 +267,75 @@ func (s *Service) update() {
 	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
 
-	_, startSnapshotTaken := s.participantSnapshot[snapshotStart]
-	if !startSnapshotTaken && status == competitionActive {
-		// First, attempt to read the start snapshot from file. This allows
-		// the app to be restarted easily.
-		startSnapshot, err := readSnapshotFile(snapshotStartFilename)
-		if err != nil {
-			// Failed to read file, so fall back to taking a snapshot and saving it.
-			startSnapshot, err = copyParticipants(newBoard.Participants)
-			if err != nil {
-				log.WithFields(log.Fields{
-					"error": err.Error(),
-				}).Warn("Failed to copy whole start snapshot")
-				startSnapshot = []Participant{}
-			}
-			saveSnapshotFile(snapshotStartFilename, startSnapshot)
-			log.Info("Saved start snapshot to disk")
-		} else {
-			log.Info("Read start snapshot from disk")
-		}
-		s.participantSnapshot[snapshotStart] = startSnapshot
-	}
+	if s.cfg.SnapshotEnabled {
 
-	_, endSnapshotTaken := s.participantSnapshot[snapshotEnd]
-	if !endSnapshotTaken && status == competitionEnded {
-		// First, attempt to read the end snapshot from file. This allows
-		// the app to be restarted easily.
-		endSnapshot, err := readSnapshotFile(snapshotEndFilename)
-		if err != nil {
-			// Failed to read file, so fall back to taking a snapshot and saving it.
-			endSnapshot, err = copyParticipants(newBoard.Participants)
+		_, startSnapshotTaken := s.participantSnapshot[snapshotStart]
+		if !startSnapshotTaken && status == competitionActive {
+			// First, attempt to read the start snapshot from file. This allows
+			// the app to be restarted easily.
+			startSnapshot, err := readSnapshotFile(snapshotStartFilename)
 			if err != nil {
-				log.WithFields(log.Fields{
-					"error": err.Error(),
-				}).Warn("Failed to copy whole end snapshot")
-				endSnapshot = []Participant{}
+				// Failed to read file, so fall back to taking a snapshot and saving it.
+				startSnapshot, err = copyParticipants(newBoard.Participants)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"error": err.Error(),
+					}).Warn("Failed to copy whole start snapshot")
+					startSnapshot = []Participant{}
+				}
+				saveSnapshotFile(snapshotStartFilename, startSnapshot)
+				log.Info("Saved start snapshot to disk")
+			} else {
+				log.Info("Read start snapshot from disk")
 			}
-			saveSnapshotFile(snapshotEndFilename, endSnapshot)
-			log.Info("Saved end snapshot to disk")
-		} else {
-			log.Info("Read end snapshot from disk")
+			s.participantSnapshot[snapshotStart] = startSnapshot
 		}
-		s.participantSnapshot[snapshotEnd] = endSnapshot
+
+		_, endSnapshotTaken := s.participantSnapshot[snapshotEnd]
+		if !endSnapshotTaken && status == competitionEnded {
+			// First, attempt to read the end snapshot from file. This allows
+			// the app to be restarted easily.
+			endSnapshot, err := readSnapshotFile(snapshotEndFilename)
+			if err != nil {
+				// Failed to read file, so fall back to taking a snapshot and saving it.
+				endSnapshot, err = copyParticipants(newBoard.Participants)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"error": err.Error(),
+					}).Warn("Failed to copy whole end snapshot")
+					endSnapshot = []Participant{}
+				}
+				saveSnapshotFile(snapshotEndFilename, endSnapshot)
+				log.Info("Saved end snapshot to disk")
+			} else {
+				log.Info("Read end snapshot from disk")
+			}
+			s.participantSnapshot[snapshotEnd] = endSnapshot
+		}
 	}
 }
 
-func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
+func (s *Service) MarshalLeaderboard(q string, skip int64, size int64) ([]byte, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	if q == "" {
-		// Return standard leaderboard
-		return json.Marshal(s.board)
-	}
-	q = strings.ToLower(q)
-
 	participants := []Participant{}
-
-	for _, p := range s.board.Participants {
-		pubKey := strings.ToLower(p.PublicKey)
-		twitterHandle := strings.ToLower(p.TwitterHandle)
-		// case insensitive comparison
-		if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
-			participants = append(participants, p)
+	if q == "" {
+		// No search query filter found
+		// Full data set required
+		participants = s.board.Participants
+	} else {
+		// Search query has been passed with request
+		q = strings.ToLower(q)
+		for _, p := range s.board.Participants {
+			pubKey := strings.ToLower(p.PublicKey)
+			twitterHandle := strings.ToLower(p.TwitterHandle)
+			// case insensitive comparison
+			if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
+				participants = append(participants, p)
+			}
 		}
+		// Filtered data set with search query
 	}
 
 	board := Leaderboard{
@@ -329,9 +347,26 @@ func (s *Service) MarshalLeaderboard(q string) ([]byte, error) {
 		DefaultSort:          s.board.DefaultSort,
 		DefaultDisplay:       s.board.DefaultDisplay,
 		Status:               s.board.Status,
-		Participants:         participants,
+		Participants:         s.paginate(participants, skip, size),
 		ParticipantsSnapshot: nil,
 	}
 
 	return json.Marshal(board)
+}
+
+func (s *Service) paginate(p []Participant, skip int64, size int64) []Participant {
+	if skip < 1 {
+		skip = 0
+	}
+	if size < 1 {
+		size = 999999
+	}
+	if skip > int64(len(p)) {
+		skip = int64(len(p))
+	}
+	end := skip + size
+	if end > int64(len(p)) {
+		end = int64(len(p))
+	}
+	return p[skip:end]
 }

@@ -1,0 +1,11 @@
+---
+algorithm: BySocialRegistration
+
+algorithmConfig: {}
+
+defaultDisplay: Registered
+
+defaultSort: Registered
+
+headers:
+  - Registered
