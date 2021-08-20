@@ -1,8 +1,9 @@
-FROM golang:1.16.2 AS builder
+FROM golang:1.16.7 AS builder
 ENV GOPROXY=direct GOSUMDB=off
 WORKDIR /go/src/project
 ADD *.go go.* ./
 ADD config config
+ADD datastore datastore
 ADD leaderboard leaderboard
 ADD pricing pricing
 ADD util util
@@ -11,10 +12,8 @@ RUN env CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o topgun-ser
 
 # # #
 
-FROM ubuntu:20.04
+FROM alpine:3.14
 ENTRYPOINT ["/topgun-service"]
-RUN \
-	apt update && \
-	DEBIAN_FRONTEND=noninteractive apt install -y ca-certificates && \
-	rm -rf /var/lib/apt/lists
+
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/src/project/topgun-service /
