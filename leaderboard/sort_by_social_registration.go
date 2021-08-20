@@ -21,7 +21,7 @@ func (s *Service) sortBySocialRegistration(socials *verifier.Socials) ([]Partici
 			TwitterHandle: s.TwitterHandle,
 			CreatedAt:     util.TimeFromUnixTimeStamp(s.CreatedAt),
 			UpdatedAt:     util.TimeFromUnixTimeStamp(s.UpdatedAt),
-			Data:          []string{ "Registered" },
+			Data:          []string{"Registered"},
 			sortNum:       float64(count),
 		})
 	}

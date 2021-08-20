@@ -55,7 +55,7 @@ type Config struct {
 	MongoDatabaseName     string `yaml:"mongoDatabaseName"`
 
 	// Set to false to disable creation of snapshot json files
-	SnapshotEnabled bool   `yaml:"snapshotEnabled"`
+	SnapshotEnabled bool `yaml:"snapshotEnabled"`
 }
 
 func CheckConfig(cfg Config) error {
@@ -166,7 +166,7 @@ func (c *Config) LogFields() log.Fields {
 		"logLevel":                c.LogLevel,
 		"logMethodName":           c.LogMethodName,
 		"algorithm":               c.Algorithm,
-		"algorithmConfig":          c.AlgorithmConfig,
+		"algorithmConfig":         c.AlgorithmConfig,
 		"description":             c.Description,
 		"defaultDisplay":          c.DefaultDisplay,
 		"defaultSort":             c.DefaultSort,
