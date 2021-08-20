@@ -3,6 +3,7 @@ package leaderboard
 import (
 	"sort"
 
+	"github.com/vegaprotocol/topgun-service/util"
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
@@ -18,6 +19,8 @@ func (s *Service) sortBySocialRegistration(socials *verifier.Socials) ([]Partici
 		participants = append(participants, Participant{
 			PublicKey:     s.PartyID,
 			TwitterHandle: s.TwitterHandle,
+			CreatedAt:     util.TimeFromUnixTimeStamp(s.CreatedAt),
+			UpdatedAt:     util.TimeFromUnixTimeStamp(s.UpdatedAt),
 			Data:          []string{ "Registered" },
 			sortNum:       float64(count),
 		})

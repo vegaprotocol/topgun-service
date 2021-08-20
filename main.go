@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"time"
 
@@ -113,10 +114,30 @@ type ErrorObject struct {
 	Error string `json:"error"`
 }
 
+func GetQuery(r *http.Request, key string) string {
+	return r.URL.Query().Get(key)
+}
+
+func GetQueryInt(r *http.Request, key string) int64 {
+	q := GetQuery(r, key)
+	if len(q) > 0 {
+		i, err := strconv.ParseInt(q, 10, 64)
+		if err != nil {
+			log.Warnf("Could not parse query string param %s %s to int", key, q)
+			return -1
+		}
+		return i
+	}
+	return -1
+}
+
+
 func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboard.Service) {
 	w.Header().Set("Content-Type", "application/json")
-	q := r.URL.Query().Get("q")
-	payload, err := svc.MarshalLeaderboard(q)
+	q := GetQuery(r,"q")
+	skip := GetQueryInt(r, "skip")
+	size := GetQueryInt(r, "size")
+	payload, err := svc.MarshalLeaderboard(q, skip, size)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"error": err.Error(),
