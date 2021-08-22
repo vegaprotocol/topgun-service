@@ -131,10 +131,9 @@ func GetQueryInt(r *http.Request, key string) int64 {
 	return -1
 }
 
-
 func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboard.Service) {
 	w.Header().Set("Content-Type", "application/json")
-	q := GetQuery(r,"q")
+	q := GetQuery(r, "q")
 	skip := GetQueryInt(r, "skip")
 	size := GetQueryInt(r, "size")
 	payload, err := svc.MarshalLeaderboard(q, skip, size)

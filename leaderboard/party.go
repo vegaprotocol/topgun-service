@@ -11,8 +11,8 @@ import (
 )
 
 type Asset struct {
-	Id     string `json:"id"`
-	Symbol string `json:"symbol"`
+	Id     string      `json:"id"`
+	Symbol string      `json:"symbol"`
 	Source AssetSource `json:"source"`
 }
 
@@ -27,19 +27,19 @@ type Account struct {
 }
 
 type Deposit struct {
-	Amount     string `json:"amount"`
-	Asset      Asset  `json:"asset"`
+	Amount     string    `json:"amount"`
+	Asset      Asset     `json:"asset"`
 	CreatedAt  time.Time `json:"createdTimestamp"`
 	CreditedAt time.Time `json:"creditedTimestamp"`
-	Status     string `json:"status"`
+	Status     string    `json:"status"`
 }
 
 type Withdrawal struct {
-	Amount     string `json:"amount"`
-	Asset      Asset  `json:"asset"`
+	Amount     string    `json:"amount"`
+	Asset      Asset     `json:"asset"`
 	CreatedAt  time.Time `json:"createdTimestamp"`
 	CreditedAt time.Time `json:"creditedTimestamp"`
-	Status     string `json:"status"`
+	Status     string    `json:"status"`
 }
 
 type Order struct {

@@ -7,8 +7,9 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/vegaprotocol/topgun-service/datastore"
+
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -87,7 +88,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 	}
 
 	participationCount := 0
-	dbParticipantsMap := make(map[string]*Participant,len(dbParticipants))
+	dbParticipantsMap := make(map[string]*Participant, len(dbParticipants))
 	for _, dbParticipant := range dbParticipants {
 		participationCount++
 		dbParticipant.sortNum = float64(participationCount)
@@ -149,7 +150,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 func (s *Service) hasDepositedErc20Assets(min int, deposits []Deposit) bool {
 	totalDepositsForParty := 0
 	if len(deposits) > 0 {
-		foundAssets := make(map[string]bool,0)
+		foundAssets := make(map[string]bool, 0)
 		for _, d := range deposits {
 			if d.Asset.Source.Name == "ERC20" &&
 				d.Status == "Finalized" &&
@@ -169,7 +170,7 @@ func (s *Service) hasDepositedErc20Assets(min int, deposits []Deposit) bool {
 func (s *Service) hasWithdrawnErc20Assets(min int, withdrawals []Withdrawal) bool {
 	totalWithdrawalsForParty := 0
 	if len(withdrawals) > 0 {
-		foundAssets := make(map[string]bool,0)
+		foundAssets := make(map[string]bool, 0)
 		for _, w := range withdrawals {
 			if w.Asset.Source.Name == "ERC20" &&
 				w.Status == "Finalized" &&

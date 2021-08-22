@@ -15,8 +15,8 @@ import (
 type Socials []struct {
 	PartyID       string `json:"party_id"`
 	TwitterHandle string `json:"twitter_handle"`
-	CreatedAt     int64 `json:"created"`
-	UpdatedAt     int64 `json:"last_modified"`
+	CreatedAt     int64  `json:"created"`
+	UpdatedAt     int64  `json:"last_modified"`
 }
 
 type Service struct {
