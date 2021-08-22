@@ -40,6 +40,7 @@ The application requires a custom configuration file passed in the argument name
 - headers - A collection of custom headers returned with the data in a leaderboard e.g. Asset Total
 - startTime - the start time for the incentive period
 - endTime - the end time for the incentive period
+- snapshotEnabled - set to true to enable json snapshots of leaderboard, default: False
 
 **MongoDB:**
 
