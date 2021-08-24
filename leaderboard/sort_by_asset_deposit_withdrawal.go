@@ -3,7 +3,6 @@ package leaderboard
 import (
 	"context"
 	"fmt"
-	"sort"
 	"strings"
 	"time"
 
@@ -111,6 +110,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 			if s.hasDepositedErc20Assets(minDepositAndWithdrawals, party.Deposits) &&
 				s.hasWithdrawnErc20Assets(minDepositAndWithdrawals, party.Withdrawals) {
 				participationCount++
+
 				// Only users that have successfully participated in the task will be stored
 				utcNow := time.Now().UTC()
 				participant := Participant{
@@ -121,7 +121,10 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 					Data:          []string{"Achieved"},
 					sortNum:       float64(participationCount),
 				}
-				participants = append(participants, participant)
+
+				// Push newly found participant to the top of the list
+				// existing participants from db are  in created-at desc order
+				participants = append([]Participant{participant}, participants...)
 
 				insertResult, err := dbParticipantsCollection.InsertOne(ctx, participant)
 				if err != nil {
@@ -134,11 +137,6 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 			log.Debugf("Found db participant: %s %s", party.social, party.ID)
 		}
 	}
-
-	sortFunc := func(i, j int) bool {
-		return participants[i].sortNum > participants[j].sortNum
-	}
-	sort.Slice(participants, sortFunc)
 
 	err = svc.Disconnect()
 	if err != nil {
