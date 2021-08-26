@@ -19,6 +19,9 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 	minDepositAndWithdrawals := 2
 	// Default: 2 unique asset deposits and 2 unique withdrawals from the erc20 bridge
 
+	// Total number of participants awarded
+	maxAwarded := 5000
+
 	gqlQuery := `query {
 	  parties{
 		id
@@ -100,41 +103,49 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 
 	sParties := socialParties(socials, parties)
 	participants := dbParticipants
-	for _, party := range sParties {
-		if _, found := dbParticipantsMap[strings.ToLower(party.social)]; !found {
 
-			// Social handle not found in the database
-			// - check if they've achieved the participation reward
-			// - if they have then insert into mongodb collection
+	if participationCount < maxAwarded {
+		for _, party := range sParties {
+			if _, found := dbParticipantsMap[strings.ToLower(party.social)]; !found {
 
-			if s.hasDepositedErc20Assets(minDepositAndWithdrawals, party.Deposits) &&
-				s.hasWithdrawnErc20Assets(minDepositAndWithdrawals, party.Withdrawals) {
-				participationCount++
+				// Social handle not found in the database
+				// - check if they've achieved the participation reward
+				// - if they have then insert into mongodb collection
 
-				// Only users that have successfully participated in the task will be stored
-				utcNow := time.Now().UTC()
-				participant := Participant{
-					PublicKey:     party.ID,
-					TwitterHandle: party.social,
-					CreatedAt:     utcNow,
-					UpdatedAt:     utcNow,
-					Data:          []string{"Achieved"},
-					sortNum:       float64(participationCount),
+				if participationCount == maxAwarded {
+					log.Infof("Reached maximum awarded: %d", participationCount)
+					break
 				}
 
-				// Push newly found participant to the top of the list
-				// existing participants from db are  in created-at desc order
-				participants = append([]Participant{participant}, participants...)
+				if s.hasDepositedErc20Assets(minDepositAndWithdrawals, party.Deposits) &&
+					s.hasWithdrawnErc20Assets(minDepositAndWithdrawals, party.Withdrawals) {
+					participationCount++
 
-				insertResult, err := dbParticipantsCollection.InsertOne(ctx, participant)
-				if err != nil {
-					log.WithError(err).Error("Error inserting participant")
-				} else {
-					log.Infof("Inserted: %s %s", participant.TwitterHandle, insertResult.InsertedID)
+					// Only users that have successfully participated in the task will be stored
+					utcNow := time.Now().UTC()
+					participant := Participant{
+						PublicKey:     party.ID,
+						TwitterHandle: party.social,
+						CreatedAt:     utcNow,
+						UpdatedAt:     utcNow,
+						Data:          []string{"Achieved"},
+						sortNum:       float64(participationCount),
+					}
+
+					// Push newly found participant to the top of the list
+					// existing participants from db are  in created-at desc order
+					participants = append([]Participant{participant}, participants...)
+
+					insertResult, err := dbParticipantsCollection.InsertOne(ctx, participant)
+					if err != nil {
+						log.WithError(err).Error("Error inserting participant")
+					} else {
+						log.Infof("Inserted: %s %s", participant.TwitterHandle, insertResult.InsertedID)
+					}
 				}
+			} else {
+				log.Debugf("Found db participant: %s %s", party.social, party.ID)
 			}
-		} else {
-			log.Debugf("Found db participant: %s %s", party.social, party.ID)
 		}
 	}
 
