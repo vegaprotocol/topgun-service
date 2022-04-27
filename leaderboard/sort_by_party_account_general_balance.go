@@ -15,6 +15,16 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 	// 	return nil, fmt.Errorf("failed to get algorithm config: %w", err)
 	// }
 
+	// Grab the DP we're targeting (for the asset we're interested in for the market specified
+	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+	decimalPlaces, err := strconv.ParseInt(decimalPlacesStr, 0, 32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+
 	gqlQueryPartiesAccounts := `query($assetId: String!) {
 		parties {
 			id
@@ -82,12 +92,12 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		// 	}
 		// }
 
-		balanceGeneral := party.Balance(s.cfg.VegaAsset, "General", "Margin")
+		balanceGeneral := party.Balance(s.cfg.VegaAsset, decimalPlaces, "General", "Margin")
 		var sortNum float64
 		// var balanceGeneralStr string
 		// if tradeCount > 0 {
 		// if len(party.Trades) > 0 {
-		balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', 5, 32)
+		balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
 		sortNum = balanceGeneral
 		// } else {
 		// 	// Untraded folks have not participated in the competition.

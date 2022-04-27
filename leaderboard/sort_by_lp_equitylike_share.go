@@ -15,7 +15,7 @@ type PartyJustID struct {
 	ID string `json:"id"`
 }
 
-type LiquidityProvision struct {
+type EquityLiquidityProvision struct {
 	CreatedAt        time.Time   `json:"createdAt"`
 	CommitmentAmount int         `json:"commitmentAmount"`
 	Fee              string      `json:"fee"` // float
@@ -23,23 +23,23 @@ type LiquidityProvision struct {
 	Party            PartyJustID `json:"party"`
 }
 
-type LiquidityProviderFeeShare struct {
+type EquityLiquidityProviderFeeShare struct {
 	AverageEntryValuation string      `json:"averageEntryValuation"` // uint64 ** 10^DP
 	EquityLikeShare       string      `json:"equityLikeShare"`       // float
 	Party                 PartyJustID `json:"party"`
 }
 
 type MarketData struct {
-	LPFeeShare []LiquidityProviderFeeShare `json:"liquidityProviderFeeShare"`
+	LPFeeShare []EquityLiquidityProviderFeeShare `json:"liquidityProviderFeeShare"`
 }
 
-type Market struct {
-	LiquidityProvisions []LiquidityProvision `json:"liquidityProvisions"`
+type LPMarket struct {
+	LiquidityProvisions []EquityLiquidityProvision `json:"liquidityProvisions"`
 	Data                MarketData           `json:"data"`
 }
 
 type marketResponse struct {
-	Market Market `json:"market"`
+	Market LPMarket `json:"market"`
 }
 
 func (s *Service) sortByLPEquitylikeShare(socials map[string]string) ([]Participant, error) {

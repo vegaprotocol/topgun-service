@@ -21,6 +21,10 @@ docker_push: docker_build
 build:
 	@go build -o topgun-service .
 
+.PHONY: build_linux
+build_linux:
+	@env GOOS=linux GOARCH=amd64 go build -o topgun-service .
+
 .PHONY: test
 test: ## Run tests
 	@echo "No tests here."
