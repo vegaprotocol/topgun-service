@@ -2,6 +2,7 @@ package leaderboard
 
 import (
 	"context"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,6 +13,8 @@ import (
 
 type Asset struct {
 	Id     string      `json:"id"`
+	Name     string `json:"name"`
+	Decimals int    `json:"decimals"`
 	Symbol string      `json:"symbol"`
 	Source AssetSource `json:"source"`
 }
@@ -27,6 +30,7 @@ type Account struct {
 }
 
 type Deposit struct {
+	Id         string    `json:"id"`
 	Amount     string    `json:"amount"`
 	Asset      Asset     `json:"asset"`
 	CreatedAt  time.Time `json:"createdTimestamp"`
@@ -62,16 +66,49 @@ type PartyVote struct {
 	Vote       Vote   `json:"vote"`
 }
 
-type Party struct {
-	ID          string       `json:"id"`
-	Accounts    []Account    `json:"accounts"`
-	Deposits    []Deposit    `json:"deposits"`
-	Orders      []Order      `json:"orders"`
-	Trades      []Trade      `json:"trades"`
-	Votes       []PartyVote  `json:"votes"`
-	Withdrawals []Withdrawal `json:"withdrawals"`
+type LiquidityOrder struct {
+	Reference  string `json:"reference"`
+	Proportion int    `json:"proportion"`
+	Offset     string `json:"offset"`
+}
 
-	social string
+type Buys struct {
+	LiquidityOrder LiquidityOrder `json:"liquidityOrder"`
+}
+
+type Sells struct {
+	LiquidityOrder LiquidityOrder `json:"liquidityOrder"`
+}
+
+type LiquidityProvision struct {
+	ID               string    `json:"id"`
+	Market           Market    `json:"market"`
+	CommitmentAmount string    `json:"commitmentAmount"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
+	Status           string    `json:"status"`
+	Fee              string    `json:"fee"`
+	Version          string    `json:"version"`
+	Reference        string    `json:"reference"`
+	Buys             []Buys    `json:"buys"`
+	Sells            []Sells   `json:"sells"`
+}
+
+type Party struct {
+	ID          string               `json:"id"`
+	Accounts    []Account            `json:"accounts"`
+	Deposits    []Deposit            `json:"deposits"`
+	Orders      []Order              `json:"orders"`
+	Trades      []Trade              `json:"trades"`
+	Votes       []PartyVote          `json:"votes"`
+	Withdrawals []Withdrawal         `json:"withdrawals"`
+	LPs         []LiquidityProvision `json:"liquidityProvisions"`
+	social      string
+}
+
+type Market struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
 }
 
 func hasString(ss []string, s string) bool {
@@ -83,7 +120,7 @@ func hasString(ss []string, s string) bool {
 	return false
 }
 
-func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
+func (p *Party) Balance(assetName string, decimalPlaces int64, accountTypes ...string) float64 {
 	var accu float64
 	for _, acc := range p.Accounts {
 		if acc.Asset.Symbol == assetName && hasString(accountTypes, acc.Type) {
@@ -96,11 +133,33 @@ func (p *Party) Balance(assetName string, accountTypes ...string) float64 {
 			accu += v
 		}
 	}
-	if accu != 0 {
-		accu = accu / float64(100000)
+	if accu != 0 && decimalPlaces > 0 {
+		dpMultiplier := math.Pow(10, float64(decimalPlaces))
+		accu = accu / dpMultiplier
 	}
-
 	return accu
+}
+
+func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int64) float64 {
+	// Total deposits made in asset
+	var total float64
+	total = 0
+	for _, d := range p.Deposits {
+		if d.Asset.Symbol == asset && d.Status == "Finalized" {
+			amount, err := strconv.ParseFloat(d.Amount, 10)
+			if err != nil {
+				log.WithError(err).Error("Cannot parse the found epoch in delegation")
+			}
+			//log.Infof("Amount raw %s, converted: %f", d.Amount, amount)
+			total += amount
+		}
+	}
+	if total != 0 && decimalPlaces > 0 {
+		dpMultiplier := math.Pow(10, float64(decimalPlaces))
+		total = total / dpMultiplier
+		log.Infof("Amount total %f, dpMultiplier: %f", total, dpMultiplier)
+	}
+	return total
 }
 
 type PartyList struct {

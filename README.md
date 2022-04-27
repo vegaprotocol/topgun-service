@@ -7,10 +7,21 @@ The leaderboard is filtered to include ONLY participants that are found on a ver
 When running an incentive/game the configuration file for the topgun-service can be configured with the appropriate 'algorithm' to serve up a list of participants on a leaderboard. The choices of algorithm currently includes:
 
 * `ByPartyAccountGeneralBalance` - Sorted by trading account total general balance of given asset
+* `ByPartyAccountGeneralBalanceLP` - Sorted by trading account total general balance of given asset and must have submitted LP for configured `MarketID`
+* `ByPartyAccountGeneralProfit` - Sorted by profit algorithm ((balanceGeneral - depositTotal)/depositTotal) for given asset
+* `ByPartyAccountGeneralProfitLP` - Sorted by profit algorithm (as above) for given asset and must have submitted LP for configured `MarketID`
 * `ByPartyGovernanceVotes` - Sorted by trading account governance votes
 * `ByLPEquitylikeShare` - Sorted by LP equity like share
 * `ByAssetDepositWithdrawal` - Sorted by ERC20 assets deposited and withdrawn (achieved when user deposits and withdraws 2 unique assets) 
 * `BySocialRegistration` - Sorted by latest Twitter registrations (used to check that a twitter handle is verified/signed up for incentives)
+
+  case "ByPartyAccountGeneralBalanceLP":
+  p, err = s.sortByPartyAccountGeneralBalanceAndLP(socials)
+  case "":
+  p, err = s.sortByPartyAccountGeneralProfit(socials, false)
+  case "":
+  p, err = s.sortByPartyAccountGeneralProfit(socials, true)
+
 
 The service is written in Go and more recent algorithms use MongoDB as a perisistence layer.
 

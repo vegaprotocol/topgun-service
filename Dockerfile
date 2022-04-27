@@ -1,6 +1,7 @@
-FROM golang:1.16.7 AS builder
+FROM golang:1.16-alpine AS builder
 ENV GOPROXY=direct GOSUMDB=off
 WORKDIR /go/src/project
+RUN apk add --no-cache ca-certificates git
 ADD *.go go.* ./
 ADD config config
 ADD datastore datastore

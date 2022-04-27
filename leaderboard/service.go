@@ -201,7 +201,6 @@ func (s *Service) update() {
 	s.verifier.UpdateVerifiedParties()
 	// Grab a map of the verified pub-key->twitter-handle for leaderboard
 	socials := s.verifier.PubKeysToTwitterHandles()
-
 	// If no verified pub-key->social-handles found, no need to query Vega
 	if len(socials) == 0 {
 		return
@@ -220,6 +219,12 @@ func (s *Service) update() {
 	switch s.cfg.Algorithm {
 	case "ByPartyAccountGeneralBalance":
 		p, err = s.sortByPartyAccountGeneralBalance(socials)
+	case "ByPartyAccountGeneralBalanceLP":
+		p, err = s.sortByPartyAccountGeneralBalanceAndLP(socials)
+	case "ByPartyAccountGeneralProfit":
+		p, err = s.sortByPartyAccountGeneralProfit(socials, false)
+	case "ByPartyAccountGeneralProfitLP":
+		p, err = s.sortByPartyAccountGeneralProfit(socials, true)
 	case "ByPartyGovernanceVotes":
 		p, err = s.sortByPartyGovernanceVotes(socials)
 	case "ByLPEquitylikeShare":
