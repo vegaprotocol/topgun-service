@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.Social) ([]Participant, error) {
 	// marketID, err := s.getAlgorithmConfig("marketID")
 	// if err != nil {
 	// 	return nil, fmt.Errorf("failed to get algorithm config: %w", err)
@@ -104,11 +106,15 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		// 	balanceGeneralStr = "n/a"
 		// 	sortNum = -1.0e20
 		// }
+		utcNow := time.Now().UTC()
 		participants = append(participants, Participant{
 			PublicKey:     party.ID,
 			TwitterHandle: party.social,
+			TwitterUserID: party.twitterID,
 			Data:          []string{balanceGeneralStr},
 			sortNum:       sortNum,
+			CreatedAt:     utcNow,
+			UpdatedAt:     utcNow,
 		})
 	}
 

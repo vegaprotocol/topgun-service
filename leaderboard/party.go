@@ -9,14 +9,15 @@ import (
 
 	"github.com/machinebox/graphql"
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
 type Asset struct {
-	Id     string      `json:"id"`
-	Name     string `json:"name"`
-	Decimals int    `json:"decimals"`
-	Symbol string      `json:"symbol"`
-	Source AssetSource `json:"source"`
+	Id       string      `json:"id"`
+	Name     string      `json:"name"`
+	Decimals int         `json:"decimals"`
+	Symbol   string      `json:"symbol"`
+	Source   AssetSource `json:"source"`
 }
 
 type AssetSource struct {
@@ -104,6 +105,7 @@ type Party struct {
 	Withdrawals []Withdrawal         `json:"withdrawals"`
 	LPs         []LiquidityProvision `json:"liquidityProvisions"`
 	social      string
+	twitterID   float64
 }
 
 type Market struct {
@@ -191,7 +193,7 @@ func getParties(
 	return response.Parties, nil
 }
 
-func socialParties(socials map[string]string, parties []Party) []Party {
+func socialParties(socials map[string]verifier.Social, parties []Party) []Party {
 	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
 	sp := make([]Party, 0, len(socials))
 	for partyID, social := range socials {
@@ -203,7 +205,8 @@ func socialParties(socials map[string]string, parties []Party) []Party {
 					"social":        social,
 					"account_count": len(p.Accounts),
 				}).Debug("Social (found)")
-				p.social = social
+				p.social = social.TwitterHandle
+				p.twitterID = social.TwitterUserID
 				sp = append(sp, p)
 				found = true
 				break
@@ -211,8 +214,9 @@ func socialParties(socials map[string]string, parties []Party) []Party {
 		}
 		if !found {
 			sp = append(sp, Party{
-				ID:     partyID,
-				social: social,
+				ID:        partyID,
+				social:    social.TwitterHandle,
+				twitterID: social.TwitterUserID,
 			})
 			log.WithFields(log.Fields{
 				"partyID":       partyID,

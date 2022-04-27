@@ -9,6 +9,7 @@ import (
 
 	"github.com/machinebox/graphql"
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
 type PartyJustID struct {
@@ -35,14 +36,14 @@ type MarketData struct {
 
 type LPMarket struct {
 	LiquidityProvisions []EquityLiquidityProvision `json:"liquidityProvisions"`
-	Data                MarketData           `json:"data"`
+	Data                MarketData                 `json:"data"`
 }
 
 type marketResponse struct {
 	Market LPMarket `json:"market"`
 }
 
-func (s *Service) sortByLPEquitylikeShare(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByLPEquitylikeShare(socials map[string]verifier.Social) ([]Participant, error) {
 
 	marketID, err := s.getAlgorithmConfig("marketID")
 	if err != nil {
@@ -144,17 +145,20 @@ func (s *Service) sortByLPEquitylikeShare(socials map[string]string) ([]Particip
 		if !found {
 			f = 0.0
 		}
-
+		utcNow := time.Now().UTC()
 		participants = append(participants, Participant{
 			PublicKey:     party.ID,
 			TwitterHandle: party.social,
+			TwitterUserID: party.twitterID,
 			Data: []string{
 				fmt.Sprintf("%d", ca/10000),      // TODO: market decimal places
 				fmt.Sprintf("%.5f", aev/10000.0), // TODO: market decimal places
 				fmt.Sprintf("%.6f%%", els*100.0),
 				fmt.Sprintf("%.6f%%", f*100.0),
 			},
-			sortNum: els,
+			sortNum:   els,
+			CreatedAt: utcNow,
+			UpdatedAt: utcNow,
 		})
 	}
 
