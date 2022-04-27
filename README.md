@@ -15,14 +15,6 @@ When running an incentive/game the configuration file for the topgun-service can
 * `ByAssetDepositWithdrawal` - Sorted by ERC20 assets deposited and withdrawn (achieved when user deposits and withdraws 2 unique assets) 
 * `BySocialRegistration` - Sorted by latest Twitter registrations (used to check that a twitter handle is verified/signed up for incentives)
 
-  case "ByPartyAccountGeneralBalanceLP":
-  p, err = s.sortByPartyAccountGeneralBalanceAndLP(socials)
-  case "":
-  p, err = s.sortByPartyAccountGeneralProfit(socials, false)
-  case "":
-  p, err = s.sortByPartyAccountGeneralProfit(socials, true)
-
-
 The service is written in Go and more recent algorithms use MongoDB as a perisistence layer.
 
 ## How to run the service
