@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"github.com/vegaprotocol/topgun-service/datastore"
+	"github.com/vegaprotocol/topgun-service/verifier"
 
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Social) ([]Participant, error) {
 
 	// The minimum number of unique deposits and withdrawals needed to achieve this reward
 	minDepositAndWithdrawals := 2
@@ -126,6 +127,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]string) ([]Par
 					participant := Participant{
 						PublicKey:     party.ID,
 						TwitterHandle: party.social,
+						TwitterUserID: party.twitterID,
 						CreatedAt:     utcNow,
 						UpdatedAt:     utcNow,
 						Data:          []string{"Achieved"},

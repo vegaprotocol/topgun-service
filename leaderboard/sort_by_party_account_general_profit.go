@@ -8,9 +8,10 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, hasCommittedLP bool) ([]Participant, error) {
+func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.Social, hasCommittedLP bool) ([]Participant, error) {
 	// Grab the market ID for the market we're targeting
 	marketID, err := s.getAlgorithmConfig("marketID")
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -28,6 +29,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				id
 				accounts(asset: $assetId){
 					asset {
+						id
 						symbol
 					}
 					balance
@@ -55,6 +57,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				id
 				accounts(asset: $assetId){
 					asset {
+						id
 						symbol
 					}
 					balance
@@ -140,11 +143,11 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				balanceGeneral, depositTotal, balanceGeneral/depositTotal)
 
 			var sortNum float64
-			profit := (balanceGeneral - depositTotal)/depositTotal
+			profit := (balanceGeneral - depositTotal) / depositTotal
 			sortNum = profit
 
 			balanceGeneralStr := fmt.Sprintf("%f", balanceGeneral) //strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
-			totalDepositStr := fmt.Sprintf("%f", depositTotal) //strconv.FormatFloat(depositTotal, 'f', int(decimalPlaces), 32)
+			totalDepositStr := fmt.Sprintf("%f", depositTotal)     //strconv.FormatFloat(depositTotal, 'f', int(decimalPlaces), 32)
 			partyProfitStr := strconv.FormatFloat(profit, 'f', 6, 32)
 			if profit > 0 {
 				partyProfitStr = fmt.Sprintf("+%s", partyProfitStr)
@@ -157,6 +160,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				participants = append(participants, Participant{
 					PublicKey:     party.ID,
 					TwitterHandle: party.social,
+					TwitterUserID: party.twitterID,
 					Data:          []string{formattedBalancePosition, balanceGeneralStr, totalDepositStr, partyProfitStr},
 					sortNum:       sortNum,
 					CreatedAt:     t,
@@ -173,5 +177,3 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 
 	return participants, nil
 }
-
-

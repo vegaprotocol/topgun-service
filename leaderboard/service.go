@@ -29,6 +29,7 @@ type Participant struct {
 	Position      int       `json:"position" bson:"position,omitempty"`
 	PublicKey     string    `json:"publicKey" bson:"pub_key,omitempty"`
 	TwitterHandle string    `json:"twitterHandle" bson:"twitter_handle,omitempty"`
+	TwitterUserID int64     `json:"twitterUserID" bson:"twitter_userid,omitempty"`
 	CreatedAt     time.Time `json:"createdAt" bson:"created,omitempty"`
 	UpdatedAt     time.Time `json:"updatedAt" bson:"last_modified,omitempty"`
 	Data          []string  `json:"data" bson:"data,omitempty"`
@@ -200,7 +201,7 @@ func (s *Service) update() {
 	// Safe approach, will only overwrite internal collection if successful
 	s.verifier.UpdateVerifiedParties()
 	// Grab a map of the verified pub-key->twitter-handle for leaderboard
-	socials := s.verifier.PubKeysToTwitterHandles()
+	socials := s.verifier.PubKeysToSocials()
 	// If no verified pub-key->social-handles found, no need to query Vega
 	if len(socials) == 0 {
 		return
