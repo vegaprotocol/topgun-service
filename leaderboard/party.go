@@ -123,7 +123,7 @@ func hasString(ss []string, s string) bool {
 func (p *Party) Balance(assetName string, decimalPlaces int64, accountTypes ...string) float64 {
 	var accu float64
 	for _, acc := range p.Accounts {
-		if acc.Asset.Symbol == assetName && hasString(accountTypes, acc.Type) {
+		if acc.Asset.Id == assetName && hasString(accountTypes, acc.Type) {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
@@ -145,7 +145,7 @@ func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int64) float6
 	var total float64
 	total = 0
 	for _, d := range p.Deposits {
-		if d.Asset.Symbol == asset && d.Status == "Finalized" {
+		if d.Asset.Id == asset && d.Status == "Finalized" {
 			amount, err := strconv.ParseFloat(d.Amount, 10)
 			if err != nil {
 				log.WithError(err).Error("Cannot parse the found epoch in delegation")

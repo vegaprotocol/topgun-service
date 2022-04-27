@@ -28,6 +28,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				id
 				accounts(asset: $assetId){
 					asset {
+						id
 						symbol
 					}
 					balance
@@ -55,6 +56,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				id
 				accounts(asset: $assetId){
 					asset {
+						id
 						symbol
 					}
 					balance
