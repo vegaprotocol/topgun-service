@@ -105,7 +105,7 @@ type Party struct {
 	Withdrawals []Withdrawal         `json:"withdrawals"`
 	LPs         []LiquidityProvision `json:"liquidityProvisions"`
 	social      string
-	twitterID   float64
+	twitterID   int64
 }
 
 type Market struct {

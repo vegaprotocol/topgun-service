@@ -19,7 +19,7 @@ type Socials struct {
 type Social struct {
 	PartyID       string `json:"party_id"`
 	TwitterHandle string `json:"twitter_handle"`
-	TwitterUserID float64 `json:"twitter_user_id"`
+	TwitterUserID int64  `json:"twitter_user_id"`
 	CreatedAt     int64  `json:"created"`
 	UpdatedAt     int64  `json:"last_modified"`
 }

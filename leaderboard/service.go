@@ -29,7 +29,7 @@ type Participant struct {
 	Position      int       `json:"position" bson:"position,omitempty"`
 	PublicKey     string    `json:"publicKey" bson:"pub_key,omitempty"`
 	TwitterHandle string    `json:"twitterHandle" bson:"twitter_handle,omitempty"`
-	TwitterUserID float64    `json:"twitterUserID" bson:"twitter_userid,omitempty"`
+	TwitterUserID int64     `json:"twitterUserID" bson:"twitter_userid,omitempty"`
 	CreatedAt     time.Time `json:"createdAt" bson:"created,omitempty"`
 	UpdatedAt     time.Time `json:"updatedAt" bson:"last_modified,omitempty"`
 	Data          []string  `json:"data" bson:"data,omitempty"`
