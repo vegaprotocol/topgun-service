@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gocarina/gocsv"
 	"github.com/vegaprotocol/topgun-service/config"
 	"github.com/vegaprotocol/topgun-service/pricing"
 	"github.com/vegaprotocol/topgun-service/util"
@@ -321,7 +322,46 @@ func (s *Service) update() {
 	}
 }
 
-func (s *Service) MarshalLeaderboard(q string, skip int64, size int64) ([]byte, error) {
+func (s *Service) CsvLeaderboard(q string, skip int64, size int64) ([]byte, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	participants := []Participant{}
+	if q == "" {
+		// No search query filter found
+		// Full data set required
+		participants = s.board.Participants
+	} else {
+		// Search query has been passed with request
+		q = strings.ToLower(q)
+		for _, p := range s.board.Participants {
+			pubKey := strings.ToLower(p.PublicKey)
+			twitterHandle := strings.ToLower(p.TwitterHandle)
+			// case insensitive comparison
+			if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
+				participants = append(participants, p)
+			}
+		}
+		// Filtered data set with search query
+	}
+
+	board := Leaderboard{
+		Version:              s.board.Version,
+		Asset:                s.board.Asset,
+		LastUpdate:           s.board.LastUpdate,
+		Headers:              s.board.Headers,
+		Description:          s.board.Description,
+		DefaultSort:          s.board.DefaultSort,
+		DefaultDisplay:       s.board.DefaultDisplay,
+		Status:               s.board.Status,
+		Participants:         s.paginate(participants, skip, size),
+		ParticipantsSnapshot: nil,
+	}
+
+	return s.WriteParticipantsToCsvBytes(board.Participants)
+}
+
+func (s *Service) JsonLeaderboard(q string, skip int64, size int64) ([]byte, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -375,4 +415,34 @@ func (s *Service) paginate(p []Participant, skip int64, size int64) []Participan
 		end = int64(len(p))
 	}
 	return p[skip:end]
+}
+
+func (s *Service) WriteParticipantsToCsvBytes(participants []Participant) (result []byte, err error) {
+	if len(participants) > 0 {
+		csvData := make([]util.ParticipantCsvEntry, 0)
+		for _, p := range participants {
+			csv := util.ParticipantCsvEntry{
+				Position:      p.Position,
+				TwitterHandle: p.TwitterHandle,
+				TwitterID:     p.TwitterUserID,
+				VegaPubKey:    p.PublicKey,
+				CreatedAt:     p.CreatedAt,
+				UpdatedAt:     p.UpdatedAt,
+			}
+			for i, d := range p.Data {
+				if i > 0 {
+					csv.VegaData += "|"
+				}
+				csv.VegaData += d
+			}
+			csvData = append(csvData, csv)
+		}
+		res, err := gocsv.MarshalBytes(&csvData)
+		if err != nil {
+			log.WithError(err).Error("Error marshaling Participant data to CSV bytes")
+			return make([]byte, 0), err
+		}
+		return res, nil
+	}
+	return make([]byte, 0), nil
 }
