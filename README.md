@@ -63,6 +63,7 @@ config file.
    -  `?q={social_handle}` - search query to filter for a specific social handle, case insensitive
    -  `?skip={n}` - skip `n` leaderboard results (pagination)
    -  `?size={n}` - page size `n` leaderboard results (pagination)
+   -  `?type={csv|json}` - return type of results, default JSON
 
 ## Verified socials
 
