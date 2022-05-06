@@ -56,6 +56,9 @@ type Config struct {
 
 	// Set to false to disable creation of snapshot json files
 	SnapshotEnabled bool `yaml:"snapshotEnabled"`
+
+	// TwitterBlacklist describes a set of users who should be filtered from the public leaderboard results
+	TwitterBlacklist map[string]string `yaml:"twitterBlacklist"`
 }
 
 func CheckConfig(cfg Config) error {
@@ -137,6 +140,7 @@ func (c *Config) String() string {
 		"mongoCollectionName:%s" +
 		"mongoDatabaseName:%s" +
 		"snapshotEnabled:%v" +
+		"twitterBlacklist:%v" +
 		"}"
 	return fmt.Sprintf(
 		fmtStr,
@@ -156,6 +160,7 @@ func (c *Config) String() string {
 		c.MongoCollectionName,
 		c.MongoDatabaseName,
 		c.SnapshotEnabled,
+		c.TwitterBlacklist,
 	)
 }
 
@@ -182,6 +187,7 @@ func (c *Config) LogFields() log.Fields {
 		"mongoCollectionName":     c.MongoCollectionName,
 		"mongoDatabaseName":       c.MongoDatabaseName,
 		"snapshotEnabled":         c.SnapshotEnabled,
+		"twitterBlacklist":        c.TwitterBlacklist,
 	}
 }
 

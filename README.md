@@ -2,7 +2,7 @@
 
 API service that provides a **sorted leaderboard for incentives/games operating on the Fairground testnet.**
 
-The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration".
+The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration". An optional blacklist can be configured to exclude users from the main public leaderboard, this feature is useful for team members or known bots/scammers.
 
 When running an incentive/game the configuration file for the topgun-service can be configured with the appropriate 'algorithm' to serve up a list of participants on a leaderboard. The choices of algorithm currently includes:
 
@@ -43,7 +43,7 @@ The application requires a custom configuration file passed in the argument name
 - headers - A collection of custom headers returned with the data in a leaderboard e.g. Asset Total
 - startTime - the start time for the incentive period
 - endTime - the end time for the incentive period
-- snapshotEnabled - set to true to enable json snapshots of leaderboard, default: False
+- twitterBlacklist - a map/list of twitterUserID: twitterHandle that should be excluded from the default leaderboard
 
 **MongoDB:**
 
@@ -64,6 +64,7 @@ config file.
    -  `?skip={n}` - skip `n` leaderboard results (pagination)
    -  `?size={n}` - page size `n` leaderboard results (pagination)
    -  `?type={csv|json}` - return type of results, default JSON
+   -  `?blacklisted={true|false}` - Return leaderboard of blacklisted users, default: `false`
 
 ## Verified socials
 

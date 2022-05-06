@@ -115,6 +115,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 			sortNum:       sortNum,
 			CreatedAt:     utcNow,
 			UpdatedAt:     utcNow,
+			isBlacklisted: party.blacklisted,
 		})
 	}
 

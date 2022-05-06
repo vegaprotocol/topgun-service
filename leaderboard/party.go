@@ -106,6 +106,7 @@ type Party struct {
 	LPs         []LiquidityProvision `json:"liquidityProvisions"`
 	social      string
 	twitterID   int64
+	blacklisted bool
 }
 
 type Market struct {
@@ -207,6 +208,7 @@ func socialParties(socials map[string]verifier.Social, parties []Party) []Party 
 				}).Debug("Social (found)")
 				p.social = social.TwitterHandle
 				p.twitterID = social.TwitterUserID
+				p.blacklisted = social.IsBlacklisted
 				sp = append(sp, p)
 				found = true
 				break
@@ -217,6 +219,7 @@ func socialParties(socials map[string]verifier.Social, parties []Party) []Party 
 				ID:        partyID,
 				social:    social.TwitterHandle,
 				twitterID: social.TwitterUserID,
+				blacklisted: social.IsBlacklisted,
 			})
 			log.WithFields(log.Fields{
 				"partyID":       partyID,

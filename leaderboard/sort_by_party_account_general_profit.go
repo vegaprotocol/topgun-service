@@ -156,6 +156,10 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 
 			// Only include participants who have non-zero positions
 			if balanceGeneral != depositTotal {
+				if party.blacklisted {
+					log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
+				}
+
 				t := time.Now().UTC()
 				participants = append(participants, Participant{
 					PublicKey:     party.ID,
@@ -165,6 +169,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 					sortNum:       sortNum,
 					CreatedAt:     t,
 					UpdatedAt:     t,
+					isBlacklisted: party.blacklisted,
 				})
 			}
 		}
@@ -175,5 +180,5 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 	}
 	sort.Slice(participants, sortFunc)
 
-	return participants, nil
+	return participants,nil
 }
