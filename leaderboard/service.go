@@ -3,9 +3,7 @@ package leaderboard
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -35,6 +33,7 @@ type Participant struct {
 	UpdatedAt     time.Time `json:"updatedAt" bson:"last_modified,omitempty"`
 	Data          []string  `json:"data" bson:"data,omitempty"`
 
+	isBlacklisted bool
 	sortNum float64
 }
 
@@ -48,15 +47,12 @@ type Leaderboard struct {
 	DefaultDisplay string   `json:"defaultDisplay"`
 	Status         string   `json:"status"`
 
-	// Participants lists current participants in an active competition
+	// Participants is the filtered list of participants in an active incentive
 	Participants []Participant `json:"participants"`
 
-	// ParticipantsSnapshot lists participants at a particular time point.
-	// Keys:
-	// - "start": snapshot taken at the start of a competition
-	// - "end": snapshot taken at the end of a competition
-	// - "yyyy-mm-ddTHH:MM:SSZ": snapshot taken at given time
-	ParticipantsSnapshot map[string][]Participant `json:"participantsSnapshot"`
+	// Blacklisted is the list of participants in an active
+	// incentive including excluded/blacklisted socials e.g. team/bots
+	blacklisted []Participant
 }
 
 func NewLeaderboardService(cfg config.Config) *Service {
@@ -67,8 +63,7 @@ func NewLeaderboardService(cfg config.Config) *Service {
 			Host:   "prices.ops.vega.xyz",
 			Path:   "/prices",
 		}),
-		verifier:            verifier.NewVerifierService(*cfg.SocialURL),
-		participantSnapshot: make(map[string][]Participant),
+		verifier: verifier.NewVerifierService(*cfg.SocialURL, cfg.TwitterBlacklist),
 	}
 	return svc
 }
@@ -81,7 +76,6 @@ type Service struct {
 	board               Leaderboard
 	mu                  sync.RWMutex
 	verifier            *verifier.Service
-	participantSnapshot map[string][]Participant
 }
 
 func (s *Service) Start() {
@@ -99,8 +93,8 @@ func (s *Service) Start() {
 		Headers:              s.cfg.Headers,
 		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
 		Status:               competitionLoading,
-		ParticipantsSnapshot: s.participantSnapshot,
 		Participants:         []Participant{},
+		blacklisted:          []Participant{},
 	}
 	s.board = newBoard
 
@@ -120,12 +114,6 @@ const (
 	competitionNotStarted = "notStarted"
 	competitionActive     = "active"
 	competitionEnded      = "ended"
-
-	snapshotStart = "start"
-	snapshotEnd   = "end"
-
-	snapshotStartFilename = "snapshotStart.json"
-	snapshotEndFilename   = "snapshotEnd.json"
 )
 
 func (s *Service) Status() string {
@@ -140,59 +128,6 @@ func (s *Service) Status() string {
 	}
 	// Competition has ended
 	return competitionEnded
-}
-
-func readSnapshotFile(filename string) ([]Participant, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open %s: %w", filename, err)
-	}
-
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file data from %s: %w", filename, err)
-	}
-
-	var snapshot []Participant
-	err = json.Unmarshal(data, &snapshot)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal file data from %s: %w", filename, err)
-	}
-
-	return snapshot, nil
-}
-
-func saveSnapshotFile(filename string, participants []Participant) error {
-	payload, err := json.Marshal(participants)
-	if err != nil {
-		return fmt.Errorf("failed to marshal to json: %w", err)
-	}
-
-	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
-	if err != nil {
-		return fmt.Errorf("failed to open file for writing: %s: %w", filename, err)
-	}
-
-	_, err = file.Write(payload)
-	if err != nil {
-		return fmt.Errorf("failed to write all data: %s: %w", filename, err)
-	}
-
-	err = file.Close()
-	if err != nil {
-		return fmt.Errorf("failed to close file: %s: %w", filename, err)
-	}
-	return nil
-}
-
-func copyParticipants(src []Participant) ([]Participant, error) {
-	l := len(src)
-	dst := make([]Participant, l)
-	count := copy(dst, src)
-	if count < l {
-		return nil, fmt.Errorf("failed to copy all participants (%d<%d)", count, l)
-	}
-	return dst, nil
 }
 
 func (s *Service) update() {
@@ -242,11 +177,20 @@ func (s *Service) update() {
 		log.WithError(err).Warn("Failed to sort")
 		p = []Participant{}
 	}
-	i := 0
-	for range p {
-		p[i].Position = i + 1 // humans want 1-indexed lists :-|
-		i++
+
+	// Filter into two sets to separate blacklisted users
+	include := []Participant{}
+	exclude := []Participant{}
+	for _, ppt := range p {
+		if ppt.isBlacklisted {
+			exclude = append(exclude, ppt)
+		} else {
+			include = append(include, ppt)
+		}
 	}
+	include = s.AllocatePositions(include)
+	exclude = s.AllocatePositions(exclude)
+
 	log.Infof("Algo finish: %s", s.cfg.Algorithm)
 
 	s.mu.Lock()
@@ -259,82 +203,45 @@ func (s *Service) update() {
 		Headers:              s.cfg.Headers,
 		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
 		Status:               status,
-		ParticipantsSnapshot: s.participantSnapshot,
 	}
 	// Seems like sometime the participants list is empty
 	// in that case we just reuse the previous
 	// board participants
-	if len(p) > 0 {
-		newBoard.Participants = p
+	if len(include) > 0 {
+		newBoard.Participants = include
 	} else {
 		newBoard.Participants = s.board.Participants
+	}
+	if len(exclude) > 0 {
+		newBoard.blacklisted = exclude
+	} else {
+		newBoard.blacklisted = s.board.blacklisted
 	}
 
 	s.board = newBoard
 	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
-
-	if s.cfg.SnapshotEnabled {
-
-		_, startSnapshotTaken := s.participantSnapshot[snapshotStart]
-		if !startSnapshotTaken && status == competitionActive {
-			// First, attempt to read the start snapshot from file. This allows
-			// the app to be restarted easily.
-			startSnapshot, err := readSnapshotFile(snapshotStartFilename)
-			if err != nil {
-				// Failed to read file, so fall back to taking a snapshot and saving it.
-				startSnapshot, err = copyParticipants(newBoard.Participants)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"error": err.Error(),
-					}).Warn("Failed to copy whole start snapshot")
-					startSnapshot = []Participant{}
-				}
-				saveSnapshotFile(snapshotStartFilename, startSnapshot)
-				log.Info("Saved start snapshot to disk")
-			} else {
-				log.Info("Read start snapshot from disk")
-			}
-			s.participantSnapshot[snapshotStart] = startSnapshot
-		}
-
-		_, endSnapshotTaken := s.participantSnapshot[snapshotEnd]
-		if !endSnapshotTaken && status == competitionEnded {
-			// First, attempt to read the end snapshot from file. This allows
-			// the app to be restarted easily.
-			endSnapshot, err := readSnapshotFile(snapshotEndFilename)
-			if err != nil {
-				// Failed to read file, so fall back to taking a snapshot and saving it.
-				endSnapshot, err = copyParticipants(newBoard.Participants)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"error": err.Error(),
-					}).Warn("Failed to copy whole end snapshot")
-					endSnapshot = []Participant{}
-				}
-				saveSnapshotFile(snapshotEndFilename, endSnapshot)
-				log.Info("Saved end snapshot to disk")
-			} else {
-				log.Info("Read end snapshot from disk")
-			}
-			s.participantSnapshot[snapshotEnd] = endSnapshot
-		}
-	}
 }
 
-func (s *Service) CsvLeaderboard(q string, skip int64, size int64) ([]byte, error) {
+func (s *Service) CsvLeaderboard(q string, skip int64, size int64, blacklisted bool) ([]byte, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+
+	// Filter based on blacklisted or regular leaderboard participants
+	target := s.board.Participants
+	if blacklisted {
+		target = s.board.blacklisted
+	}
 
 	participants := []Participant{}
 	if q == "" {
 		// No search query filter found
 		// Full data set required
-		participants = s.board.Participants
+		participants = target
 	} else {
 		// Search query has been passed with request
 		q = strings.ToLower(q)
-		for _, p := range s.board.Participants {
+		for _, p := range target {
 			pubKey := strings.ToLower(p.PublicKey)
 			twitterHandle := strings.ToLower(p.TwitterHandle)
 			// case insensitive comparison
@@ -355,25 +262,29 @@ func (s *Service) CsvLeaderboard(q string, skip int64, size int64) ([]byte, erro
 		DefaultDisplay:       s.board.DefaultDisplay,
 		Status:               s.board.Status,
 		Participants:         s.paginate(participants, skip, size),
-		ParticipantsSnapshot: nil,
 	}
 
 	return s.WriteParticipantsToCsvBytes(board.Participants)
 }
 
-func (s *Service) JsonLeaderboard(q string, skip int64, size int64) ([]byte, error) {
+func (s *Service) JsonLeaderboard(q string, skip int64, size int64, blacklisted bool) ([]byte, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+
+	// Filter based on blacklisted or regular leaderboard participants
+	target := s.board.Participants
+	if blacklisted {
+		target = s.board.blacklisted
+	}
 
 	participants := []Participant{}
 	if q == "" {
 		// No search query filter found
-		// Full data set required
-		participants = s.board.Participants
+		participants = target
 	} else {
 		// Search query has been passed with request
 		q = strings.ToLower(q)
-		for _, p := range s.board.Participants {
+		for _, p := range target {
 			pubKey := strings.ToLower(p.PublicKey)
 			twitterHandle := strings.ToLower(p.TwitterHandle)
 			// case insensitive comparison
@@ -394,7 +305,6 @@ func (s *Service) JsonLeaderboard(q string, skip int64, size int64) ([]byte, err
 		DefaultDisplay:       s.board.DefaultDisplay,
 		Status:               s.board.Status,
 		Participants:         s.paginate(participants, skip, size),
-		ParticipantsSnapshot: nil,
 	}
 
 	return json.Marshal(board)
@@ -445,4 +355,13 @@ func (s *Service) WriteParticipantsToCsvBytes(participants []Participant) (resul
 		return res, nil
 	}
 	return make([]byte, 0), nil
+}
+
+func (s *Service) AllocatePositions(p []Participant) []Participant {
+	i := 0
+	for range p {
+		p[i].Position = i + 1 // humans want 1-indexed lists :-|
+		i++
+	}
+	return p
 }

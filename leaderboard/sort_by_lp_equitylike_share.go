@@ -159,6 +159,7 @@ func (s *Service) sortByLPEquitylikeShare(socials map[string]verifier.Social) ([
 			sortNum:   els,
 			CreatedAt: utcNow,
 			UpdatedAt: utcNow,
+			isBlacklisted: party.blacklisted,
 		})
 	}
 

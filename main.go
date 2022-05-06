@@ -138,7 +138,8 @@ func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboar
 		q := GetQuery(r, "q")
 		skip := GetQueryInt(r, "skip")
 		size := GetQueryInt(r, "size")
-		payload, err := svc.CsvLeaderboard(q, skip, size)
+		blacklisted := strings.ToLower(GetQuery(r, "blacklisted")) == "true"
+		payload, err := svc.CsvLeaderboard(q, skip, size, blacklisted)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"error": err.Error(),
@@ -154,7 +155,8 @@ func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboar
 		q := GetQuery(r, "q")
 		skip := GetQueryInt(r, "skip")
 		size := GetQueryInt(r, "size")
-		payload, err := svc.JsonLeaderboard(q, skip, size)
+		blacklisted := strings.ToLower(GetQuery(r, "blacklisted")) == "true"
+		payload, err := svc.JsonLeaderboard(q, skip, size, blacklisted)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"error": err.Error(),

@@ -35,6 +35,7 @@ func (s *Service) sortByPartyGovernanceVotes(socials map[string]verifier.Social)
 			sortNum:       float64(voteCount),
 			CreatedAt:     utcNow,
 			UpdatedAt:     utcNow,
+			isBlacklisted: party.blacklisted,
 		})
 	}
 

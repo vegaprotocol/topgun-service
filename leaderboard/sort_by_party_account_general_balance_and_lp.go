@@ -96,6 +96,7 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 						sortNum:       sortNum,
 						CreatedAt:     utcNow,
 						UpdatedAt:     utcNow,
+						isBlacklisted: party.blacklisted,
 					})
 					break
 				}

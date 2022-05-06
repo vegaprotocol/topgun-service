@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -22,20 +23,23 @@ type Social struct {
 	TwitterUserID int64  `json:"twitter_user_id"`
 	CreatedAt     int64  `json:"created"`
 	UpdatedAt     int64  `json:"last_modified"`
+	IsBlacklisted bool   `json:"is_blacklisted"`
 }
 
 type Service struct {
 	mu         sync.RWMutex
+	blacklist  map[string]string
 	socialList *Socials
 	verifyURL  url.URL
 }
 
-func NewVerifierService(verifyURL url.URL) *Service {
+func NewVerifierService(verifyURL url.URL, blacklist map[string]string) *Service {
 	socialList := make([]Social, 0)
 	socialHolder := Socials{Socials: socialList}
 	s := Service{
 		verifyURL:  verifyURL,
 		socialList: &socialHolder,
+		blacklist: blacklist,
 	}
 	return &s
 }
@@ -46,35 +50,53 @@ func (s *Service) UpdateVerifiedParties() {
 
 	log.Info("Syncing verified parties from external social verifier API service")
 	socials, err := s.loadVerifiedParties()
-	socialList := s.getSocialList()
+	previousSocialList := s.getSocialList()
+
 	foundTotal := 0
 	if err != nil {
 		log.Error(errors.Wrap(err, "failed to update/sync verified parties"))
 	} else {
 		log.Info("Verified parties loaded from external API service")
-		foundTotal = len(socialList.Socials)
+		foundTotal = len(socials.Socials)
 		s.socialList = socials
 	}
 
-	log.Infof("Parties found: %d, last total: %d", len(socialList.Socials), foundTotal)
+	log.Infof("Parties found: %d, last total: %d", foundTotal, len(previousSocialList))
 }
 
 func (s *Service) List() []Social {
-	return s.socialList.Socials
+	soc := *s.socialList
+	return soc.Socials
 }
 
-func (s *Service) getSocialList() Socials {
+func (s *Service) processBlacklisted(socials []Social) []Social {
+	if socials == nil {
+		return nil
+	}
+	socialList := make([]Social, 0)
+	for _, soc := range socials {
+		sUID:= strconv.FormatInt(soc.TwitterUserID, 10)
+		if _, found := s.blacklist[sUID]; found {
+			log.Infof("Found blacklisted user: %s - %d", soc.TwitterHandle, soc.TwitterUserID)
+			soc.IsBlacklisted = true
+		}
+		socialList = append(socialList, soc)
+	}
+	return socialList
+}
+
+func (s *Service) getSocialList() []Social {
 	socialList := Socials{}
 	if s.socialList != nil {
 		socialList = *s.socialList
 	}
-	return socialList
+	return socialList.Socials
 }
 
 func (s *Service) PubKeysToSocials() map[string]Social {
 	result := map[string]Social{}
 	socialList := s.getSocialList()
-	for _, m := range socialList.Socials {
+	for _, m := range socialList {
 		result[m.PartyID] = m
 	}
 	return result
@@ -99,7 +121,7 @@ func (s *Service) loadVerifiedParties() (*Socials, error) {
 			return nil, errors.Wrap(err, "unable to unmarshal the mapping returned from verifier service")
 		}
 		found := res
-		return &Socials{Socials: found}, nil
+		return &Socials{Socials: s.processBlacklisted(found)}, nil
 	} else {
 		return nil, errors.New(fmt.Sprintf("wrong status code returned from verifier service: %d", resp.StatusCode))
 	}

@@ -132,6 +132,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 						UpdatedAt:     utcNow,
 						Data:          []string{"Achieved"},
 						sortNum:       float64(participationCount),
+						isBlacklisted: party.blacklisted,
 					}
 
 					// Push newly found participant to the top of the list
