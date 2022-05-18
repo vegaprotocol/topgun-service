@@ -4,9 +4,12 @@ import (
 	"context"
 	"fmt"
 	"sort"
+	"time"
+
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyGovernanceVotes(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByPartyGovernanceVotes(socials map[string]verifier.Social) ([]Participant, error) {
 	gqlQuery := "query {parties {id votes {proposalId vote {value datetime}}}}"
 	ctx := context.Background()
 	parties, err := getParties(ctx, s.cfg.VegaGraphQLURL.String(), gqlQuery, nil, nil)
@@ -23,11 +26,16 @@ func (s *Service) sortByPartyGovernanceVotes(socials map[string]string) ([]Parti
 				voteCount++
 			}
 		}
+		utcNow := time.Now().UTC()
 		participants = append(participants, Participant{
 			PublicKey:     party.ID,
 			TwitterHandle: party.social,
+			TwitterUserID: party.twitterID,
 			Data:          []string{fmt.Sprintf("%d", voteCount)},
 			sortNum:       float64(voteCount),
+			CreatedAt:     utcNow,
+			UpdatedAt:     utcNow,
+			isBlacklisted: party.blacklisted,
 		})
 	}
 

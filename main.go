@@ -132,28 +132,49 @@ func GetQueryInt(r *http.Request, key string) int64 {
 }
 
 func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboard.Service) {
-	w.Header().Set("Content-Type", "application/json")
-	q := GetQuery(r, "q")
-	skip := GetQueryInt(r, "skip")
-	size := GetQueryInt(r, "size")
-	payload, err := svc.MarshalLeaderboard(q, skip, size)
-	if err != nil {
-		log.WithFields(log.Fields{
-			"error": err.Error(),
-		}).Error("Error marshaling leaderboard")
-
-		payload, err = json.Marshal(ErrorObject{Error: err.Error()})
+	responseType := GetQuery(r, "type")
+	if strings.ToLower(responseType) == "csv" {
+		w.Header().Set("Content-Type", "text/plain")
+		q := GetQuery(r, "q")
+		skip := GetQueryInt(r, "skip")
+		size := GetQueryInt(r, "size")
+		blacklisted := strings.ToLower(GetQuery(r, "blacklisted")) == "true"
+		payload, err := svc.CsvLeaderboard(q, skip, size, blacklisted)
 		if err != nil {
 			log.WithFields(log.Fields{
 				"error": err.Error(),
-			}).Error("Error marshaling error message during marshaling of leaderboard")
-			payload = []byte("{\"error\":\"\"}")
+			}).Error("Error marshaling leaderboard")
+			payload = []byte(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
 		}
-		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(payload)
 	} else {
-		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		q := GetQuery(r, "q")
+		skip := GetQueryInt(r, "skip")
+		size := GetQueryInt(r, "size")
+		blacklisted := strings.ToLower(GetQuery(r, "blacklisted")) == "true"
+		payload, err := svc.JsonLeaderboard(q, skip, size, blacklisted)
+		if err != nil {
+			log.WithFields(log.Fields{
+				"error": err.Error(),
+			}).Error("Error marshaling leaderboard")
+
+			payload, err = json.Marshal(ErrorObject{Error: err.Error()})
+			if err != nil {
+				log.WithFields(log.Fields{
+					"error": err.Error(),
+				}).Error("Error marshaling error message during marshaling of leaderboard")
+				payload = []byte("{\"error\":\"\"}")
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		w.Write(payload)
 	}
-	w.Write(payload)
 }
 
 func EndpointStatus(w http.ResponseWriter, r *http.Request) {

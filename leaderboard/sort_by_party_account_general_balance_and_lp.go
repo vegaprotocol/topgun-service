@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verifier.Social) ([]Participant, error) {
 	// Grab the market ID for the market we're targeting
 	marketID, err := s.getAlgorithmConfig("marketID")
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -85,11 +87,16 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]strin
 					balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
 					sortNum = balanceGeneral
 
+					utcNow := time.Now().UTC()
 					participants = append(participants, Participant{
 						PublicKey:     party.ID,
 						TwitterHandle: party.social,
+						TwitterUserID: party.twitterID,
 						Data:          []string{balanceGeneralStr},
 						sortNum:       sortNum,
+						CreatedAt:     utcNow,
+						UpdatedAt:     utcNow,
+						isBlacklisted: party.blacklisted,
 					})
 					break
 				}
