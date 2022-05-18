@@ -55,25 +55,24 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 
 	participants := []Participant{}
 	for _, party := range sParties {
-
+		var balanceMultiAsset = 0.0
 		for _, acc := range party.Accounts {
 			for _, asset := range s.cfg.VegaAssets {
 				if acc.Asset.Id == asset {
-					party.Balance(acc.Asset.Id, decimalPlaces, "General", "Margin")
+					balanceMultiAsset = party.Balance(acc.Asset.Id, decimalPlaces, "General", "Margin")
 				}
 			}
 		}
 
-		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], decimalPlaces, "General", "Margin")
 		var sortNum float64
 
-		balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
-		sortNum = balanceGeneral
+		balanceMultiAssetStr := strconv.FormatFloat(balanceMultiAsset, 'f', int(decimalPlaces), 32)
+		sortNum = balanceMultiAsset
 
 		participants = append(participants, Participant{
 			PublicKey:     party.ID,
 			TwitterHandle: party.social,
-			Data:          []string{balanceGeneralStr},
+			Data:          []string{balanceMultiAssetStr},
 			sortNum:       sortNum,
 		})
 	}
