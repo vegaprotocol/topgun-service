@@ -38,7 +38,7 @@ type Participant struct {
 
 type Leaderboard struct {
 	Version        int      `json:"version"`
-	Asset          string   `json:"asset"`
+	Assets         []string `json:"assets"`
 	LastUpdate     string   `json:"lastUpdate"`
 	Headers        []string `json:"headers"`
 	Description    string   `json:"description"`
@@ -90,7 +90,7 @@ func (s *Service) Start() {
 	// from the Vega API
 	newBoard := Leaderboard{
 		Version:              1,
-		Asset:                s.cfg.VegaAsset,
+		Assets:               s.cfg.VegaAssets,
 		DefaultDisplay:       s.cfg.DefaultDisplay,
 		DefaultSort:          s.cfg.DefaultSort,
 		Description:          s.cfg.Description,
@@ -250,7 +250,7 @@ func (s *Service) update() {
 	s.mu.Lock()
 	newBoard := Leaderboard{
 		Version:              1,
-		Asset:                s.cfg.VegaAsset,
+		Assets:                s.cfg.VegaAssets,
 		DefaultDisplay:       s.cfg.DefaultDisplay,
 		DefaultSort:          s.cfg.DefaultSort,
 		Description:          s.cfg.Description,

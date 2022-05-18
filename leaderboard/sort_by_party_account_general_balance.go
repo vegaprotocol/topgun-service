@@ -47,11 +47,12 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 	// }`
 
 	ctx := context.Background()
+
 	parties, err := getParties(
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
 		gqlQueryPartiesAccounts,
-		map[string]string{"assetId": s.cfg.VegaAsset},
+		map[string]string{"assetId": s.cfg.VegaAssets[0]},
 		nil,
 	)
 	if err != nil {
@@ -92,7 +93,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]string) ([
 		// 	}
 		// }
 
-		balanceGeneral := party.Balance(s.cfg.VegaAsset, decimalPlaces, "General", "Margin")
+		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], decimalPlaces, "General", "Margin")
 		var sortNum float64
 		// var balanceGeneralStr string
 		// if tradeCount > 0 {

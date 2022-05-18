@@ -103,7 +103,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
 		gqlQueryPartiesAccounts,
-		map[string]string{"assetId": s.cfg.VegaAsset},
+		map[string]string{"assetId": s.cfg.VegaAssets[0]},
 		nil,
 	)
 	if err != nil {
@@ -130,8 +130,8 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 		}
 
 		if calculateBalance || !hasCommittedLP {
-			balanceGeneral := party.Balance(s.cfg.VegaAsset, decimalPlaces, "General", "Margin")
-			depositTotal := party.CalculateTotalDeposits(s.cfg.VegaAsset, decimalPlaces)
+			balanceGeneral := party.Balance(s.cfg.VegaAssets[0], decimalPlaces, "General", "Margin")
+			depositTotal := party.CalculateTotalDeposits(s.cfg.VegaAssets[0], decimalPlaces)
 			if depositTotal == 0 {
 				continue
 			}
