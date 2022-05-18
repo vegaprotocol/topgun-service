@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.Social) ([]Participant, error) {
 	// marketID, err := s.getAlgorithmConfig("marketID")
 	// if err != nil {
 	// 	return nil, fmt.Errorf("failed to get algorithm config: %w", err)
@@ -54,7 +56,15 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]string) (
 	participants := []Participant{}
 	for _, party := range sParties {
 
-		balanceGeneral := party.Balance(s.cfg.VegaAssets, decimalPlaces, "General", "Margin")
+		for _, acc := range party.Accounts {
+			for _, asset := range s.cfg.VegaAssets {
+				if acc.Asset.Id == asset {
+					party.Balance(acc.Asset.Id, decimalPlaces, "General", "Margin")
+				}
+			}
+		}
+
+		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], decimalPlaces, "General", "Margin")
 		var sortNum float64
 
 		balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
