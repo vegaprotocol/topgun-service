@@ -55,11 +55,11 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 
 	participants := []Participant{}
 	for _, party := range sParties {
-		var balanceMultiAsset = 0.0
+		balanceMultiAsset := 0.0
 		for _, acc := range party.Accounts {
 			for _, asset := range s.cfg.VegaAssets {
 				if acc.Asset.Id == asset {
-					balanceMultiAsset = party.Balance(acc.Asset.Id, decimalPlaces, "General", "Margin")
+					balanceMultiAsset += party.Balance(acc.Asset.Id, decimalPlaces, "General", "Margin")
 				}
 			}
 		}
