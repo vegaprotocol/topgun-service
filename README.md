@@ -15,7 +15,7 @@ When running an incentive/game the configuration file for the topgun-service can
 * `ByAssetDepositWithdrawal` - Sorted by ERC20 assets deposited and withdrawn (achieved when user deposits and withdraws 2 unique assets) 
 * `BySocialRegistration` - Sorted by latest Twitter registrations (used to check that a twitter handle is verified/signed up for incentives)
 
-The service is written in Go and more recent algorithms use MongoDB as a perisistence layer.
+The service is written in Go and more recent algorithms use MongoDB as a persistence layer.
 
 ## How to run the service
 
@@ -35,7 +35,7 @@ The application requires a custom configuration file passed in the argument name
 - vegaGraphQLUrl - endpoint url to send graphql queries to
 - gracefulShutdownTimeout - the duration for which the server gracefully waits for existing connections to finish e.g. 15s
 - vegapoll - the duration for which the service will poll the Vega API for accounts e.g. 5s
-- vegaasset - Vega asset, e.g. tDAI
+- vegaassets - a collection of one or more Vega asset IDs, e.g. XYZAlpha, etc
 - base - Base for price fetching e.g. BTC
 - quote - Quote for price fetching e.g. USD
 - defaultDisplay - the default display name/data for the leaderboard
