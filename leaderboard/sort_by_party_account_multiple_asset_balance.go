@@ -17,6 +17,7 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 			accounts {
 				asset {
 					symbol
+					decimals
 				}
 				balance
 				type
@@ -43,7 +44,7 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 		balanceMultiAsset := 0.0
 		for _, acc := range party.Accounts {
 			for _, asset := range s.cfg.VegaAssets {
-				if acc.Asset.Id == asset {
+				if acc.Asset.Symbol == asset {
 					balanceMultiAsset += party.Balance(acc.Asset.Id, acc.Asset.Decimals, "General", "Margin")
 				}
 			}
