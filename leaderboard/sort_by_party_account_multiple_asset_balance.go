@@ -49,12 +49,14 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 				}
 			}
 		}
-		participants = append(participants, Participant{
-			PublicKey:     party.ID,
-			TwitterHandle: party.social,
-			Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 5, 32)},
-			sortNum:       balanceMultiAsset,
-		})
+		if balanceMultiAsset > 0.0 {
+			participants = append(participants, Participant{
+				PublicKey:     party.ID,
+				TwitterHandle: party.social,
+				Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 5, 32)},
+				sortNum:       balanceMultiAsset,
+			})
+		}
 	}
 
 	sortFunc := func(i, j int) bool {
