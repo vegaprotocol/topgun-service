@@ -145,8 +145,11 @@ func (s *Service) update() {
 
 	// Only process leaderboard between competition start and end times
 	timeNow := time.Now().UTC()
-	if timeNow.Before(s.cfg.StartTime) || timeNow.After(s.cfg.EndTime) {
-		log.Info("Current date/time outside of leaderboard start/end time")
+	if timeNow.Before(s.cfg.StartTime) {
+		log.Info("This incentive has not started yet. The leaderboard will update when the incentive begins")
+		return
+	} else if timeNow.After(s.cfg.EndTime) {
+		log.Info("This incentive has now ended")
 		return
 	}
 
