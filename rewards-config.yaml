@@ -1,0 +1,35 @@
+listen: 127.0.0.1:8000  # ip:port
+logFormat: text  # json, text (default), textcolour, textnocolour
+logLevel: Info
+LogMethodName: false
+base: AAPL.MF21
+quote: USD
+vegaAssets:
+  - TIM
+  - WOZ
+  - STE
+algorithm: ByPartyAccountMultipleBalance
+algorithmConfig:
+  marketID: 	3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3
+  decimalPlaces: 5
+defaultDisplay: Balance
+defaultSort: Balance
+description: A Rewards Incentive on the Apple Market
+gracefulShutdownTimeout: 5s
+headers:
+  - Balance
+socialURL:
+  scheme: https
+  host: europe-west1-vegaprotocol.cloudfunctions.net
+  path: /smv/parties
+vegaGraphQLURL:
+  scheme: https
+  host: lb.testnet.vega.xyz
+  path: /query
+vegaPoll: 300s
+startTime: 2022-06-08T14:00:00Z
+endTime: 2022-06-10T15:00:00Z
+mongoConnectionString: mongodb+srv://not-required
+mongoCollectionName: not-required
+mongoDatabaseName: not-required
+snapshotEnabled: true
