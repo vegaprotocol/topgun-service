@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
@@ -50,11 +52,20 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 			}
 		}
 		if balanceMultiAsset > 0.0 {
+			if party.blacklisted {
+				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
+			}
+
+			t := time.Now().UTC()
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
+				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
 				Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 5, 32)},
 				sortNum:       balanceMultiAsset,
+				CreatedAt:     t,
+				UpdatedAt:     t,
+				isBlacklisted: party.blacklisted,
 			})
 		}
 	}
