@@ -18,6 +18,7 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 			id
 			accounts {
 				asset {
+					id
 					symbol
 					decimals
 				}
@@ -47,10 +48,12 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 		for _, acc := range party.Accounts {
 			for _, asset := range s.cfg.VegaAssets {
 				if acc.Asset.Symbol == asset {
-					balanceMultiAsset += party.Balance(acc.Asset.Id, acc.Asset.Decimals, "General", "Margin")
+					b := party.Balance(acc.Asset.Id, acc.Asset.Decimals, "General")
+					balanceMultiAsset += b
 				}
 			}
 		}
+
 		if balanceMultiAsset > 0.0 {
 			if party.blacklisted {
 				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
@@ -61,7 +64,7 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 				PublicKey:     party.ID,
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
-				Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 5, 32)},
+				Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 10, 32)},
 				sortNum:       balanceMultiAsset,
 				CreatedAt:     t,
 				UpdatedAt:     t,

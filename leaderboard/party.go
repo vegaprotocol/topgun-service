@@ -125,6 +125,8 @@ func hasString(ss []string, s string) bool {
 
 func (p *Party) Balance(assetId string, decimalPlaces int, accountTypes ...string) float64 {
 	var accu float64
+	accu = 0
+
 	for _, acc := range p.Accounts {
 		if acc.Asset.Id == assetId && hasString(accountTypes, acc.Type) {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
