@@ -63,7 +63,7 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
 		gqlQueryPartiesAccounts,
-		map[string]string{"assetId": s.cfg.VegaAsset},
+		map[string]string{"assetId": s.cfg.VegaAssets[0]},
 		nil,
 	)
 	if err != nil {
@@ -81,7 +81,7 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 				if lp.Market.ID == marketID {
 					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPs)}).Info("Party has LPs on correct market")
 
-					balanceGeneral := party.Balance(s.cfg.VegaAsset, decimalPlaces, "General", "Margin")
+					balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces),"General", "Margin")
 					var sortNum float64
 
 					balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)

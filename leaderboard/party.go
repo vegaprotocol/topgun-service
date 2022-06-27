@@ -123,14 +123,16 @@ func hasString(ss []string, s string) bool {
 	return false
 }
 
-func (p *Party) Balance(assetName string, decimalPlaces int64, accountTypes ...string) float64 {
+func (p *Party) Balance(assetId string, decimalPlaces int, accountTypes ...string) float64 {
 	var accu float64
+	accu = 0
+
 	for _, acc := range p.Accounts {
-		if acc.Asset.Id == assetName && hasString(accountTypes, acc.Type) {
+		if acc.Asset.Id == assetId && hasString(accountTypes, acc.Type) {
 			v, err := strconv.ParseFloat(acc.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
-					"Failed to parse %s/%s balance [Balance]", assetName, accountTypes)
+					"Failed to parse %s/%s balance [Balance]", assetId, accountTypes)
 				return 0
 			}
 			accu += v
@@ -143,7 +145,7 @@ func (p *Party) Balance(assetName string, decimalPlaces int64, accountTypes ...s
 	return accu
 }
 
-func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int64) float64 {
+func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int) float64 {
 	// Total deposits made in asset
 	var total float64
 	total = 0
@@ -216,9 +218,9 @@ func socialParties(socials map[string]verifier.Social, parties []Party) []Party 
 		}
 		if !found {
 			sp = append(sp, Party{
-				ID:        partyID,
-				social:    social.TwitterHandle,
-				twitterID: social.TwitterUserID,
+				ID:          partyID,
+				social:      social.TwitterHandle,
+				twitterID:   social.TwitterUserID,
 				blacklisted: social.IsBlacklisted,
 			})
 			log.WithFields(log.Fields{

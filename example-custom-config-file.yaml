@@ -4,7 +4,9 @@ logLevel: Info
 LogMethodName: false
 base: XXX
 quote: XYZalpha
-vegaAsset: XYZalpha
+vegaAssets: 
+  XYZalpha
+  XYZbeta 
 algorithm: ByPartyAccountGeneralBalance
 algorithmConfig:
   marketID: f9c9727a2ba5afddb1037add9f69e500b4a52455dc1bffc46af345c9a474f4c1

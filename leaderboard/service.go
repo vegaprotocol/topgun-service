@@ -34,12 +34,12 @@ type Participant struct {
 	Data          []string  `json:"data" bson:"data,omitempty"`
 
 	isBlacklisted bool
-	sortNum float64
+	sortNum       float64
 }
 
 type Leaderboard struct {
 	Version        int      `json:"version"`
-	Asset          string   `json:"asset"`
+	Assets         []string `json:"assets"`
 	LastUpdate     string   `json:"lastUpdate"`
 	Headers        []string `json:"headers"`
 	Description    string   `json:"description"`
@@ -71,11 +71,11 @@ func NewLeaderboardService(cfg config.Config) *Service {
 type Service struct {
 	cfg config.Config
 
-	pricingEngine       PricingEngine
-	timer               *time.Ticker
-	board               Leaderboard
-	mu                  sync.RWMutex
-	verifier            *verifier.Service
+	pricingEngine PricingEngine
+	timer         *time.Ticker
+	board         Leaderboard
+	mu            sync.RWMutex
+	verifier      *verifier.Service
 }
 
 func (s *Service) Start() {
@@ -85,16 +85,16 @@ func (s *Service) Start() {
 	// in a status of "loading" as it waits for first data
 	// from the Vega API
 	newBoard := Leaderboard{
-		Version:              1,
-		Asset:                s.cfg.VegaAsset,
-		DefaultDisplay:       s.cfg.DefaultDisplay,
-		DefaultSort:          s.cfg.DefaultSort,
-		Description:          s.cfg.Description,
-		Headers:              s.cfg.Headers,
-		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
-		Status:               competitionLoading,
-		Participants:         []Participant{},
-		blacklisted:          []Participant{},
+		Version:        1,
+		Assets:         s.cfg.VegaAssets,
+		DefaultDisplay: s.cfg.DefaultDisplay,
+		DefaultSort:    s.cfg.DefaultSort,
+		Description:    s.cfg.Description,
+		Headers:        s.cfg.Headers,
+		LastUpdate:     util.UnixTimestampUtcNowFormatted(),
+		Status:         competitionLoading,
+		Participants:   []Participant{},
+		blacklisted:    []Participant{},
 	}
 	s.board = newBoard
 
@@ -144,11 +144,14 @@ func (s *Service) update() {
 	}
 
 	// Only process leaderboard between competition start and end times
-	//timeNow := time.Now().UTC()
-	//if timeNow.Before(s.cfg.StartTime) || timeNow.After(s.cfg.EndTime) {
-	//	log.Info("Current date/time outside of leaderboard start/end time")
-	//	return
-	//}
+	timeNow := time.Now().UTC()
+	if timeNow.Before(s.cfg.StartTime) {
+		log.Info("This incentive has not started yet. The leaderboard will update when the incentive begins")
+		return
+	} else if timeNow.After(s.cfg.EndTime) {
+		log.Info("This incentive has now ended")
+		return
+	}
 
 	log.Infof("Algo start: %s", s.cfg.Algorithm)
 	var p []Participant
@@ -170,6 +173,8 @@ func (s *Service) update() {
 		p, err = s.sortByAssetDepositWithdrawal(socials)
 	case "BySocialRegistration":
 		p, err = s.sortBySocialRegistration(s.verifier.List())
+	case "ByPartyAccountMultipleBalance":
+		p, err = s.sortByPartyAccountMultipleBalance(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
@@ -195,14 +200,14 @@ func (s *Service) update() {
 
 	s.mu.Lock()
 	newBoard := Leaderboard{
-		Version:              1,
-		Asset:                s.cfg.VegaAsset,
-		DefaultDisplay:       s.cfg.DefaultDisplay,
-		DefaultSort:          s.cfg.DefaultSort,
-		Description:          s.cfg.Description,
-		Headers:              s.cfg.Headers,
-		LastUpdate:           util.UnixTimestampUtcNowFormatted(),
-		Status:               status,
+		Version:        1,
+		Assets:         s.cfg.VegaAssets,
+		DefaultDisplay: s.cfg.DefaultDisplay,
+		DefaultSort:    s.cfg.DefaultSort,
+		Description:    s.cfg.Description,
+		Headers:        s.cfg.Headers,
+		LastUpdate:     util.UnixTimestampUtcNowFormatted(),
+		Status:         status,
 	}
 	// Seems like sometime the participants list is empty
 	// in that case we just reuse the previous
@@ -253,15 +258,15 @@ func (s *Service) CsvLeaderboard(q string, skip int64, size int64, blacklisted b
 	}
 
 	board := Leaderboard{
-		Version:              s.board.Version,
-		Asset:                s.board.Asset,
-		LastUpdate:           s.board.LastUpdate,
-		Headers:              s.board.Headers,
-		Description:          s.board.Description,
-		DefaultSort:          s.board.DefaultSort,
-		DefaultDisplay:       s.board.DefaultDisplay,
-		Status:               s.board.Status,
-		Participants:         s.paginate(participants, skip, size),
+		Version:        s.board.Version,
+		Assets:         s.board.Assets,
+		LastUpdate:     s.board.LastUpdate,
+		Headers:        s.board.Headers,
+		Description:    s.board.Description,
+		DefaultSort:    s.board.DefaultSort,
+		DefaultDisplay: s.board.DefaultDisplay,
+		Status:         s.board.Status,
+		Participants:   s.paginate(participants, skip, size),
 	}
 
 	return s.WriteParticipantsToCsvBytes(board.Participants)
@@ -296,15 +301,15 @@ func (s *Service) JsonLeaderboard(q string, skip int64, size int64, blacklisted 
 	}
 
 	board := Leaderboard{
-		Version:              s.board.Version,
-		Asset:                s.board.Asset,
-		LastUpdate:           s.board.LastUpdate,
-		Headers:              s.board.Headers,
-		Description:          s.board.Description,
-		DefaultSort:          s.board.DefaultSort,
-		DefaultDisplay:       s.board.DefaultDisplay,
-		Status:               s.board.Status,
-		Participants:         s.paginate(participants, skip, size),
+		Version:        s.board.Version,
+		Assets:         s.board.Assets,
+		LastUpdate:     s.board.LastUpdate,
+		Headers:        s.board.Headers,
+		Description:    s.board.Description,
+		DefaultSort:    s.board.DefaultSort,
+		DefaultDisplay: s.board.DefaultDisplay,
+		Status:         s.board.Status,
+		Participants:   s.paginate(participants, skip, size),
 	}
 
 	return json.Marshal(board)
