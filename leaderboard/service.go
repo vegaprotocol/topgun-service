@@ -175,6 +175,8 @@ func (s *Service) update() {
 		p, err = s.sortBySocialRegistration(s.verifier.List())
 	case "ByPartyAccountMultipleBalance":
 		p, err = s.sortByPartyAccountMultipleBalance(socials)
+	case "ByPartyAccountGeneralLoser":
+		p, err = s.sortByPartyAccountGeneralLoser(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
