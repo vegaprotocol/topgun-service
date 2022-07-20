@@ -10,6 +10,7 @@ When running an incentive/game the configuration file for the topgun-service can
 * `ByPartyAccountGeneralBalanceLP` - Sorted by trading account total general balance of given asset and must have submitted LP for configured `MarketID`
 * `ByPartyAccountGeneralProfit` - Sorted by profit algorithm ((balanceGeneral - depositTotal)/depositTotal) for given asset
 * `ByPartyAccountGeneralProfitLP` - Sorted by profit algorithm (as above) for given asset and must have submitted LP for configured `MarketID`
+* `ByPartyAccountGeneralLoser` - Sorted by profit algorithm ((balanceGeneral - depositTotal)/depositTotal) for given asset, however this is ranked descending by greatest non-rekt loser i.e. >0 
 * `ByPartyGovernanceVotes` - Sorted by trading account governance votes
 * `ByLPEquitylikeShare` - Sorted by LP equity like share
 * `ByAssetDepositWithdrawal` - Sorted by ERC20 assets deposited and withdrawn (achieved when user deposits and withdraws 2 unique assets) 
