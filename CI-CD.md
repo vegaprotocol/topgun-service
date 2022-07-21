@@ -30,3 +30,5 @@ Process for this repository is based on branch, meaning that HEAD REFERENCES (la
 
 * dev -> develop
 
+* prod -> master
+
