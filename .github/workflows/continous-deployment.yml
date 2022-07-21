@@ -7,6 +7,8 @@ name: "Continous Deployment Workflow"
       
       - develop
       
+      - master
+      
   
 jobs:
   integration:
@@ -34,6 +36,9 @@ jobs:
           cd k8s
                     if [ "$(git rev-parse --abbrev-ref HEAD)" = "develop" ]; then
             echo -n "$version" > charts/apps/topgun-service/dev/VERSION
+          fi
+                    if [ "$(git rev-parse --abbrev-ref HEAD)" = "master" ]; then
+            echo -n "$version" > charts/apps/topgun-service/prod/VERSION
           fi
                     git add -A
           git commit -m "Automated version update for topgun-service: $version, from repository: $GITHUB_REPOSITORY"
