@@ -1,20 +1,13 @@
-FROM golang:1.16-alpine AS builder
-ENV GOPROXY=direct GOSUMDB=off
-WORKDIR /go/src/project
-RUN apk add --no-cache ca-certificates git
-ADD *.go go.* ./
-ADD config config
-ADD datastore datastore
-ADD leaderboard leaderboard
-ADD pricing pricing
-ADD util util
-ADD verifier verifier
-RUN env CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o topgun-service .
-
-# # #
-
-FROM alpine:3.14
-ENTRYPOINT ["/topgun-service"]
-
-RUN apk add --no-cache ca-certificates
-COPY --from=builder /go/src/project/topgun-service /
+# FILE IS AUTOMATICALLY MANAGED BY github.com/vegaprotocol/terraform//github
+ARG GO_VERSION=1.18.0
+ARG ALPINE_VERSION=3.15
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+RUN mkdir /build
+WORKDIR /build
+ADD . .
+RUN apk add make git
+RUN make build
+FROM alpine:${ALPINE_VERSION}
+# USER nonroot:nonroot
+# COPY --chown=nonroot:nonroot bin/topgun-service /topgun-service
+COPY --from=builder /build/bin/topgun-service /topgun-service
