@@ -1,17 +1,13 @@
 # FILE IS AUTOMATICALLY MANAGED BY github.com/vegaprotocol/terraform//github
 name: "Continous Delivery Workflow"
 "on":
-  
   workflow_call:
-  
 
 env:
   GO_VERSION: "1.18.0"
 
 jobs:
-  
   release-docker:
-    
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,6 +37,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: GO_VERSION=${{env.GO_VERSION}}
           push: true
           tags: ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${{ github.sha }},ghcr.io/${{ github.repository }}:${{ github.ref_name }}
 
