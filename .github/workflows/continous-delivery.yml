@@ -58,7 +58,7 @@ jobs:
     
     if: ${{ github.head_ref == 'master' || github.head_ref == 'master' }}
     
-    needs: integration
+    
     name: Release on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
