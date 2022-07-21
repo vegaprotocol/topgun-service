@@ -56,7 +56,7 @@ jobs:
 
   release-binary:
     
-    if: github.head_ref == "main" || github.head_ref == "master"
+    if: ${{ github.head_ref == 'master' || github.head_ref == 'master' }}
     
     needs: integration
     name: Release on ${{ matrix.os }}
