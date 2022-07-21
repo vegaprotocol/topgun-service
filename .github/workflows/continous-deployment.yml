@@ -2,10 +2,11 @@
 name: "Continous Deployment Workflow"
 "on":
   
-  branches:
-    
-    - develop
-    
+  push:
+    branches:
+      
+      - develop
+      
   
 jobs:
   
