@@ -54,42 +54,4 @@ jobs:
           push: true
           tags: ${{ github.repository }}:latest,${{ github.repository }}:${{ github.sha }},${{ github.repository }}:${{ github.ref_name }}
 
-  release-binary:
-    
-    if: ${{ github.head_ref == 'master' || github.head_ref == 'master' }}
-    
-    
-    name: Release on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - macos-latest
-          - windows-latest
-          - ubuntu-latest
-    steps:
-      - name: Set up Go ${{ env.GO_VERSION }}
-        uses: actions/setup-go@v3
-        with:
-          go-version: ${{ env.GO_VERSION }}
-        id: go
-
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Get dependencies
-        run: make deps
-
-      - name: Build
-        env:
-          
-          RELEASE_VERSION: ${{ github.head_ref }}-${{ github.sha }}
-          
-        run: make release-${{ matrix.os }}
-
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: build/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
