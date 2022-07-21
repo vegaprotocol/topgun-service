@@ -10,6 +10,8 @@ name: "Continous Deployment Workflow"
   
 jobs:
   
+  integration:
+    uses: ./.github/workflows/continous-integration.yml
   delivery:
     uses: ./.github/workflows/continous-delivery.yml
   
