@@ -8,8 +8,6 @@ name: "Continous Integration Workflow"
     
     - develop
     
-    - main
-    
 jobs:
   integration:
     runs-on: ubuntu-latest
