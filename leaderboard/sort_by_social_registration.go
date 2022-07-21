@@ -8,7 +8,7 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortBySocialRegistration(socials *verifier.Socials) ([]Participant, error) {
+func (s *Service) sortBySocialRegistration(socials []verifier.Social) ([]Participant, error) {
 
 	// A leaderboard to show only registered social accounts, used to verify that they have
 	// registered successfully with the twitter service/vega incentives
@@ -16,7 +16,8 @@ func (s *Service) sortBySocialRegistration(socials *verifier.Socials) ([]Partici
 	count := 0
 	participants := []Participant{}
 	existing := make(map[string]byte, 0)
-	for _, s := range *socials {
+
+	for _, s := range socials {
 		handle := strings.ToLower(s.TwitterHandle)
 		if _, found := existing[handle]; !found {
 			// Keep a map of found social handles
@@ -26,9 +27,10 @@ func (s *Service) sortBySocialRegistration(socials *verifier.Socials) ([]Partici
 			participants = append(participants, Participant{
 				PublicKey:     s.PartyID,
 				TwitterHandle: s.TwitterHandle,
+				TwitterUserID: s.TwitterUserID,
 				CreatedAt:     util.TimeFromUnixTimeStamp(s.CreatedAt),
 				UpdatedAt:     util.TimeFromUnixTimeStamp(s.UpdatedAt),
-				Data:          []string{ "Registered" },
+				Data:          []string{"Registered"},
 				sortNum:       float64(count),
 			})
 		}

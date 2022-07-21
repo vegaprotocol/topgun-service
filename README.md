@@ -2,7 +2,7 @@
 
 API service that provides a **sorted leaderboard for incentives/games operating on the Fairground testnet.**
 
-The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration".
+The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration". An optional blacklist can be configured to exclude users from the main public leaderboard, this feature is useful for team members or known bots/scammers.
 
 When running an incentive/game the configuration file for the topgun-service can be configured with the appropriate 'algorithm' to serve up a list of participants on a leaderboard. The choices of algorithm currently includes:
 
@@ -10,20 +10,13 @@ When running an incentive/game the configuration file for the topgun-service can
 * `ByPartyAccountGeneralBalanceLP` - Sorted by trading account total general balance of given asset and must have submitted LP for configured `MarketID`
 * `ByPartyAccountGeneralProfit` - Sorted by profit algorithm ((balanceGeneral - depositTotal)/depositTotal) for given asset
 * `ByPartyAccountGeneralProfitLP` - Sorted by profit algorithm (as above) for given asset and must have submitted LP for configured `MarketID`
+* `ByPartyAccountGeneralLoser` - Sorted by profit algorithm ((balanceGeneral - depositTotal)/depositTotal) for given asset, however this is ranked descending by greatest non-rekt loser i.e. >0 
 * `ByPartyGovernanceVotes` - Sorted by trading account governance votes
 * `ByLPEquitylikeShare` - Sorted by LP equity like share
 * `ByAssetDepositWithdrawal` - Sorted by ERC20 assets deposited and withdrawn (achieved when user deposits and withdraws 2 unique assets) 
 * `BySocialRegistration` - Sorted by latest Twitter registrations (used to check that a twitter handle is verified/signed up for incentives)
 
-  case "ByPartyAccountGeneralBalanceLP":
-  p, err = s.sortByPartyAccountGeneralBalanceAndLP(socials)
-  case "":
-  p, err = s.sortByPartyAccountGeneralProfit(socials, false)
-  case "":
-  p, err = s.sortByPartyAccountGeneralProfit(socials, true)
-
-
-The service is written in Go and more recent algorithms use MongoDB as a perisistence layer.
+The service is written in Go and more recent algorithms use MongoDB as a persistence layer.
 
 ## How to run the service
 
@@ -43,7 +36,7 @@ The application requires a custom configuration file passed in the argument name
 - vegaGraphQLUrl - endpoint url to send graphql queries to
 - gracefulShutdownTimeout - the duration for which the server gracefully waits for existing connections to finish e.g. 15s
 - vegapoll - the duration for which the service will poll the Vega API for accounts e.g. 5s
-- vegaasset - Vega asset, e.g. tDAI
+- vegaassets - a collection of one or more Vega asset IDs, e.g. XYZAlpha, etc
 - base - Base for price fetching e.g. BTC
 - quote - Quote for price fetching e.g. USD
 - defaultDisplay - the default display name/data for the leaderboard
@@ -51,7 +44,7 @@ The application requires a custom configuration file passed in the argument name
 - headers - A collection of custom headers returned with the data in a leaderboard e.g. Asset Total
 - startTime - the start time for the incentive period
 - endTime - the end time for the incentive period
-- snapshotEnabled - set to true to enable json snapshots of leaderboard, default: False
+- twitterBlacklist - a map/list of twitterUserID: twitterHandle that should be excluded from the default leaderboard
 
 **MongoDB:**
 
@@ -71,6 +64,8 @@ config file.
    -  `?q={social_handle}` - search query to filter for a specific social handle, case insensitive
    -  `?skip={n}` - skip `n` leaderboard results (pagination)
    -  `?size={n}` - page size `n` leaderboard results (pagination)
+   -  `?type={csv|json}` - return type of results, default JSON
+   -  `?blacklisted={true|false}` - Return leaderboard of blacklisted users, default: `false`
 
 ## Verified socials
 

@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]string) ([]Participant, error) {
+func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verifier.Social) ([]Participant, error) {
 	// Grab the market ID for the market we're targeting
 	marketID, err := s.getAlgorithmConfig("marketID")
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -61,7 +63,7 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]strin
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
 		gqlQueryPartiesAccounts,
-		map[string]string{"assetId": s.cfg.VegaAsset},
+		map[string]string{"assetId": s.cfg.VegaAssets[0]},
 		nil,
 	)
 	if err != nil {
@@ -79,17 +81,22 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]strin
 				if lp.Market.ID == marketID {
 					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPs)}).Info("Party has LPs on correct market")
 
-					balanceGeneral := party.Balance(s.cfg.VegaAsset, decimalPlaces,"General", "Margin")
+					balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces),"General", "Margin")
 					var sortNum float64
 
 					balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
 					sortNum = balanceGeneral
 
+					utcNow := time.Now().UTC()
 					participants = append(participants, Participant{
 						PublicKey:     party.ID,
 						TwitterHandle: party.social,
+						TwitterUserID: party.twitterID,
 						Data:          []string{balanceGeneralStr},
 						sortNum:       sortNum,
+						CreatedAt:     utcNow,
+						UpdatedAt:     utcNow,
+						isBlacklisted: party.blacklisted,
 					})
 					break
 				}

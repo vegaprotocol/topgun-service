@@ -8,9 +8,10 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
+	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, hasCommittedLP bool) ([]Participant, error) {
+func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.Social, hasCommittedLP bool) ([]Participant, error) {
 	// Grab the market ID for the market we're targeting
 	marketID, err := s.getAlgorithmConfig("marketID")
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -28,6 +29,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				id
 				accounts(asset: $assetId){
 					asset {
+						id
 						symbol
 					}
 					balance
@@ -55,6 +57,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				id
 				accounts(asset: $assetId){
 					asset {
+						id
 						symbol
 					}
 					balance
@@ -103,7 +106,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
 		gqlQueryPartiesAccounts,
-		map[string]string{"assetId": s.cfg.VegaAsset},
+		map[string]string{"assetId": s.cfg.VegaAssets[0]},
 		nil,
 	)
 	if err != nil {
@@ -130,8 +133,8 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 		}
 
 		if calculateBalance || !hasCommittedLP {
-			balanceGeneral := party.Balance(s.cfg.VegaAsset, decimalPlaces, "General", "Margin")
-			depositTotal := party.CalculateTotalDeposits(s.cfg.VegaAsset, decimalPlaces)
+			balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "General", "Margin")
+			depositTotal := party.CalculateTotalDeposits(s.cfg.VegaAssets[0], int(decimalPlaces))
 			if depositTotal == 0 {
 				continue
 			}
@@ -140,11 +143,11 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 				balanceGeneral, depositTotal, balanceGeneral/depositTotal)
 
 			var sortNum float64
-			profit := (balanceGeneral - depositTotal)/depositTotal
+			profit := (balanceGeneral - depositTotal) / depositTotal
 			sortNum = profit
 
 			balanceGeneralStr := fmt.Sprintf("%f", balanceGeneral) //strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
-			totalDepositStr := fmt.Sprintf("%f", depositTotal) //strconv.FormatFloat(depositTotal, 'f', int(decimalPlaces), 32)
+			totalDepositStr := fmt.Sprintf("%f", depositTotal)     //strconv.FormatFloat(depositTotal, 'f', int(decimalPlaces), 32)
 			partyProfitStr := strconv.FormatFloat(profit, 'f', 6, 32)
 			if profit > 0 {
 				partyProfitStr = fmt.Sprintf("+%s", partyProfitStr)
@@ -153,14 +156,20 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 
 			// Only include participants who have non-zero positions
 			if balanceGeneral != depositTotal {
+				if party.blacklisted {
+					log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
+				}
+
 				t := time.Now().UTC()
 				participants = append(participants, Participant{
 					PublicKey:     party.ID,
 					TwitterHandle: party.social,
+					TwitterUserID: party.twitterID,
 					Data:          []string{formattedBalancePosition, balanceGeneralStr, totalDepositStr, partyProfitStr},
 					sortNum:       sortNum,
 					CreatedAt:     t,
 					UpdatedAt:     t,
+					isBlacklisted: party.blacklisted,
 				})
 			}
 		}
@@ -171,7 +180,5 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]string, has
 	}
 	sort.Slice(participants, sortFunc)
 
-	return participants, nil
+	return participants,nil
 }
-
-

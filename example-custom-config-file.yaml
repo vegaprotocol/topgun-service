@@ -4,10 +4,13 @@ logLevel: Info
 LogMethodName: false
 base: XXX
 quote: XYZalpha
-vegaAsset: XYZalpha
+vegaAssets: 
+  XYZalpha
+  XYZbeta 
 algorithm: ByPartyAccountGeneralBalance
 algorithmConfig:
-  marketID: f9c9727a2ba5afddb1037add9f69e500b4a52455dc1bffc46af345c9a474f4c1
+  marketID: 3f0ee43aa51d2696c09c7b7844bba5fd31641ee1ac3c293085c8f0581e19191b
+  decimalPlaces: 5
 defaultDisplay: Balance
 defaultSort: Balance
 description: A trading competition
@@ -28,3 +31,5 @@ endTime: 2021-06-21T09:00:00Z
 mongoConnectionString: mongodb+srv://not-required
 mongoCollectionName: not-required
 mongoDatabaseName: not-required
+twitterBlacklist:
+  1355884110619828111: hello_world

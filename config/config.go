@@ -40,7 +40,7 @@ type Config struct {
 
 	SocialURL *url.URL `yaml:"socialURL"`
 
-	VegaAsset string `yaml:"vegaAsset"`
+	VegaAssets []string `yaml:"vegaAssets"`
 
 	VegaGraphQLURL *url.URL `yaml:"vegaGraphQLURL"`
 
@@ -56,6 +56,9 @@ type Config struct {
 
 	// Set to false to disable creation of snapshot json files
 	SnapshotEnabled bool `yaml:"snapshotEnabled"`
+
+	// TwitterBlacklist describes a set of users who should be filtered from the public leaderboard results
+	TwitterBlacklist map[string]string `yaml:"twitterBlacklist"`
 }
 
 func CheckConfig(cfg Config) error {
@@ -91,8 +94,8 @@ func CheckConfig(cfg Config) error {
 	if cfg.SocialURL == nil || cfg.SocialURL.String() == "" {
 		e = multierror.Append(e, errors.New("missing: socialURL"))
 	}
-	if len(cfg.VegaAsset) == 0 {
-		e = multierror.Append(e, errors.New("missing: vegaAsset"))
+	if len(cfg.VegaAssets) == 0 {
+		e = multierror.Append(e, errors.New("missing: vegaAssets"))
 	}
 	if cfg.VegaGraphQLURL == nil || cfg.VegaGraphQLURL.String() == "" {
 		e = multierror.Append(e, errors.New("missing: vegaGraphQLURL"))
@@ -128,7 +131,7 @@ func (c *Config) String() string {
 		"gracefulShutdownTimeout:%s, " +
 		"headers:%v" +
 		"socialURL:%s, " +
-		"vegaAsset:%s, " +
+		"vegaAssets:%v, " +
 		"vegaGraphQLURL:%s, " +
 		"vegaPoll:%s" +
 		"startTime:%s" +
@@ -137,6 +140,7 @@ func (c *Config) String() string {
 		"mongoCollectionName:%s" +
 		"mongoDatabaseName:%s" +
 		"snapshotEnabled:%v" +
+		"twitterBlacklist:%v" +
 		"}"
 	return fmt.Sprintf(
 		fmtStr,
@@ -147,7 +151,7 @@ func (c *Config) String() string {
 		c.GracefulShutdownTimeout,
 		c.Headers,
 		c.SocialURL.String(),
-		c.VegaAsset,
+		c.VegaAssets,
 		c.VegaGraphQLURL.String(),
 		c.VegaPoll.String(),
 		c.StartTime,
@@ -156,6 +160,7 @@ func (c *Config) String() string {
 		c.MongoCollectionName,
 		c.MongoDatabaseName,
 		c.SnapshotEnabled,
+		c.TwitterBlacklist,
 	)
 }
 
@@ -173,7 +178,7 @@ func (c *Config) LogFields() log.Fields {
 		"gracefulShutdownTimeout": c.GracefulShutdownTimeout,
 		"headers":                 c.Headers,
 		"socialURL":               c.SocialURL.String(),
-		"vegaAsset":               c.VegaAsset,
+		"vegaAssets":              c.VegaAssets,
 		"vegaGraphQLURL":          c.VegaGraphQLURL.String(),
 		"vegaPoll":                c.VegaPoll.String(),
 		"startTime":               c.StartTime,
@@ -182,6 +187,7 @@ func (c *Config) LogFields() log.Fields {
 		"mongoCollectionName":     c.MongoCollectionName,
 		"mongoDatabaseName":       c.MongoDatabaseName,
 		"snapshotEnabled":         c.SnapshotEnabled,
+		"twitterBlacklist":        c.TwitterBlacklist,
 	}
 }
 
