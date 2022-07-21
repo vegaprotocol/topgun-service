@@ -6,8 +6,6 @@ name: "Continous Deployment Workflow"
     
     - develop
     
-    - main
-    
   
 jobs:
   
