@@ -1,6 +1,6 @@
 module github.com/vegaprotocol/topgun-service
 
-go 1.16
+go 1.19
 
 require (
 	code.vegaprotocol.io/priceproxy v0.0.2
