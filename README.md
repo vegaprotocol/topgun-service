@@ -24,6 +24,9 @@ The service is written in Go and more recent algorithms use MongoDB as a persist
 
 `./topgun-service -config custom-config-file.yaml`
 
+To build - you can run `go build -v -o bin/topgun-service ./cmd/topgun-service`
+Then to run from the bin directory you can use `./bin/topgun-service -config config.yaml`  
+
 The application requires a custom configuration file passed in the argument named `-config`, an example can be found [here](./example-custom-config-file.yaml). Details of the config variables are detailed below:
 
 **Config:**
