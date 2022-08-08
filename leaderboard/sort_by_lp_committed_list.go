@@ -17,13 +17,6 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 	gqlQueryPartiesAccounts := `query($assetId: String!) {
 		parties {
 			id
-			accounts(asset: $assetId){
-				asset {
-					symbol
-				}
-				balance
-				type
-			}
 			liquidityProvisions {
 				id
 				market { id, name }

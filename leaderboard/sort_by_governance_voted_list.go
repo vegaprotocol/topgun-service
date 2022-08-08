@@ -38,7 +38,7 @@ func (s *Service) sortByPartyGovernanceVotedList(socials map[string]verifier.Soc
 	}
 
 	sortFunc := func(i, j int) bool {
-		return participants[i].sortNum > participants[j].sortNum
+		return participants[i].UpdatedAt.Unix() > participants[j].UpdatedAt.Unix()
 	}
 	sort.Slice(participants, sortFunc)
 
