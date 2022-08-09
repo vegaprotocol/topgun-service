@@ -14,7 +14,7 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 	// Grab the market ID for the market we're targeting
 	marketID, err := s.getAlgorithmConfig("marketID")
 
-	gqlQueryPartiesAccounts := `query($assetId: String!) {
+	gqlQueryPartiesAccounts := `query() {
 		parties {
 			id
 			liquidityProvisions {
@@ -58,26 +58,31 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 
 	participants := []Participant{}
 	for _, party := range sParties {
+		lpCount := 0
 		// Check for matching parties who have committed LP :)
 		if party.LPs != nil && len(party.LPs) > 0 {
 			for _, lp := range party.LPs {
 				if lp.Market.ID == marketID {
 					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPs)}).Info("Party has LPs on correct market")
-
-					utcNow := time.Now().UTC()
-					participants = append(participants, Participant{
-						PublicKey:     party.ID,
-						TwitterHandle: party.social,
-						TwitterUserID: party.twitterID,
-						Data:          []string{"Provided Liquidity"},
-						CreatedAt:     utcNow,
-						UpdatedAt:     utcNow,
-						isBlacklisted: party.blacklisted,
-					})
-					break
+					lpCount++
 				}
 			}
 		}
+
+		if lpCount > 0 {
+			utcNow := time.Now().UTC()
+			participants = append(participants, Participant{
+				PublicKey:     party.ID,
+				TwitterHandle: party.social,
+				TwitterUserID: party.twitterID,
+				Data:          []string{"Provided Liquidity"},
+				CreatedAt:     utcNow,
+				UpdatedAt:     utcNow,
+				isBlacklisted: party.blacklisted,
+			})
+			break
+		}
+
 	}
 
 	sortFunc := func(i, j int) bool {
