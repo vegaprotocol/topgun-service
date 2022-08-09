@@ -20,21 +20,26 @@ func (s *Service) sortByPartyGovernanceVotedList(socials map[string]verifier.Soc
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
 	for _, party := range sParties {
+		voteCount := 0
 		for _, v := range party.Votes {
 			if v.Vote.Datetime.After(s.cfg.StartTime) && v.Vote.Datetime.Before(s.cfg.EndTime) {
-				utcNow := time.Now().UTC()
-				participants = append(participants, Participant{
-					PublicKey:     party.ID,
-					TwitterHandle: party.social,
-					TwitterUserID: party.twitterID,
-					Data:          []string{"Voted"},
-					sortNum:       float64(1),
-					CreatedAt:     utcNow,
-					UpdatedAt:     utcNow,
-					isBlacklisted: party.blacklisted,
-				})
+				voteCount++
 			}
 		}
+
+		if voteCount > 0 {
+			utcNow := time.Now().UTC()
+			participants = append(participants, Participant{
+				PublicKey:     party.ID,
+				TwitterHandle: party.social,
+				TwitterUserID: party.twitterID,
+				Data:          []string{fmt.Sprintf("%d", voteCount)},
+				CreatedAt:     utcNow,
+				UpdatedAt:     utcNow,
+				isBlacklisted: party.blacklisted,
+			})
+		}
+
 	}
 
 	sortFunc := func(i, j int) bool {
