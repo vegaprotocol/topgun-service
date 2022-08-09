@@ -38,7 +38,7 @@ func (s *Service) sortByPartyGovernanceVotedList(socials map[string]verifier.Soc
 	}
 
 	sortFunc := func(i, j int) bool {
-		return participants[i].UpdatedAt.Unix() > participants[j].UpdatedAt.Unix()
+		return participants[i].TwitterHandle < participants[j].TwitterHandle
 	}
 	sort.Slice(participants, sortFunc)
 

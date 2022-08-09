@@ -81,7 +81,7 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 	}
 
 	sortFunc := func(i, j int) bool {
-		return participants[i].sortNum > participants[j].sortNum
+		return participants[i].TwitterHandle < participants[j].TwitterHandle
 	}
 	sort.Slice(participants, sortFunc)
 
