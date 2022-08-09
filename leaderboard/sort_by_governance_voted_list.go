@@ -33,7 +33,7 @@ func (s *Service) sortByPartyGovernanceVotedList(socials map[string]verifier.Soc
 				PublicKey:     party.ID,
 				TwitterHandle: party.social,
 				TwitterUserID: party.twitterID,
-				Data:          []string{fmt.Sprintf("%d", voteCount)},
+				Data:          []string{"Voted"},
 				CreatedAt:     utcNow,
 				UpdatedAt:     utcNow,
 				isBlacklisted: party.blacklisted,
