@@ -95,7 +95,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		// 	}
 		// }
 
-		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "General", "Margin")
+		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
 		var sortNum float64
 		// var balanceGeneralStr string
 		// if tradeCount > 0 {

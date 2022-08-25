@@ -70,7 +70,7 @@ func (s *Service) sortByPartyAccountGeneralLoser(socials map[string]verifier.Soc
 
 		// Calculate the party's current general balance including margin and total deposits
 		// Margin is included because this is useful during the competition, market should be settled when incentive over
-		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "General", "Margin")
+		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
 		depositTotal := party.CalculateTotalDeposits(s.cfg.VegaAssets[0], int(decimalPlaces))
 		if depositTotal == 0 {
 			continue

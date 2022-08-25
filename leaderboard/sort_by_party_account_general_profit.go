@@ -133,7 +133,7 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 		}
 
 		if calculateBalance || !hasCommittedLP {
-			balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "General", "Margin")
+			balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
 			depositTotal := party.CalculateTotalDeposits(s.cfg.VegaAssets[0], int(decimalPlaces))
 			if depositTotal == 0 {
 				continue
