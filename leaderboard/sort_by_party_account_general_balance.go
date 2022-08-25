@@ -32,7 +32,9 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 			id
 			accounts(asset: $assetId){
 				asset {
+					id
 					symbol
+					decimals
 				}
 				balance
 				type
