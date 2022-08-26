@@ -1,7 +1,9 @@
 package api
 
 import (
+	"context"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -90,5 +92,26 @@ func (s *Service) Stop() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	s.http.Close()
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	ctx, cancel := context.WithTimeout(context.Background(), s.cfg.GracefulShutdownTimeout)
+	defer cancel()
+	s.http.Shutdown(ctx)
+}
+
+func GetQuery(r *http.Request, key string) string {
+	return r.URL.Query().Get(key)
+}
+
+func GetQueryInt(r *http.Request, key string) int64 {
+	q := GetQuery(r, key)
+	if len(q) > 0 {
+		i, err := strconv.ParseInt(q, 10, 64)
+		if err != nil {
+			log.Warnf("Could not parse query string param %s %s to int", key, q)
+			return -1
+		}
+		return i
+	}
+	return -1
 }

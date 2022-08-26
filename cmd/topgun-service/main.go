@@ -1,14 +1,10 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 
 	"github.com/vegaprotocol/topgun-service/api"
@@ -39,18 +35,10 @@ func main() {
 	// Block until we receive our signal.
 	<-c
 
-	// Create a deadline to wait for.
-	ctx, cancel := context.WithTimeout(context.Background(), cfg.GracefulShutdownTimeout)
-	defer cancel()
-
 	web.Stop()
 
 	// Signal to stop the leaderboard service
 	svc.Stop()
-
-	// Doesn't block if no connections, but will otherwise wait
-	// until the timeout deadline.
-	srv.Shutdown(ctx)
 
 	// Optionally, you could run srv.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
@@ -97,68 +85,3 @@ func loadConfig() config.Config {
 type ErrorObject struct {
 	Error string `json:"error"`
 }
-
-func GetQuery(r *http.Request, key string) string {
-	return r.URL.Query().Get(key)
-}
-
-func GetQueryInt(r *http.Request, key string) int64 {
-	q := GetQuery(r, key)
-	if len(q) > 0 {
-		i, err := strconv.ParseInt(q, 10, 64)
-		if err != nil {
-			log.Warnf("Could not parse query string param %s %s to int", key, q)
-			return -1
-		}
-		return i
-	}
-	return -1
-}
-
-func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboard.Service) {
-	responseType := GetQuery(r, "type")
-	if strings.ToLower(responseType) == "csv" {
-		w.Header().Set("Content-Type", "text/plain")
-		q := GetQuery(r, "q")
-		skip := GetQueryInt(r, "skip")
-		size := GetQueryInt(r, "size")
-		blacklisted := strings.ToLower(GetQuery(r, "blacklisted")) == "true"
-		payload, err := svc.CsvLeaderboard(q, skip, size, blacklisted)
-		if err != nil {
-			log.WithFields(log.Fields{
-				"error": err.Error(),
-			}).Error("Error marshaling leaderboard")
-			payload = []byte(err.Error())
-			w.WriteHeader(http.StatusInternalServerError)
-		} else {
-			w.WriteHeader(http.StatusOK)
-		}
-		w.Write(payload)
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-		q := GetQuery(r, "q")
-		skip := GetQueryInt(r, "skip")
-		size := GetQueryInt(r, "size")
-		blacklisted := strings.ToLower(GetQuery(r, "blacklisted")) == "true"
-		payload, err := svc.JsonLeaderboard(q, skip, size, blacklisted)
-		if err != nil {
-			log.WithFields(log.Fields{
-				"error": err.Error(),
-			}).Error("Error marshaling leaderboard")
-
-			payload, err = json.Marshal(ErrorObject{Error: err.Error()})
-			if err != nil {
-				log.WithFields(log.Fields{
-					"error": err.Error(),
-				}).Error("Error marshaling error message during marshaling of leaderboard")
-				payload = []byte("{\"error\":\"\"}")
-			}
-			w.WriteHeader(http.StatusInternalServerError)
-		} else {
-			w.WriteHeader(http.StatusOK)
-		}
-		w.Write(payload)
-	}
-}
-
-
