@@ -44,7 +44,7 @@ type Leaderboard struct {
 
 func NewLeaderboardService(cfg config.Config) *Service {
 	svc := &Service{
-		cfg: cfg,
+		cfg:      cfg,
 		verifier: verifier.NewVerifierService(*cfg.SocialURL, cfg.TwitterBlacklist),
 	}
 	return svc
@@ -53,10 +53,10 @@ func NewLeaderboardService(cfg config.Config) *Service {
 type Service struct {
 	cfg config.Config
 
-	timer         *time.Ticker
-	board         Leaderboard
-	mu            sync.RWMutex
-	verifier      *verifier.Service
+	timer    *time.Ticker
+	board    Leaderboard
+	mu       sync.RWMutex
+	verifier *verifier.Service
 }
 
 func (s *Service) Start() {
@@ -133,9 +133,24 @@ func (s *Service) update() {
 		return
 	}
 
-	GetAccountBalance()
+	participants := SocialToParticipants(socials)
 
+	// check configuration for this leaderboard, call appropriate algo/filters 
+	GetAccountBalance()
 
 	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
+}
+
+func SocialToParticipants(socials map[string]verifier.Social) []Participant {
+	participants := []Participant{}
+	for _, social := range socials {
+		participants = append(participants, Participant{
+			PublicKey:     social.PartyID,
+			TwitterHandle: social.TwitterHandle,
+			TwitterUserID: social.TwitterUserID,
+			isBlacklisted: social.IsBlacklisted,
+		})
+	}
+	return participants
 }
