@@ -10,55 +10,25 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
-	"time"
 
+	"github.com/vegaprotocol/topgun-service/api"
 	"github.com/vegaprotocol/topgun-service/config"
 	"github.com/vegaprotocol/topgun-service/leaderboard"
 
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"github.com/jinzhu/configor"
 	log "github.com/sirupsen/logrus"
 )
 
-
-
-
 func main() {
-	loadConfig()
-
-
-
+	cfg := loadConfig()
 
 	svc := leaderboard.NewLeaderboardService(cfg)
-
-	router := mux.NewRouter()
-	router.HandleFunc("/", EndpointRoot)
-	router.HandleFunc("/status", EndpointStatus)
-	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
-		EndpointLeaderboard(w, r, svc)
-	})
-	router.HandleFunc("/leaderboard", func(w http.ResponseWriter, r *http.Request) {
-		EndpointLeaderboard(w, r, svc)
-	}).Queries("q", "{q}")
-
-	srv := &http.Server{
-		Addr:         cfg.Listen,
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 60,
-		Handler:      handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(router),
-	}
+	web := api.NewAPIService(cfg, svc)
 
 	// Run the leaderboard service in its own goroutine
 	go func() {
 		svc.Start()
-	}()
-	// Run the web server in its own goroutine
-	go func() {
-		if err := srv.ListenAndServe(); err != nil && err.Error() != "http: Server closed" {
-			log.WithError(err).Warn("Failed to serve")
-		}
+		web.Start()
 	}()
 
 	c := make(chan os.Signal, 1)
@@ -72,6 +42,8 @@ func main() {
 	// Create a deadline to wait for.
 	ctx, cancel := context.WithTimeout(context.Background(), cfg.GracefulShutdownTimeout)
 	defer cancel()
+
+	web.Stop()
 
 	// Signal to stop the leaderboard service
 	svc.Stop()
@@ -87,7 +59,7 @@ func main() {
 	os.Exit(0)
 }
 
-func loadConfig() {
+func loadConfig() config.Config {
 	// Command line flags
 	var configName string
 	flag.StringVar(&configName, "config", "", "Configuration YAML file")
@@ -118,9 +90,9 @@ func loadConfig() {
 		os.Exit(1)
 	}
 	log.WithFields(cfg.LogFields()).Info("Starting server")
+
+	return cfg
 }
-
-
 
 type ErrorObject struct {
 	Error string `json:"error"`
@@ -189,26 +161,4 @@ func EndpointLeaderboard(w http.ResponseWriter, r *http.Request, svc *leaderboar
 	}
 }
 
-func EndpointStatus(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("{\"success\":true}"))
-}
 
-func EndpointRoot(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	w.WriteHeader(http.StatusOK)
-	content := `<!doctype html>
-<head>
-<title>Topgun Service</title>
-</head>
-<body>
-<h1>Topgun Service</h1>
-<ul>
-<li><a href="/status">Status</a></li>
-<li><a href="/leaderboard">Leaderboard</a></li>
-</ul>
-</body>
-</html>`
-	w.Write([]byte(content))
-}
