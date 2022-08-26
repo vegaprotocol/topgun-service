@@ -21,37 +21,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+
+
+
 func main() {
-	// Command line flags
-	var configName string
-	flag.StringVar(&configName, "config", "", "Configuration YAML file")
-	flag.Parse()
-	if len(configName) == 0 {
-		fmt.Println("Missing commandline argument: -config configfile.yaml")
-		os.Exit(1)
-	}
+	loadConfig()
 
-	var cfg config.Config
-	err := configor.Load(&cfg, configName)
-	// https://github.com/jinzhu/configor/issues/40
-	if err != nil && !strings.Contains(err.Error(), "should be struct") {
-		fmt.Printf("Failed to read config: %v", err)
-		os.Exit(1)
-	}
 
-	err = config.CheckConfig(cfg)
-	if err != nil && !strings.Contains(err.Error(), "should be struct") {
-		fmt.Printf("Invalid config: %v", err)
-		os.Exit(1)
-	}
 
-	// Logger config
-	err = config.ConfigureLogging(cfg)
-	if err != nil && !strings.Contains(err.Error(), "should be struct") {
-		fmt.Printf("Invalid logging config: %v", err)
-		os.Exit(1)
-	}
-	log.WithFields(cfg.LogFields()).Info("Starting server")
 
 	svc := leaderboard.NewLeaderboardService(cfg)
 
@@ -109,6 +86,41 @@ func main() {
 	log.Info("Stopping server")
 	os.Exit(0)
 }
+
+func loadConfig() {
+	// Command line flags
+	var configName string
+	flag.StringVar(&configName, "config", "", "Configuration YAML file")
+	flag.Parse()
+	if len(configName) == 0 {
+		fmt.Println("Missing commandline argument: -config configfile.yaml")
+		os.Exit(1)
+	}
+
+	var cfg config.Config
+	err := configor.Load(&cfg, configName)
+	// https://github.com/jinzhu/configor/issues/40
+	if err != nil && !strings.Contains(err.Error(), "should be struct") {
+		fmt.Printf("Failed to read config: %v", err)
+		os.Exit(1)
+	}
+
+	err = config.CheckConfig(cfg)
+	if err != nil && !strings.Contains(err.Error(), "should be struct") {
+		fmt.Printf("Invalid config: %v", err)
+		os.Exit(1)
+	}
+
+	// Logger config
+	err = config.ConfigureLogging(cfg)
+	if err != nil && !strings.Contains(err.Error(), "should be struct") {
+		fmt.Printf("Invalid logging config: %v", err)
+		os.Exit(1)
+	}
+	log.WithFields(cfg.LogFields()).Info("Starting server")
+}
+
+
 
 type ErrorObject struct {
 	Error string `json:"error"`
