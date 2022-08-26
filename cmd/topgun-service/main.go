@@ -43,7 +43,7 @@ func main() {
 	defer cancel()
 
 	// Signal to stop the leaderboard service
-	//svc.Stop()
+	svc.Stop()
 
 	// Stop the api/web service
 	web.Stop(ctx)
@@ -51,7 +51,6 @@ func main() {
 	// Optionally, you could run srv.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
 	// to finalize based on context cancellation.
-	log.Info("Stopping server")
 	os.Exit(0)
 }
 

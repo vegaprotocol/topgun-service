@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 	"strconv"
-	"sync"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -19,7 +18,6 @@ type Service struct {
 	router *mux.Router
 	http   *http.Server
 	lb     *leaderboard.Service
-	mu     sync.Mutex
 }
 
 func NewAPIService(cfg config.Config, lb *leaderboard.Service) *Service {
@@ -80,19 +78,18 @@ func (s *Service) leaderboardHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) Start() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
+	log.Infof("Starting API service")
 	if err := s.http.ListenAndServe(); err != nil && err.Error() != "http: Server closed" {
 		log.WithError(err).Warn("Failed to serve")
 	}
 }
 
 func (s *Service) Stop(ctx context.Context) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	s.http.Shutdown(ctx)
+	err := s.http.Shutdown(ctx)
+	if err != nil {
+		log.WithError(err)
+	}
+	log.Infof("API service stopped")
 }
 
 func GetQuery(r *http.Request, key string) string {
