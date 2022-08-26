@@ -15,9 +15,9 @@ import (
 )
 
 type Service struct {
+	cfg    config.Config
 	router *mux.Router
 	http   *http.Server
-	cfg    config.Config
 	lb     *leaderboard.Service
 	mu     sync.Mutex
 }
@@ -88,14 +88,10 @@ func (s *Service) Start() {
 	}
 }
 
-func (s *Service) Stop() {
+func (s *Service) Stop(ctx context.Context) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	// Doesn't block if no connections, but will otherwise wait
-	// until the timeout deadline.
-	ctx, cancel := context.WithTimeout(context.Background(), s.cfg.GracefulShutdownTimeout)
-	defer cancel()
 	s.http.Shutdown(ctx)
 }
 

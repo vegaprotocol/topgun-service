@@ -133,6 +133,9 @@ func (s *Service) update() {
 		return
 	}
 
+	GetAccountBalance()
+
+
 	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
 }

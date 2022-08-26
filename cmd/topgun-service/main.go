@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -17,13 +18,14 @@ import (
 
 func main() {
 	cfg := loadConfig()
-
 	svc := leaderboard.NewLeaderboardService(cfg)
 	web := api.NewAPIService(cfg, svc)
 
 	// Run the leaderboard service in its own goroutine
 	go func() {
 		svc.Start()
+	}()
+	go func() {
 		web.Start()
 	}()
 
@@ -35,10 +37,16 @@ func main() {
 	// Block until we receive our signal.
 	<-c
 
-	web.Stop()
+	// Doesn't block if no connections, but will otherwise wait
+	// until the timeout deadline.
+	ctx, cancel := context.WithTimeout(context.Background(), cfg.GracefulShutdownTimeout)
+	defer cancel()
 
 	// Signal to stop the leaderboard service
-	svc.Stop()
+	//svc.Stop()
+
+	// Stop the api/web service
+	web.Stop(ctx)
 
 	// Optionally, you could run srv.Shutdown in a goroutine and block on
 	// <-ctx.Done() if your application should wait for other services
