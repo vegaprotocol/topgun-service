@@ -109,17 +109,20 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		// 	balanceGeneralStr = "n/a"
 		// 	sortNum = -1.0e20
 		// }
-		utcNow := time.Now().UTC()
-		participants = append(participants, Participant{
-			PublicKey:     party.ID,
-			TwitterHandle: party.social,
-			TwitterUserID: party.twitterID,
-			Data:          []string{balanceGeneralStr},
-			sortNum:       sortNum,
-			CreatedAt:     utcNow,
-			UpdatedAt:     utcNow,
-			isBlacklisted: party.blacklisted,
-		})
+		if balanceGeneral > 0 {
+			utcNow := time.Now().UTC()
+			participants = append(participants, Participant{
+				PublicKey:     party.ID,
+				TwitterHandle: party.social,
+				TwitterUserID: party.twitterID,
+				Data:          []string{balanceGeneralStr},
+				sortNum:       sortNum,
+				CreatedAt:     utcNow,
+				UpdatedAt:     utcNow,
+				isBlacklisted: party.blacklisted,
+			})
+		}
+
 	}
 
 	sortFunc := func(i, j int) bool {
