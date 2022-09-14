@@ -71,7 +71,7 @@ func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social)
 				PublicKey:     party.ID,
 				TwitterHandle: party.social,
 				TwitterUserID: party.twitterID,
-				Data:          []string{"Withdrawn"},
+				Data:          []string{"Withdrawal Completed"},
 				CreatedAt:     utcNow,
 				UpdatedAt:     utcNow,
 				isBlacklisted: party.blacklisted,
