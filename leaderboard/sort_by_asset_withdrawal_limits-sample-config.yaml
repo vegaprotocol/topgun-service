@@ -1,0 +1,31 @@
+listen: 127.0.0.1:8000  # ip:port
+logFormat: text  # json, text (default), textcolour, textnocolour
+logLevel: Info
+LogMethodName: false
+vegaAssets:
+  - 3277b695f722dfa8a8788547cfca36133ee13fba38caf5f0bdb83ba11dff0fe7
+algorithm: ByAssetWithdrawalLimit
+algorithmConfig:
+defaultDisplay: Participated
+defaultSort: Participated
+description: A Withdrawals Incentive
+gracefulShutdownTimeout: 5s
+headers:
+  - Participated
+socialURL:
+  scheme: https
+  host: europe-west1-vegaprotocol.cloudfunctions.net
+  path: /smv/parties
+vegaGraphQLURL:
+  scheme: https
+  host: api.n12.testnet.vega.xyz
+  path: /graphql
+vegaPoll: 30s
+startTime: 2022-09-14T09:00:00Z
+endTime: 2022-09-16T16:00:00Z
+mongoConnectionString: mongodb+srv://not-required
+mongoCollectionName: not-required
+mongoDatabaseName: not-required
+snapshotEnabled: true
+twitterBlacklist:
+  1355884110619828111: hello_world
