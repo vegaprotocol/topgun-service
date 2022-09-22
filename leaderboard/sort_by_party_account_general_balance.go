@@ -27,10 +27,10 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
 
-	gqlQueryPartiesAccounts := `query($assetId: String!) {
+	gqlQueryPartiesAccounts := `query($assetId: ID) {
 		parties {
 			id
-			accounts(asset: $assetId){
+			accounts(assetId: $assetId){
 				asset {
 					id
 					symbol
