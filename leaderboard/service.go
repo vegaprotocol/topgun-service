@@ -75,7 +75,6 @@ func (s *Service) Start() {
 		LastUpdate:     util.UnixTimestampUtcNowFormatted(),
 		Status:         competitionLoading,
 		Participants:   []Participant{},
-		blacklisted:    []Participant{},
 	}
 	s.board = newBoard
 
@@ -134,10 +133,32 @@ func (s *Service) update() {
 	}
 
 	participants := SocialToParticipants(socials)
+	participants, err := RankByAccountBalances(participants)
+	if err != nil {
+		log.WithError(err).Error("Ranking by Account Balances failed")
+	}
 
-	// check configuration for this leaderboard, call appropriate algo/filters 
-	GetAccountBalance()
+	s.mu.Lock()
+	newBoard := Leaderboard{
+		Version:        1,
+		Assets:         s.cfg.VegaAssets,
+		DefaultDisplay: s.cfg.DefaultDisplay,
+		DefaultSort:    s.cfg.DefaultSort,
+		Description:    s.cfg.Description,
+		Headers:        s.cfg.Headers,
+		LastUpdate:     util.UnixTimestampUtcNowFormatted(),
+		Status:         "ok",
+	}
+	// Seems like sometime the participants list is empty
+	// in that case we just reuse the previous
+	// board participants
+	if len(participants) > 0 {
+		newBoard.Participants = participants
+	} else {
+		newBoard.Participants = s.board.Participants
+	}
 
+	s.board = newBoard
 	s.mu.Unlock()
 	log.WithFields(log.Fields{"participants": len(s.board.Participants)}).Info("Leaderboard updated")
 }
