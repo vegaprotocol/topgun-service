@@ -47,6 +47,13 @@ type Withdrawal struct {
 	Status     string    `json:"status"`
 }
 
+type Transfer struct {
+	Id        string    `json:"id"`
+	Amount    string    `json:"amount"`
+	Asset     Asset     `json:"asset"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
 type Order struct {
 	Id        string    `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -101,6 +108,7 @@ type Party struct {
 	Deposits    []Deposit            `json:"deposits"`
 	Orders      []Order              `json:"orders"`
 	Trades      []Trade              `json:"trades"`
+	Transfers   []Transfer           `json:"transfers"`
 	Votes       []PartyVote          `json:"votes"`
 	Withdrawals []Withdrawal         `json:"withdrawals"`
 	LPs         []LiquidityProvision `json:"liquidityProvisions"`

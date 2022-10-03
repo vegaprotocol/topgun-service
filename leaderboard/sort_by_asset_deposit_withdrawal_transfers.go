@@ -125,10 +125,9 @@ func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social)
 				}
 
 				if w.Asset.Id == s.cfg.VegaAssets[0] &&
-					w.Status == "STATUS_FINALIZED" &&
 					amount >= minTransferThreshold &&
-					w.CreatedAt.After(s.cfg.StartTime) &&
-					w.CreatedAt.Before(s.cfg.EndTime) {
+					w.Timestamp.After(s.cfg.StartTime) &&
+					w.Timestamp.Before(s.cfg.EndTime) {
 					transferCount++
 					fmt.Println(transferCount)
 				}
