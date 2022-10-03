@@ -117,7 +117,7 @@ func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social)
 
 		for _, party := range sParties {
 			transferCount := 0
-			for _, w := range party.transfers {
+			for _, w := range party.Transfers {
 				// string to int
 				amount, err := strconv.Atoi(w.Amount)
 				if err != nil {
