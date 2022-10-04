@@ -66,7 +66,7 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 		}
 
 		var sortNum float64
-		transferCountStr := strconv.FormatFloat(transferCount, 'f', int(decimalPlaces), 32)
+		transferCountStr := strconv.FormatFloat(float64(transferCount), 'f', int(0), 32)
 		sortNum = float64(transferCount)
 
 		if transferCount > 4 {
