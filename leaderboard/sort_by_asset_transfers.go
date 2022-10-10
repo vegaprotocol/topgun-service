@@ -12,7 +12,7 @@ import (
 
 func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Participant, error) {
 	// The minimum number of unique withdrawals needed to achieve this reward
-	minTransferThreshold := 49
+	minTransferThreshold := 0
 
 	gqlQuery := `query {
 		parties {
@@ -42,7 +42,7 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 		nil,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get list of parties: %w", err)
+		fmt.Errorf("failed to get list of parties: %w", err)
 	}
 
 	sParties := socialParties(socials, parties)
@@ -69,7 +69,7 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 		transferCountStr := strconv.FormatFloat(float64(transferCount), 'f', int(0), 32)
 		sortNum = float64(transferCount)
 
-		if transferCount > 4 {
+		if transferCount > 0 {
 			utcNow := time.Now().UTC()
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
