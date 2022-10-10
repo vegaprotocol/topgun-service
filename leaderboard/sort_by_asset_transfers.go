@@ -49,25 +49,29 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 		return nil, fmt.Errorf("failed to get list of parties: %w", err)
 	}
 
-	fmt.Println(parties)
-
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
 	for _, party := range sParties {
 		transferCount := 0
-		for _, w := range party.Transfers {
-			// string to int
-			amount, err := strconv.Atoi(w.Amount)
-			if err != nil {
-				fmt.Errorf("failed to convert Transfer amount to string", err)
+		if len(party.TransfersConnection.Edges) != 0 {
+			fmt.Println(party.TransfersConnection)
+			for _, w := range party.TransfersConnection.Edges {
+				// string to int
+				amount, err := strconv.Atoi(w.Node.Amount)
+				if err != nil {
+					fmt.Errorf("failed to convert Transfer amount to string", err)
+				}
+				fmt.Println(w.Node.Asset.Id)
+				fmt.Println(amount)
+				fmt.Println(w.Node.Timestamp)
+				if w.Node.Asset.Id == s.cfg.VegaAssets[0] &&
+					amount >= minTransferThreshold &&
+					w.Node.Timestamp.After(s.cfg.StartTime) &&
+					w.Node.Timestamp.Before(s.cfg.EndTime) {
+					transferCount++
+				}
 			}
 
-			if w.Asset.Id == s.cfg.VegaAssets[0] &&
-				amount >= minTransferThreshold &&
-				w.Timestamp.After(s.cfg.StartTime) &&
-				w.Timestamp.Before(s.cfg.EndTime) {
-				transferCount++
-			}
 		}
 
 		var sortNum float64
