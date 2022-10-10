@@ -14,18 +14,22 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 	// The minimum number of unique withdrawals needed to achieve this reward
 	minTransferThreshold := 0
 
-	gqlQuery := `query {
+	gqlQueryPartiesAccounts := `query{
 		parties {
+		  id
 		  transfersConnection {
 			edges {
 			  node {
 				id
-				fromAccountType 
+				fromAccountType
 				toAccountType
 				from
-				  amount
+				amount
 				timestamp
-				asset {id, name}
+				asset {
+				  id
+				  name
+				}
 			  }
 			}
 		  }
@@ -37,13 +41,15 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 	parties, err := getParties(
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
-		gqlQuery,
+		gqlQueryPartiesAccounts,
 		map[string]string{"assetId": s.cfg.VegaAssets[0]},
 		nil,
 	)
 	if err != nil {
-		fmt.Errorf("failed to get list of parties: %w", err)
+		return nil, fmt.Errorf("failed to get list of parties: %w", err)
 	}
+
+	fmt.Println(parties)
 
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
@@ -53,7 +59,7 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 			// string to int
 			amount, err := strconv.Atoi(w.Amount)
 			if err != nil {
-				fmt.Errorf("failed to convert Withdrawal amount to string", err)
+				fmt.Errorf("failed to convert Transfer amount to string", err)
 			}
 
 			if w.Asset.Id == s.cfg.VegaAssets[0] &&
@@ -61,7 +67,6 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 				w.Timestamp.After(s.cfg.StartTime) &&
 				w.Timestamp.Before(s.cfg.EndTime) {
 				transferCount++
-				fmt.Println(transferCount)
 			}
 		}
 
