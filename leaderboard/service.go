@@ -177,6 +177,8 @@ func (s *Service) update() {
 		p, err = s.sortByAssetDepositWithdrawal(socials)
 	case "ByAssetWithdrawalLimit":
 		p, err = s.sortByAssetWithdrawalLimit(socials)
+	case "ByAssetTransfers":
+		p, err = s.sortByAssetTransfers(socials)
 	case "BySocialRegistration":
 		p, err = s.sortBySocialRegistration(s.verifier.List())
 	case "ByPartyAccountMultipleBalance":
