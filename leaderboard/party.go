@@ -47,6 +47,28 @@ type Withdrawal struct {
 	Status     string    `json:"status"`
 }
 
+type TransfersConnection struct {
+	Edges []Edge `json:"edges"`
+}
+
+type Edge struct {
+	Node Node `json:"node"`
+}
+
+type Node struct {
+	Id        string    `json:"id"`
+	Amount    string    `json:"amount"`
+	Asset     Asset     `json:"asset"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
+type Transfer struct {
+	Id        string    `json:"id"`
+	Amount    string    `json:"amount"`
+	Asset     Asset     `json:"asset"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
 type Order struct {
 	Id        string    `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -96,17 +118,18 @@ type LiquidityProvision struct {
 }
 
 type Party struct {
-	ID          string               `json:"id"`
-	Accounts    []Account            `json:"accounts"`
-	Deposits    []Deposit            `json:"deposits"`
-	Orders      []Order              `json:"orders"`
-	Trades      []Trade              `json:"trades"`
-	Votes       []PartyVote          `json:"votes"`
-	Withdrawals []Withdrawal         `json:"withdrawals"`
-	LPs         []LiquidityProvision `json:"liquidityProvisions"`
-	social      string
-	twitterID   int64
-	blacklisted bool
+	ID                  string               `json:"id"`
+	Accounts            []Account            `json:"accounts"`
+	Deposits            []Deposit            `json:"deposits"`
+	Orders              []Order              `json:"orders"`
+	Trades              []Trade              `json:"trades"`
+	TransfersConnection TransfersConnection  `json:"transfersConnection"`
+	Votes               []PartyVote          `json:"votes"`
+	Withdrawals         []Withdrawal         `json:"withdrawals"`
+	LPs                 []LiquidityProvision `json:"liquidityProvisions"`
+	social              string
+	twitterID           int64
+	blacklisted         bool
 }
 
 type Market struct {

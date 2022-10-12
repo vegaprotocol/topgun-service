@@ -27,12 +27,14 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
 
-	gqlQueryPartiesAccounts := `query($assetId: String!) {
+	gqlQueryPartiesAccounts := `query($assetId: ID) {
 		parties {
 			id
-			accounts(asset: $assetId){
+			accounts(assetId: $assetId){
 				asset {
+					id
 					symbol
+					decimals
 				}
 				balance
 				type
@@ -95,7 +97,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		// 	}
 		// }
 
-		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "General", "Margin")
+		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
 		var sortNum float64
 		// var balanceGeneralStr string
 		// if tradeCount > 0 {
@@ -107,17 +109,20 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		// 	balanceGeneralStr = "n/a"
 		// 	sortNum = -1.0e20
 		// }
-		utcNow := time.Now().UTC()
-		participants = append(participants, Participant{
-			PublicKey:     party.ID,
-			TwitterHandle: party.social,
-			TwitterUserID: party.twitterID,
-			Data:          []string{balanceGeneralStr},
-			sortNum:       sortNum,
-			CreatedAt:     utcNow,
-			UpdatedAt:     utcNow,
-			isBlacklisted: party.blacklisted,
-		})
+		if balanceGeneral > 0 {
+			utcNow := time.Now().UTC()
+			participants = append(participants, Participant{
+				PublicKey:     party.ID,
+				TwitterHandle: party.social,
+				TwitterUserID: party.twitterID,
+				Data:          []string{balanceGeneralStr},
+				sortNum:       sortNum,
+				CreatedAt:     utcNow,
+				UpdatedAt:     utcNow,
+				isBlacklisted: party.blacklisted,
+			})
+		}
+
 	}
 
 	sortFunc := func(i, j int) bool {

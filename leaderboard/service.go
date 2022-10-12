@@ -167,10 +167,18 @@ func (s *Service) update() {
 		p, err = s.sortByPartyAccountGeneralProfit(socials, true)
 	case "ByPartyGovernanceVotes":
 		p, err = s.sortByPartyGovernanceVotes(socials)
+	case "ByPartyGovernanceVotedList":
+		p, err = s.sortByPartyGovernanceVotedList(socials)
+	case "ByLPCommittedList":
+		p, err = s.sortByLPCommittedList(socials)
 	case "ByLPEquitylikeShare":
 		p, err = s.sortByLPEquitylikeShare(socials)
 	case "ByAssetDepositWithdrawal":
 		p, err = s.sortByAssetDepositWithdrawal(socials)
+	case "ByAssetWithdrawalLimit":
+		p, err = s.sortByAssetWithdrawalLimit(socials)
+	case "ByAssetTransfers":
+		p, err = s.sortByAssetTransfers(socials)
 	case "BySocialRegistration":
 		p, err = s.sortBySocialRegistration(s.verifier.List())
 	case "ByPartyAccountMultipleBalance":

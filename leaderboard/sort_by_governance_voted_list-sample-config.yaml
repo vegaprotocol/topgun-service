@@ -1,0 +1,28 @@
+listen: 127.0.0.1:8000  # ip:port
+logFormat: text  # json, text (default), textcolour, textnocolour
+logLevel: Info
+LogMethodName: false
+vegaAssets:
+  - Vega
+algorithm: ByPartyGovernanceVotedList
+defaultDisplay: Vote Count
+defaultSort: Vote Count
+description: A Trading Incentive on the Cosmos Market
+gracefulShutdownTimeout: 5s
+headers:
+  - Vote Count
+socialURL:
+  scheme: https
+  host: europe-west1-vegaprotocol.cloudfunctions.net
+  path: /smv/parties
+vegaGraphQLURL:
+  scheme: https
+  host: lb.testnet.vega.xyz
+  path: /query
+vegaPoll: 30s
+startTime: 2022-08-01T10:00:00Z
+endTime: 2022-08-08T16:30:00Z
+mongoConnectionString: mongodb+srv://not-required
+mongoCollectionName: not-required
+mongoDatabaseName: not-required
+snapshotEnabled: true
