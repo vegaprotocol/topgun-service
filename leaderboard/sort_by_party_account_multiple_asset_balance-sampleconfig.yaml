@@ -1,0 +1,31 @@
+listen: 127.0.0.1:8000  # ip:port
+logFormat: text  # json, text (default), textcolour, textnocolour
+logLevel: Info
+LogMethodName: false
+vegaAssets: 
+- 73183305a3af30702d71fe88def1dfbae7e3718c57ebf45c6c6c36e980910342
+- 434b502cabb7a9a36d3036a599d589537da293d8bbab224692629351a7926249
+- 9e0bb9bd7ea2ec51efcdc98b432b6f0b055b2ed7973cfac9b44899d6e6c5deab
+algorithm: ByPartyAccountMultipleBalance
+defaultDisplay: Balance
+defaultSort: Balance
+description: A trading competition
+gracefulShutdownTimeout: 5s
+headers:
+  - Balance
+socialURL:
+  scheme: https
+  host: europe-west1-vegaprotocol.cloudfunctions.net
+  path: /smv/parties
+vegaGraphQLURL:
+  scheme: https
+  host: api.n12.testnet.vega.xyz
+  path: /graphql
+vegaPoll: 30s
+startTime: 2022-10-25T09:00:00Z
+endTime: 2022-10-29T14:00:00Z
+mongoConnectionString: mongodb+srv://not-required
+mongoCollectionName: not-required
+mongoDatabaseName: not-required
+twitterBlacklist:
+  1355884110619828111: hello_world
