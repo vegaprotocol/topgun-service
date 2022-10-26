@@ -41,7 +41,6 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 
 	// filter parties and add social handles
 	sParties := socialParties(socials, parties)
-	fmt.Println(sParties)
 	participants := []Participant{}
 	for _, party := range sParties {
 		balanceMultiAsset := 0.0
