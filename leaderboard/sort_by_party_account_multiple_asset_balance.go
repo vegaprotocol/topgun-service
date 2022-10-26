@@ -45,7 +45,6 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 	for _, party := range sParties {
 		balanceMultiAsset := 0.0
 		for _, acc := range party.Accounts {
-			fmt.Println(party.Accounts)
 			for _, asset := range s.cfg.VegaAssets {
 				if acc.Asset.Id == asset {
 					b := party.Balance(acc.Asset.Id, acc.Asset.Decimals, acc.Type)
