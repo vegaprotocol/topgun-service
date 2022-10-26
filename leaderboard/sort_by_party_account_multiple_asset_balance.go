@@ -41,14 +41,15 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 
 	// filter parties and add social handles
 	sParties := socialParties(socials, parties)
-
+	fmt.Println(sParties)
 	participants := []Participant{}
 	for _, party := range sParties {
 		balanceMultiAsset := 0.0
 		for _, acc := range party.Accounts {
+			fmt.Println(party.Accounts)
 			for _, asset := range s.cfg.VegaAssets {
 				if acc.Asset.Id == asset {
-					b := party.Balance(acc.Asset.Id, acc.Asset.Decimals, "ACCOUNT_TYPE_GENERAL")
+					b := party.Balance(acc.Asset.Id, acc.Asset.Decimals, acc.Type)
 					balanceMultiAsset += b
 				}
 			}
