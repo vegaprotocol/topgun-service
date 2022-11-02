@@ -76,6 +76,8 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 
 	participants := []Participant{}
 	for _, party := range sParties {
+		fmt.Println(party.ID)
+		fmt.Println(party.social)
 		// Add trades for each party, one by one, to avoid GraphQL query timeouts.
 		log.WithFields(log.Fields{"partyID": party.ID}).Debug("Getting trades for party")
 		// partyTrades, err := getParties(
@@ -106,6 +108,7 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		// }
 
 		balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
+		fmt.Println(balanceGeneral)
 		var sortNum float64
 		// var balanceGeneralStr string
 		// if tradeCount > 0 {
