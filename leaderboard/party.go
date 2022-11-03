@@ -2,6 +2,7 @@ package leaderboard
 
 import (
 	"context"
+	"fmt"
 	"math"
 	"net/http"
 	"strconv"
@@ -48,18 +49,11 @@ type Withdrawal struct {
 }
 
 type TransfersConnection struct {
-	Edges []Edge `json:"edges"`
+	Edges []TransfersEdge `json:"edges"`
 }
 
-type Edge struct {
-	Node Node `json:"node"`
-}
-
-type Node struct {
-	Id        string    `json:"id"`
-	Amount    string    `json:"amount"`
-	Asset     Asset     `json:"asset"`
-	Timestamp time.Time `json:"timestamp"`
+type TransfersEdge struct {
+	Transfer Transfer `json:"node"`
 }
 
 type Transfer struct {
@@ -115,6 +109,14 @@ type LiquidityProvision struct {
 	Reference        string    `json:"reference"`
 	Buys             []Buys    `json:"buys"`
 	Sells            []Sells   `json:"sells"`
+}
+
+type PartiesConnection struct {
+	Edges []PartiesEdge `json:"edges"`
+}
+
+type PartiesEdge struct {
+	Parties []Party `json:"node"`
 }
 
 type Party struct {
@@ -191,7 +193,7 @@ func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int) float64 
 }
 
 type PartyList struct {
-	Parties []Party `json:"parties"`
+	PartiesConnection PartiesConnection `json:"partiesConnection"`
 }
 
 func getParties(
@@ -216,7 +218,8 @@ func getParties(
 	if err := client.Run(ctx, req, &response); err != nil {
 		return nil, err
 	}
-	return response.Parties, nil
+	fmt.Println(response.PartiesConnection.Edges.Parties)
+	return response.PartiesConnection.Edges.Parties, nil
 }
 
 func socialParties(socials map[string]verifier.Social, parties []Party) []Party {

@@ -13,20 +13,28 @@ import (
 
 func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.Social) ([]Participant, error) {
 	// Query all accounts for parties on Vega network
-	gqlQueryPartiesAccounts := `query {
-		parties {
-			id
-			accounts {
-				asset {
-					id
-					symbol
-					decimals
+	gqlQueryPartiesAccounts := `{
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  accountsConnection {
+				edges {
+				  node {
+					asset {
+					  id
+					  symbol
+					  decimals
+					}
+					balance
+					type
+				  }
 				}
-				balance
-				type
+			  }
 			}
+		  }
 		}
-	}`
+	  }`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
