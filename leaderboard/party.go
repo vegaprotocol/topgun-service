@@ -25,6 +25,14 @@ type AssetSource struct {
 	Name string `json:"__typename"`
 }
 
+type AccountsConnection struct {
+	Edges []AccountsEdge `json:"edges"`
+}
+
+type AccountsEdge struct {
+	Account Account `json:"node"`
+}
+
 type Account struct {
 	Type    string `json:"type"`
 	Balance string `json:"balance"`
@@ -116,12 +124,12 @@ type PartiesConnection struct {
 }
 
 type PartiesEdge struct {
-	Parties []Party `json:"node"`
+	Party Party `json:"node"`
 }
 
 type Party struct {
 	ID                  string               `json:"id"`
-	Accounts            []Account            `json:"accounts"`
+	AccountsConnection  AccountsConnection   `json:"accountsConnection"`
 	Deposits            []Deposit            `json:"deposits"`
 	Orders              []Order              `json:"orders"`
 	Trades              []Trade              `json:"trades"`
@@ -152,9 +160,9 @@ func (p *Party) Balance(assetId string, decimalPlaces int, accountTypes ...strin
 	var accu float64
 	accu = 0
 
-	for _, acc := range p.Accounts {
-		if acc.Asset.Id == assetId && hasString(accountTypes, acc.Type) {
-			v, err := strconv.ParseFloat(acc.Balance, 64)
+	for _, acc := range p.AccountsConnection.Edges {
+		if acc.Account.Asset.Id == assetId && hasString(accountTypes, acc.Account.Type) {
+			v, err := strconv.ParseFloat(acc.Account.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
 					"Failed to parse %s/%s balance [Balance]", assetId, accountTypes)
@@ -192,7 +200,7 @@ func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int) float64 
 	return total
 }
 
-type PartyList struct {
+type PartiesResponse struct {
 	PartiesConnection PartiesConnection `json:"partiesConnection"`
 }
 
@@ -202,7 +210,7 @@ func getParties(
 	gqlQuery string,
 	vars map[string]string,
 	cli *http.Client,
-) ([]Party, error) {
+) ([]PartiesEdge, error) {
 
 	if cli == nil {
 		cli = &http.Client{Timeout: time.Second * 180}
@@ -213,31 +221,32 @@ func getParties(
 	for key, value := range vars {
 		req.Var(key, value)
 	}
-
-	var response PartyList
+	fmt.Println(gqlQuery)
+	var response PartiesResponse
 	if err := client.Run(ctx, req, &response); err != nil {
 		return nil, err
 	}
-	fmt.Println(response.PartiesConnection.Edges.Parties)
-	return response.PartiesConnection.Edges.Parties, nil
+	fmt.Println(response)
+	fmt.Println(response.PartiesConnection.Edges)
+	return response.PartiesConnection.Edges, nil
 }
 
-func socialParties(socials map[string]verifier.Social, parties []Party) []Party {
+func socialParties(socials map[string]verifier.Social, parties []PartiesEdge) []Party {
 	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
 	sp := make([]Party, 0, len(socials))
 	for partyID, social := range socials {
 		found := false
 		for _, p := range parties {
-			if p.ID == partyID {
+			if p.Party.ID == partyID {
 				log.WithFields(log.Fields{
 					"partyID":       partyID,
 					"social":        social,
-					"account_count": len(p.Accounts),
+					"account_count": len(p.Party.AccountsConnection.Edges),
 				}).Debug("Social (found)")
-				p.social = social.TwitterHandle
-				p.twitterID = social.TwitterUserID
-				p.blacklisted = social.IsBlacklisted
-				sp = append(sp, p)
+				p.Party.social = social.TwitterHandle
+				p.Party.twitterID = social.TwitterUserID
+				p.Party.blacklisted = social.IsBlacklisted
+				sp = append(sp, p.Party)
 				found = true
 				break
 			}

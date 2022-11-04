@@ -57,17 +57,17 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 			fmt.Println(party.TransfersConnection)
 			for _, w := range party.TransfersConnection.Edges {
 				// string to int
-				amount, err := strconv.Atoi(w.Node.Amount)
+				amount, err := strconv.Atoi(w.Transfer.Amount)
 				if err != nil {
 					fmt.Errorf("failed to convert Transfer amount to string", err)
 				}
-				fmt.Println(w.Node.Asset.Id)
+				fmt.Println(w.Transfer.Asset.Id)
 				fmt.Println(amount)
-				fmt.Println(w.Node.Timestamp)
-				if w.Node.Asset.Id == s.cfg.VegaAssets[0] &&
+				fmt.Println(w.Transfer.Timestamp)
+				if w.Transfer.Asset.Id == s.cfg.VegaAssets[0] &&
 					amount >= minTransferThreshold &&
-					w.Node.Timestamp.After(s.cfg.StartTime) &&
-					w.Node.Timestamp.Before(s.cfg.EndTime) {
+					w.Transfer.Timestamp.After(s.cfg.StartTime) &&
+					w.Transfer.Timestamp.Before(s.cfg.EndTime) {
 					transferCount++
 				}
 			}

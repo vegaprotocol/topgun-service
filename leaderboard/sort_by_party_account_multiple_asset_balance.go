@@ -13,7 +13,7 @@ import (
 
 func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.Social) ([]Participant, error) {
 	// Query all accounts for parties on Vega network
-	gqlQueryPartiesAccounts := `{
+	gqlQueryPartiesAccounts := `query(){
 		partiesConnection {
 		  edges {
 			node {
@@ -33,8 +33,8 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 			  }
 			}
 		  }
-		}
-	  }`
+	  }
+	}`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
@@ -52,10 +52,10 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 	participants := []Participant{}
 	for _, party := range sParties {
 		balanceMultiAsset := 0.0
-		for _, acc := range party.Accounts {
+		for _, acc := range party.AccountsConnection.Edges {
 			for _, asset := range s.cfg.VegaAssets {
-				if acc.Asset.Id == asset {
-					b := party.Balance(acc.Asset.Id, acc.Asset.Decimals, acc.Type)
+				if acc.Account.Asset.Id == asset {
+					b := party.Balance(acc.Account.Asset.Id, acc.Account.Asset.Decimals, acc.Account.Type)
 					balanceMultiAsset += b
 				}
 			}
