@@ -24,81 +24,111 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
 
-	gqlQueryPartiesAccounts := `query($assetId: String!) {
-			parties {
-				id
-				accounts(asset: $assetId){
+	gqlQueryPartiesAccounts := `query ($assetId: ID) {
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  accountsConnection(assetId: $assetId) {
+				edges {
+				  node {
 					asset {
-						id
-						symbol
+					  id
+					  symbol
 					}
 					balance
 					type
+				  }
 				}
-				deposits{
+			  }
+			  depositsConnection {
+				edges {
+				  node {
 					id
-					asset { 
-						id
-						name
-						decimals 
-						symbol 
+					asset {
+					  id
+					  name
+					  decimals
+					  symbol
 					}
 					status
 					createdTimestamp
 					creditedTimestamp
 					amount
+				  }
 				}
+			  }
 			}
-		}`
+		  }
+		}
+	  }`
 
 	if hasCommittedLP {
-		gqlQueryPartiesAccounts = `query($assetId: String!) {
-			parties {
-				id
-				accounts(asset: $assetId){
-					asset {
-						id
-						symbol
+		gqlQueryPartiesAccounts = `query ($assetId: ID) {
+			partiesConnection {
+			  edges {
+				node {
+				  id
+				  accountsConnection(assetId: $assetId) {
+					edges {
+					  node {
+						asset {
+						  id
+						  symbol
+						}
+						balance
+						type
+					  }
 					}
-					balance
-					type
-				}
-				deposits{
-					id
-					asset { 
+				  }
+				  depositsConnection {
+					edges {
+					  node {
 						id
-						name
-						decimals 
-						symbol 
+						asset {
+						  id
+						  name
+						  decimals
+						  symbol
+						}
+						status
+						createdTimestamp
+						creditedTimestamp
+						amount
+					  }
 					}
-					status
-					createdTimestamp
-					creditedTimestamp
-					amount
-				}
-				liquidityProvisions {
-					id
-					market { id, name }
-					commitmentAmount
-					createdAt 
-					reference
-					buys {
-						liquidityOrder {
+				  }
+				  liquidityProvisionsConnection {
+					edges {
+					  node {
+						id
+						market {
+						  id
+						}
+						commitmentAmount
+						createdAt
+						reference
+						buys {
+						  liquidityOrder {
 							reference
 							proportion
 							offset
+						  }
 						}
-					}
-					sells {
-						liquidityOrder {
+						sells {
+						  liquidityOrder {
 							reference
 							proportion
 							offset
+						  }
 						}
+					  }
 					}
+				  }
 				}
+			  }
 			}
-		}`
+		  }`
 	}
 
 	ctx := context.Background()
@@ -122,11 +152,11 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 		// Default is to rank by asset profit for all traders, inc directional (non LP)
 		// Optional flag to filter for parties that have LP on the configured market only
 		calculateBalance := false
-		if hasCommittedLP && party.LPs != nil && len(party.LPs) > 0 {
-			for _, lp := range party.LPs {
-				if lp.Market.ID == marketID {
+		if hasCommittedLP && party.LPsConnection.Edges != nil && len(party.LPsConnection.Edges) > 0 {
+			for _, lp := range party.LPsConnection.Edges {
+				if lp.LP.Market.ID == marketID {
 					calculateBalance = true
-					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPs)}).Info("Party has LPs on correct market")
+					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
 					break
 				}
 			}
@@ -180,5 +210,5 @@ func (s *Service) sortByPartyAccountGeneralProfit(socials map[string]verifier.So
 	}
 	sort.Slice(participants, sortFunc)
 
-	return participants,nil
+	return participants, nil
 }
