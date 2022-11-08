@@ -14,21 +14,25 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 	// The minimum number of unique withdrawals needed to achieve this reward
 	minTransferThreshold := 4
 
-	gqlQueryPartiesAccounts := `query{
-		parties {
-		  id
-		  transfersConnection {
-			edges {
-			  node {
-				id
-				fromAccountType
-				toAccountType
-				from
-				amount
-				timestamp
-				asset {
-				  id
-				  name
+	gqlQueryPartiesAccounts := `{
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  transfersConnection {
+				edges {
+				  node {
+					id
+					fromAccountType
+					toAccountType
+					from
+					amount
+					timestamp
+					asset {
+					  id
+					  name
+					}
+				  }
 				}
 			  }
 			}
