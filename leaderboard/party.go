@@ -87,9 +87,25 @@ type Transfer struct {
 	Timestamp time.Time `json:"timestamp"`
 }
 
+type OrdersConnection struct {
+	Edges []OrdersEdge `json:"edges"`
+}
+
+type OrdersEdge struct {
+	Order Order `json:"node"`
+}
+
 type Order struct {
 	Id        string    `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
+}
+
+type TradesConnection struct {
+	Edges []TradesEdge `json:"edges"`
+}
+
+type TradesEdge struct {
+	Trade Trade `json:"node"`
 }
 
 type Trade struct {
@@ -163,8 +179,8 @@ type Party struct {
 	ID                    string                        `json:"id"`
 	AccountsConnection    AccountsConnection            `json:"accountsConnection"`
 	DepositsConnection    DepositsConnection            `json:"depositsConnection"`
-	Orders                []Order                       `json:"orders"`
-	Trades                []Trade                       `json:"trades"`
+	OrdersConnection      OrdersConnection              `json:"ordersConnection"`
+	TradesConnection      TradesConnection              `json:"trades"Connection`
 	TransfersConnection   TransfersConnection           `json:"transfersConnection"`
 	VotesConnection       VotesConnection               `json:"votesConnection"`
 	WithdrawalsConnection WithdrawalsConnection         `json:"withdrawalsConnection"`
