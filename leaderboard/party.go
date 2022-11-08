@@ -39,6 +39,14 @@ type Account struct {
 	Asset   Asset  `json:"asset"`
 }
 
+type DepositsConnection struct {
+	Edges []DepositsEdge `json:"edges"`
+}
+
+type DepositsEdge struct {
+	Deposit Deposit `json:"node"`
+}
+
 type Deposit struct {
 	Id         string    `json:"id"`
 	Amount     string    `json:"amount"`
@@ -136,18 +144,18 @@ type PartiesEdge struct {
 }
 
 type Party struct {
-	ID                  string               `json:"id"`
-	AccountsConnection  AccountsConnection   `json:"accountsConnection"`
-	Deposits            []Deposit            `json:"deposits"`
-	Orders              []Order              `json:"orders"`
-	Trades              []Trade              `json:"trades"`
-	TransfersConnection TransfersConnection  `json:"transfersConnection"`
-	Votes               []PartyVote          `json:"votes"`
-	WithdrawalsConnection WithdrawalsConnection        `json:"withdrawals"`
-	LPs                 []LiquidityProvision `json:"liquidityProvisions"`
-	social              string
-	twitterID           int64
-	blacklisted         bool
+	ID                    string                `json:"id"`
+	AccountsConnection    AccountsConnection    `json:"accountsConnection"`
+	DepositsConnection    DepositsConnection    `json:"depositsConnection"`
+	Orders                []Order               `json:"orders"`
+	Trades                []Trade               `json:"trades"`
+	TransfersConnection   TransfersConnection   `json:"transfersConnection"`
+	Votes                 []PartyVote           `json:"votes"`
+	WithdrawalsConnection WithdrawalsConnection `json:"withdrawalsConnection"`
+	LPs                   []LiquidityProvision  `json:"liquidityProvisions"`
+	social                string
+	twitterID             int64
+	blacklisted           bool
 }
 
 type Market struct {
