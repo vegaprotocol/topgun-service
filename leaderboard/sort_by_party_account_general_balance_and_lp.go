@@ -24,39 +24,53 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
 
-	gqlQueryPartiesAccounts := `query($assetId: String!) {
-		parties {
-			id
-			accounts(asset: $assetId){
-				asset {
-					symbol
+	gqlQueryPartiesAccounts := `query ($assetId: ID) {
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  accountsConnection(assetId: $assetId) {
+				edges {
+				  node {
+					asset {
+					  symbol
+					}
+					balance
+					type
+				  }
 				}
-				balance
-				type
+			  }
+			  liquidityProvisionsConnection {
+				edges {
+				  node {
+					id
+					market {
+					  id
+					}
+					commitmentAmount
+					createdAt
+					reference
+					buys {
+					  liquidityOrder {
+						reference
+						proportion
+						offset
+					  }
+					}
+					sells {
+					  liquidityOrder {
+						reference
+						proportion
+						offset
+					  }
+					}
+				  }
+				}
+			  }
 			}
-			liquidityProvisions {
-				id
-				market { id, name }
-				commitmentAmount
-				createdAt 
-				reference
-				buys {
-					liquidityOrder {
-						reference
-						proportion
-						offset
-					}
-				}
-				sells {
-					liquidityOrder {
-						reference
-						proportion
-						offset
-					}
-				}
-    		}
+		  }
 		}
-	}`
+	  }`
 
 	ctx := context.Background()
 	parties, err := getParties(
@@ -76,12 +90,12 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 	participants := []Participant{}
 	for _, party := range sParties {
 		// Check for matching parties who have committed LP :)
-		if party.LPs != nil && len(party.LPs) > 0 {
-			for _, lp := range party.LPs {
-				if lp.Market.ID == marketID {
-					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPs)}).Info("Party has LPs on correct market")
+		if party.LPsConnection.Edges != nil && len(party.LPsConnection.Edges) > 0 {
+			for _, lp := range party.LPsConnection.Edges {
+				if lp.LP.Market.ID == marketID {
+					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
 
-					balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces),"ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
+					balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")
 					var sortNum float64
 
 					balanceGeneralStr := strconv.FormatFloat(balanceGeneral, 'f', int(decimalPlaces), 32)
