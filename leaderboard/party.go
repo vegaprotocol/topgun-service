@@ -48,6 +48,14 @@ type Deposit struct {
 	Status     string    `json:"status"`
 }
 
+type WithdrawalsConnection struct {
+	Edges []WithdrawalsEdge `json:"edges"`
+}
+
+type WithdrawalsEdge struct {
+	Withdrawal Withdrawal `json:"node"`
+}
+
 type Withdrawal struct {
 	Amount     string    `json:"amount"`
 	Asset      Asset     `json:"asset"`
@@ -135,7 +143,7 @@ type Party struct {
 	Trades              []Trade              `json:"trades"`
 	TransfersConnection TransfersConnection  `json:"transfersConnection"`
 	Votes               []PartyVote          `json:"votes"`
-	Withdrawals         []Withdrawal         `json:"withdrawals"`
+	WithdrawalsConnection WithdrawalsConnection        `json:"withdrawals"`
 	LPs                 []LiquidityProvision `json:"liquidityProvisions"`
 	social              string
 	twitterID           int64

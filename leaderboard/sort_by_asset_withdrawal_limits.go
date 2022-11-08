@@ -14,18 +14,28 @@ func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social)
 	// The minimum number of unique withdrawals needed to achieve this reward
 	minWithdrawalThreshold := 2000
 
-	gqlQuery := `query {
-		parties{
-		  id
-		  withdrawals{
-			amount
-			createdTimestamp
-			createdTimestamp
-			status
-			asset {
+	gqlQuery := `{
+		partiesConnection {
+		  edges {
+			node {
 			  id
-			  symbol
-			  source { __typename }
+			  withdrawalsConnection {
+				edges {
+				  node {
+					amount
+					createdTimestamp
+					createdTimestamp
+					status
+					asset {
+					  id
+					  symbol
+					  source {
+						__typename
+					  }
+					}
+				  }
+				}
+			  }
 			}
 		  }
 		}
@@ -48,18 +58,18 @@ func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social)
 	participants := []Participant{}
 	for _, party := range sParties {
 		withdrawalCount := 0
-		for _, w := range party.Withdrawals {
+		for _, w := range party.WithdrawalsConnection.Edges {
 			// string to int
-			amount, err := strconv.Atoi(w.Amount)
+			amount, err := strconv.Atoi(w.Withdrawal.Amount)
 			if err != nil {
 				fmt.Errorf("failed to convert Withdrawal amount to string", err)
 			}
 
-			if w.Asset.Id == s.cfg.VegaAssets[0] &&
-				w.Status == "STATUS_FINALIZED" &&
+			if w.Withdrawal.Asset.Id == s.cfg.VegaAssets[0] &&
+				w.Withdrawal.Status == "STATUS_FINALIZED" &&
 				amount >= minWithdrawalThreshold &&
-				w.CreatedAt.After(s.cfg.StartTime) &&
-				w.CreatedAt.Before(s.cfg.EndTime) {
+				w.Withdrawal.CreatedAt.After(s.cfg.StartTime) &&
+				w.Withdrawal.CreatedAt.Before(s.cfg.EndTime) {
 				withdrawalCount++
 				fmt.Println(withdrawalCount)
 			}
