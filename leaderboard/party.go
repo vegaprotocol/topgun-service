@@ -129,6 +129,14 @@ type Sells struct {
 	LiquidityOrder LiquidityOrder `json:"liquidityOrder"`
 }
 
+type LiquidityProvisionsConnection struct {
+	Edges []LiquidityProvisionsEdge `json:"edges"`
+}
+
+type LiquidityProvisionsEdge struct {
+	LP LiquidityProvision `json:"node"`
+}
+
 type LiquidityProvision struct {
 	ID               string    `json:"id"`
 	Market           Market    `json:"market"`
@@ -152,15 +160,15 @@ type PartiesEdge struct {
 }
 
 type Party struct {
-	ID                    string                `json:"id"`
-	AccountsConnection    AccountsConnection    `json:"accountsConnection"`
-	DepositsConnection    DepositsConnection    `json:"depositsConnection"`
-	Orders                []Order               `json:"orders"`
-	Trades                []Trade               `json:"trades"`
-	TransfersConnection   TransfersConnection   `json:"transfersConnection"`
-	VotesConnection       VotesConnection       `json:"votesConnection"`
-	WithdrawalsConnection WithdrawalsConnection `json:"withdrawalsConnection"`
-	LPs                   []LiquidityProvision  `json:"liquidityProvisions"`
+	ID                    string                        `json:"id"`
+	AccountsConnection    AccountsConnection            `json:"accountsConnection"`
+	DepositsConnection    DepositsConnection            `json:"depositsConnection"`
+	Orders                []Order                       `json:"orders"`
+	Trades                []Trade                       `json:"trades"`
+	TransfersConnection   TransfersConnection           `json:"transfersConnection"`
+	VotesConnection       VotesConnection               `json:"votesConnection"`
+	WithdrawalsConnection WithdrawalsConnection         `json:"withdrawalsConnection"`
+	LPsConnection         LiquidityProvisionsConnection `json:"liquidityProvisionsConnection"`
 	social                string
 	twitterID             int64
 	blacklisted           bool
@@ -206,9 +214,9 @@ func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int) float64 
 	// Total deposits made in asset
 	var total float64
 	total = 0
-	for _, d := range p.Deposits {
-		if d.Asset.Id == asset && d.Status == "Finalized" {
-			amount, err := strconv.ParseFloat(d.Amount, 10)
+	for _, d := range p.DepositsConnection.Edges {
+		if d.Deposit.Asset.Id == asset && d.Deposit.Status == "Finalized" {
+			amount, err := strconv.ParseFloat(d.Deposit.Amount, 10)
 			if err != nil {
 				log.WithError(err).Error("Cannot parse the found epoch in delegation")
 			}
