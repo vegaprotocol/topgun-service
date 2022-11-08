@@ -97,6 +97,14 @@ type Trade struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+type VotesConnection struct {
+	Edges []VotesEdge `json:"edges"`
+}
+
+type VotesEdge struct {
+	Vote Vote `json:"node"`
+}
+
 type Vote struct {
 	Value    string    `json:"value"`
 	Datetime time.Time `json:"datetime"`
@@ -150,7 +158,7 @@ type Party struct {
 	Orders                []Order               `json:"orders"`
 	Trades                []Trade               `json:"trades"`
 	TransfersConnection   TransfersConnection   `json:"transfersConnection"`
-	Votes                 []PartyVote           `json:"votes"`
+	VotesConnection       VotesConnection       `json:"votesConnection"`
 	WithdrawalsConnection WithdrawalsConnection `json:"withdrawalsConnection"`
 	LPs                   []LiquidityProvision  `json:"liquidityProvisions"`
 	social                string
