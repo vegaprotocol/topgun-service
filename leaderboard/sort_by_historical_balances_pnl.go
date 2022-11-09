@@ -12,14 +12,15 @@ import (
 )
 
 type BalanceChangesResponse struct {
-	BalanceChangesConnection BalanceChangesConnection `json:"end"`
+	StartBalance BalanceChangesConnection `json:"start"`
+	EndBalance   BalanceChangesConnection `json:"end"`
 }
 
 func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verifier.Social) ([]Participant, error) {
 
 	gqlQuery := `{ 
 		start: balanceChanges(
-		  dateRange: {start: "1666812477000000000", end: "1666812477000000000"}
+		  dateRange: {start: startTime, end: "1666812477000000000"}
 		) {
 		  edges {
 			node {
@@ -31,7 +32,7 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 		  }
 		}
 		end: balanceChanges(
-		  dateRange: {start: "1666812477000000000"}
+		  dateRange: {start: startTime}
 		) {
 		  edges {
 			node {
@@ -46,20 +47,23 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 	client := graphql.NewClient(s.cfg.VegaGraphQLURL.String())
 	req := graphql.NewRequest(gqlQuery)
 	req.Header.Set("Cache-Control", "no-cache")
-
+	vars := map[string]string{"startTime": strconv.FormatInt(s.cfg.StartTime.Unix(), 10)}
+	for key, value := range vars {
+		req.Var(key, value)
+	}
 	var response BalanceChangesResponse
 	ctx := context.Background()
 	if err := client.Run(ctx, req, &response); err != nil {
 		return nil, fmt.Errorf("failed to get balance changes info: %w", err)
 	}
 
-	fmt.Println(response.BalanceChangesConnection.BalanceChangesEdges)
+	fmt.Println(response.EndBalance.BalanceChangesEdges)
 
 	parties := make([]Party, 0)
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
 	for _, party := range sParties {
-		for _, res := range response.BalanceChangesConnection.BalanceChangesEdges {
+		for _, res := range response.EndBalance.BalanceChangesEdges {
 			for _, asset := range s.cfg.VegaAssets {
 				if (asset == res.BalanceChanges.AssetId) && (res.BalanceChanges.PartyId == party.ID) {
 					sortNum, err := strconv.ParseFloat(res.BalanceChanges.Balance, 64)
