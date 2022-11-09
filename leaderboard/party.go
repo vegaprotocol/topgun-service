@@ -137,6 +137,21 @@ type Market struct {
 	Name string `json:"name"`
 }
 
+type BalanceChangesConnection struct {
+	BalanceChangesEdges []BalanceChangesEdge `json:"edges"`
+}
+
+type BalanceChangesEdge struct {
+	BalanceChanges BalanceChanges `json:"node"`
+}
+
+type BalanceChanges struct {
+	AssetId   string `json:"assetId"`
+	PartyId   string `json:"partyId"`
+	Balance   string `json:"balance"`
+	Timestamp string `json:"timestamp"`
+}
+
 func hasString(ss []string, s string) bool {
 	for _, v := range ss {
 		if s == v {
