@@ -18,9 +18,9 @@ type BalanceChangesResponse struct {
 
 func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verifier.Social) ([]Participant, error) {
 
-	gqlQuery := `{ 
+	gqlQuery := `query($startTime: Timestamp){ 
 		start: balanceChanges(
-		  dateRange: {start: startTime, end: "1666812477000000000"}
+		  dateRange: {start: $startTime, end: "1666812477000000000"}
 		) {
 		  edges {
 			node {
@@ -32,7 +32,7 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 		  }
 		}
 		end: balanceChanges(
-		  dateRange: {start: startTime}
+		  dateRange: {start: $startTime}
 		) {
 		  edges {
 			node {
@@ -63,10 +63,11 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
 	for _, party := range sParties {
-		for _, res := range response.EndBalance.BalanceChangesEdges {
-			for _, asset := range s.cfg.VegaAssets {
-				if (asset == res.BalanceChanges.AssetId) && (res.BalanceChanges.PartyId == party.ID) {
-					sortNum, err := strconv.ParseFloat(res.BalanceChanges.Balance, 64)
+		for _, resEnd := range response.EndBalance.BalanceChangesEdges {
+			for _, resStart := range response.StartBalance.BalanceChangesEdges {
+				if (s.cfg.VegaAssets[0] == resEnd.BalanceChanges.AssetId) && (resEnd.BalanceChanges.PartyId == party.ID) {
+					PnL := (resEnd.BalanceChanges.Balance - resStart.BalanceChanges.Balance)
+					sortNum, err := strconv.ParseFloat(resEnd.BalanceChanges.Balance, 64)
 					if err != nil {
 						fmt.Println(err)
 					} else {
@@ -75,14 +76,13 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 							PublicKey:     party.ID,
 							TwitterHandle: party.social,
 							TwitterUserID: party.twitterID,
-							Data:          []string{res.BalanceChanges.Balance},
+							Data:          []string{resEnd.BalanceChanges.Balance},
 							sortNum:       sortNum,
 							CreatedAt:     utcNow,
 							UpdatedAt:     utcNow,
 							isBlacklisted: party.blacklisted,
 						})
 					}
-
 				}
 			}
 		}
@@ -93,4 +93,8 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 	}
 	sort.Slice(participants, sortFunc)
 	return participants, nil
+}
+
+func typeOf(key string) {
+	panic("unimplemented")
 }
