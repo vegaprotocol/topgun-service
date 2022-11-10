@@ -20,7 +20,7 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 
 	gqlQuery := `query($startTime: Timestamp){ 
 		start: balanceChanges(
-		  dateRange: {start: $startTime, end: "1666812477000000000"}
+		  dateRange: {start: $startTime, end: $startTime}
 		) {
 		  edges {
 			node {
@@ -57,7 +57,7 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 		return nil, fmt.Errorf("failed to get balance changes info: %w", err)
 	}
 
-	fmt.Println(response.EndBalance.BalanceChangesEdges)
+	fmt.Println(response.StartBalance.BalanceChangesEdges)
 
 	parties := make([]Party, 0)
 	sParties := socialParties(socials, parties)
@@ -66,23 +66,30 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 		for _, resEnd := range response.EndBalance.BalanceChangesEdges {
 			for _, resStart := range response.StartBalance.BalanceChangesEdges {
 				if (s.cfg.VegaAssets[0] == resEnd.BalanceChanges.AssetId) && (resEnd.BalanceChanges.PartyId == party.ID) {
-					PnL := (resEnd.BalanceChanges.Balance - resStart.BalanceChanges.Balance)
-					sortNum, err := strconv.ParseFloat(resEnd.BalanceChanges.Balance, 64)
-					if err != nil {
-						fmt.Println(err)
-					} else {
-						utcNow := time.Now().UTC()
-						participants = append(participants, Participant{
-							PublicKey:     party.ID,
-							TwitterHandle: party.social,
-							TwitterUserID: party.twitterID,
-							Data:          []string{resEnd.BalanceChanges.Balance},
-							sortNum:       sortNum,
-							CreatedAt:     utcNow,
-							UpdatedAt:     utcNow,
-							isBlacklisted: party.blacklisted,
-						})
+					startBalance := 0.0
+					endBalance := 0.0
+					if s, err := strconv.ParseFloat(resEnd.BalanceChanges.Balance, 32); err == nil {
+						endBalance = s
 					}
+					if t, err := strconv.ParseFloat(resStart.BalanceChanges.Balance, 32); err == nil {
+						startBalance = t
+					}
+					fmt.Println(endBalance)
+					fmt.Println(startBalance)
+					PnL := (endBalance - startBalance)
+					PnLString := fmt.Sprintf("%f", PnL)
+					sortNum := PnL
+					utcNow := time.Now().UTC()
+					participants = append(participants, Participant{
+						PublicKey:     party.ID,
+						TwitterHandle: party.social,
+						TwitterUserID: party.twitterID,
+						Data:          []string{PnLString},
+						sortNum:       sortNum,
+						CreatedAt:     utcNow,
+						UpdatedAt:     utcNow,
+						isBlacklisted: party.blacklisted,
+					})
 				}
 			}
 		}
@@ -93,8 +100,4 @@ func (s *Service) sortByPartyAccountHistoricBalancesPnL(socials map[string]verif
 	}
 	sort.Slice(participants, sortFunc)
 	return participants, nil
-}
-
-func typeOf(key string) {
-	panic("unimplemented")
 }
