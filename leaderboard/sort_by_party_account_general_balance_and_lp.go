@@ -91,8 +91,8 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 	for _, party := range sParties {
 		// Check for matching parties who have committed LP :)
 		if party.LPsConnection.Edges != nil && len(party.LPsConnection.Edges) > 0 {
-			for _, lp := range party.LPsConnection.Edges {
-				if lp.LP.Market.ID == marketID {
+			for _, lpEdge := range party.LPsConnection.Edges {
+				if lpEdge.LP.Market.ID == marketID {
 					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
 
 					balanceGeneral := party.Balance(s.cfg.VegaAssets[0], int(decimalPlaces), "ACCOUNT_TYPE_GENERAL", "ACCOUNT_TYPE_MARGIN")

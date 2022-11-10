@@ -71,7 +71,6 @@ func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social)
 				w.Withdrawal.CreatedAt.After(s.cfg.StartTime) &&
 				w.Withdrawal.CreatedAt.Before(s.cfg.EndTime) {
 				withdrawalCount++
-				fmt.Println(withdrawalCount)
 			}
 		}
 

@@ -2,7 +2,6 @@ package leaderboard
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"net/http"
 	"strconv"
@@ -180,7 +179,7 @@ type Party struct {
 	AccountsConnection    AccountsConnection            `json:"accountsConnection"`
 	DepositsConnection    DepositsConnection            `json:"depositsConnection"`
 	OrdersConnection      OrdersConnection              `json:"ordersConnection"`
-	TradesConnection      TradesConnection              `json:"trades"Connection`
+	TradesConnection      TradesConnection              `json:"tradesConnection"`
 	TransfersConnection   TransfersConnection           `json:"transfersConnection"`
 	VotesConnection       VotesConnection               `json:"votesConnection"`
 	WithdrawalsConnection WithdrawalsConnection         `json:"withdrawalsConnection"`
@@ -269,13 +268,10 @@ func getParties(
 	for key, value := range vars {
 		req.Var(key, value)
 	}
-	fmt.Println(gqlQuery)
 	var response PartiesResponse
 	if err := client.Run(ctx, req, &response); err != nil {
 		return nil, err
 	}
-	fmt.Println(response)
-	fmt.Println(response.PartiesConnection.Edges)
 	return response.PartiesConnection.Edges, nil
 }
 
