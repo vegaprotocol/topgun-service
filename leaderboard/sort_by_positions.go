@@ -14,23 +14,26 @@ import (
 func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Participant, error) {
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-		parties {
-		  id
-		  positionsConnection() {
-			edges {
-			  node {
-				market{id}
-				openVolume
-				realisedPNL
-				averageEntryPrice
-				unrealisedPNL
-				realisedPNL
-				
-			  }
-			}
+	partiesConnection {
+      edges {
+        node {
+          id
+          positionsConnection() {
+            edges {
+              node {
+              market{id}
+              openVolume
+              realisedPNL
+              averageEntryPrice
+              unrealisedPNL
+              realisedPNL
+              }
+            }
 		  }
 		}
-	  }`
+	  }
+    }
+}`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
@@ -47,17 +50,22 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
 	for _, party := range sParties {
-		balanceMultiAsset := 0.0
-		for _, acc := range party.Accounts {
-			for _, asset := range s.cfg.VegaAssets {
-				if acc.Asset.Id == asset {
-					b := party.Balance(acc.Asset.Id, acc.Asset.Decimals, acc.Type)
-					balanceMultiAsset += b
+		PnL := 0.0
+		realisedPnL := 0.0
+		unrealisedPnL := 0.0
+		for _, acc := range party.PositionsConnection.Edges {
+			if acc.Position.Market.ID == s.cfg.AlgorithmConfig["marketId"] {
+				if s, err := strconv.ParseFloat(acc.Position.realisedPNL, 32); err == nil {
+					realisedPnL = s
 				}
+				if t, err := strconv.ParseFloat(acc.Position.unrealisedPNL, 32); err == nil {
+					unrealisedPnL = t
+				}
+				PnL = realisedPnL + unrealisedPnL
 			}
 		}
 
-		if balanceMultiAsset > 0.0 {
+		if PnL > 0.0 {
 			if party.blacklisted {
 				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
 			}
@@ -67,8 +75,8 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 				PublicKey:     party.ID,
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
-				Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 10, 32)},
-				sortNum:       balanceMultiAsset,
+				Data:          []string{strconv.FormatFloat(PnL, 'f', 10, 32)},
+				sortNum:       PnL,
 				CreatedAt:     t,
 				UpdatedAt:     t,
 				isBlacklisted: party.blacklisted,
