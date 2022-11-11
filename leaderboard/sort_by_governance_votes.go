@@ -10,7 +10,26 @@ import (
 )
 
 func (s *Service) sortByPartyGovernanceVotes(socials map[string]verifier.Social) ([]Participant, error) {
-	gqlQuery := "query {parties {id votes {proposalId vote {value datetime}}}}"
+	gqlQuery := `{
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  votesConnection {
+				edges {
+				  node {
+					proposalId
+					vote {
+					  value
+					  datetime
+					}
+				  }
+				}
+			  }
+			}
+		  }
+		}
+	  }`
 	ctx := context.Background()
 	parties, err := getParties(ctx, s.cfg.VegaGraphQLURL.String(), gqlQuery, nil, nil)
 	if err != nil {
@@ -21,7 +40,7 @@ func (s *Service) sortByPartyGovernanceVotes(socials map[string]verifier.Social)
 	participants := []Participant{}
 	for _, party := range sParties {
 		voteCount := 0
-		for _, v := range party.Votes {
+		for _, v := range party.VotesConnection.Edges {
 			if v.Vote.Datetime.After(s.cfg.StartTime) && v.Vote.Datetime.Before(s.cfg.EndTime) {
 				voteCount++
 			}
