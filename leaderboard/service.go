@@ -183,6 +183,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyAccountMultipleBalance(socials)
 	case "ByPartyAccountGeneralLoser":
 		p, err = s.sortByPartyAccountGeneralLoser(socials)
+	case "ByPartyPositions":
+		p, err = s.sortByPartyPositions(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}

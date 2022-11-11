@@ -53,19 +53,24 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 		PnL := 0.0
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
-		for _, acc := range party.PositionsConnection.Edges {
-			if acc.Position.Market.ID == s.cfg.AlgorithmConfig["marketId"] {
-				if s, err := strconv.ParseFloat(acc.Position.realisedPNL, 32); err == nil {
-					realisedPnL = s
+		marketID, err := s.getAlgorithmConfig("marketID")
+		if err == nil {
+			for _, acc := range party.PositionsConnection.Edges {
+				fmt.Println(acc.Position)
+				if acc.Position.Market.ID == marketID {
+					if s, err := strconv.ParseFloat(acc.Position.realisedPNL, 32); err == nil {
+						realisedPnL = s
+					}
+					if t, err := strconv.ParseFloat(acc.Position.unrealisedPNL, 32); err == nil {
+						unrealisedPnL = t
+					}
+					PnL = realisedPnL + unrealisedPnL
+					fmt.Println(PnL)
 				}
-				if t, err := strconv.ParseFloat(acc.Position.unrealisedPNL, 32); err == nil {
-					unrealisedPnL = t
-				}
-				PnL = realisedPnL + unrealisedPnL
 			}
 		}
 
-		if PnL > 0.0 {
+		if (realisedPnL != 0.0) || (unrealisedPnL != 0.0) {
 			if party.blacklisted {
 				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
 			}

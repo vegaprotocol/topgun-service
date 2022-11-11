@@ -99,6 +99,22 @@ type Order struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+type PositionsConnection struct {
+	Edges []PositionsEdge `json:"edges"`
+}
+
+type PositionsEdge struct {
+	Position Position `json:"node"`
+}
+
+type Position struct {
+	Market            Market `json:"market"`
+	openVolume        string `json:"openVolume"`
+	averageEntryPrice string `json:"averageEntryPrice"`
+	unrealisedPNL     string `json:"unrealisedPNL"`
+	realisedPNL       string `json:"realisedPNL"`
+}
+
 type TradesConnection struct {
 	Edges []TradesEdge `json:"edges"`
 }
@@ -184,6 +200,7 @@ type Party struct {
 	VotesConnection       VotesConnection               `json:"votesConnection"`
 	WithdrawalsConnection WithdrawalsConnection         `json:"withdrawalsConnection"`
 	LPsConnection         LiquidityProvisionsConnection `json:"liquidityProvisionsConnection"`
+	PositionsConnection   PositionsConnection           `json:"positionsConnection"`
 	social                string
 	twitterID             int64
 	blacklisted           bool
