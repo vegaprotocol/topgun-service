@@ -159,6 +159,8 @@ func (s *Service) update() {
 	switch s.cfg.Algorithm {
 	case "ByPartyAccountGeneralBalance":
 		p, err = s.sortByPartyAccountGeneralBalance(socials)
+	case "ByPartyAccountGeneralBalanceWeekend":
+		p, err = s.sortByPartyAccountGeneralBalanceWeekend(socials)
 	case "ByPartyAccountGeneralBalanceLP":
 		p, err = s.sortByPartyAccountGeneralBalanceAndLP(socials)
 	case "ByPartyAccountGeneralProfit":
