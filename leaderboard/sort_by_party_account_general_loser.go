@@ -23,32 +23,43 @@ func (s *Service) sortByPartyAccountGeneralLoser(socials map[string]verifier.Soc
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
 
-	gqlQueryPartiesAccounts := `query($assetId: String!) {
-			parties {
-				id
-				accounts(asset: $assetId){
+	gqlQueryPartiesAccounts := `query ($assetId: ID) {
+		partiesConnection {
+		  edges {
+			node {
+			  accountsConnection(assetId: $assetId) {
+				edges {
+				  node {
 					asset {
-						id
-						symbol
+					  id
+					  symbol
 					}
 					balance
 					type
+				  }
 				}
-				deposits{
+			  }
+			  depositsConnection {
+				edges {
+				  node {
 					id
-					asset { 
-						id
-						name
-						decimals 
-						symbol 
+					asset {
+					  id
+					  name
+					  decimals
+					  symbol
 					}
 					status
 					createdTimestamp
 					creditedTimestamp
 					amount
+				  }
 				}
+			  }
 			}
-		}`
+		  }
+		}
+	  }`
 
 	ctx := context.Background()
 	parties, err := getParties(
@@ -123,5 +134,5 @@ func (s *Service) sortByPartyAccountGeneralLoser(socials map[string]verifier.Soc
 	}
 	sort.Slice(participants, sortFunc)
 
-	return participants,nil
+	return participants, nil
 }
