@@ -23,33 +23,49 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 	// Total number of participants awarded
 	maxAwarded := 5000
 
-	gqlQuery := `query {
-	  parties{
-		id
-		deposits {
-		  amount
-		  createdTimestamp
-		  creditedTimestamp
-		  status
-          asset {
-			id
-			symbol
-            source { __typename }
+	gqlQuery := `{
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  depositsConnection {
+				edges {
+				  node {
+					amount
+					createdTimestamp
+					creditedTimestamp
+					status
+					asset {
+					  id
+					  symbol
+					  source {
+						__typename
+					  }
+					}
+				  }
+				}
+			  }
+			  withdrawalsConnection {
+				edges {
+				  node {
+					amount
+					createdTimestamp
+					createdTimestamp
+					status
+					asset {
+					  id
+					  symbol
+					  source {
+						__typename
+					  }
+					}
+				  }
+				}
+			  }
+			}
 		  }
 		}
-		withdrawals{
-		  amount
-		  createdTimestamp
-		  createdTimestamp
-		  status
-		  asset {
-			id
-			symbol
-			source { __typename }
-		  }
-		}
-	  }
-	}`
+	  }`
 
 	log.Info("Vega query starting...")
 
@@ -118,8 +134,8 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 					break
 				}
 
-				if s.hasDepositedErc20Assets(minDepositAndWithdrawals, party.Deposits) &&
-					s.hasWithdrawnErc20Assets(minDepositAndWithdrawals, party.Withdrawals) {
+				if s.hasDepositedErc20Assets(minDepositAndWithdrawals, party.DepositsConnection.Edges) &&
+					s.hasWithdrawnErc20Assets(minDepositAndWithdrawals, party.WithdrawalsConnection.Edges) {
 					participationCount++
 
 					// Only users that have successfully participated in the task will be stored
@@ -159,16 +175,16 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 	return participants, nil
 }
 
-func (s *Service) hasDepositedErc20Assets(min int, deposits []Deposit) bool {
+func (s *Service) hasDepositedErc20Assets(min int, deposits []DepositsEdge) bool {
 	totalDepositsForParty := 0
 	if len(deposits) > 0 {
 		foundAssets := make(map[string]bool, 0)
 		for _, d := range deposits {
-			if d.Asset.Source.Name == "ERC20" &&
-				d.Status == "Finalized" &&
-				d.CreatedAt.After(s.cfg.StartTime) &&
-				d.CreatedAt.Before(s.cfg.EndTime) {
-				foundAssets[d.Asset.Symbol] = true
+			if d.Deposit.Asset.Source.Name == "ERC20" &&
+				d.Deposit.Status == "Finalized" &&
+				d.Deposit.CreatedAt.After(s.cfg.StartTime) &&
+				d.Deposit.CreatedAt.Before(s.cfg.EndTime) {
+				foundAssets[d.Deposit.Asset.Symbol] = true
 				totalDepositsForParty++
 			}
 			if totalDepositsForParty >= min && len(foundAssets) >= min {
@@ -179,16 +195,16 @@ func (s *Service) hasDepositedErc20Assets(min int, deposits []Deposit) bool {
 	return false
 }
 
-func (s *Service) hasWithdrawnErc20Assets(min int, withdrawals []Withdrawal) bool {
+func (s *Service) hasWithdrawnErc20Assets(min int, withdrawals []WithdrawalsEdge) bool {
 	totalWithdrawalsForParty := 0
 	if len(withdrawals) > 0 {
 		foundAssets := make(map[string]bool, 0)
 		for _, w := range withdrawals {
-			if w.Asset.Source.Name == "ERC20" &&
-				w.Status == "Finalized" &&
-				w.CreatedAt.After(s.cfg.StartTime) &&
-				w.CreatedAt.Before(s.cfg.EndTime) {
-				foundAssets[w.Asset.Symbol] = true
+			if w.Withdrawal.Asset.Source.Name == "ERC20" &&
+				w.Withdrawal.Status == "Finalized" &&
+				w.Withdrawal.CreatedAt.After(s.cfg.StartTime) &&
+				w.Withdrawal.CreatedAt.Before(s.cfg.EndTime) {
+				foundAssets[w.Withdrawal.Asset.Symbol] = true
 				totalWithdrawalsForParty++
 			}
 			if totalWithdrawalsForParty >= min && len(foundAssets) >= min {

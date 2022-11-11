@@ -24,10 +24,26 @@ type AssetSource struct {
 	Name string `json:"__typename"`
 }
 
+type AccountsConnection struct {
+	Edges []AccountsEdge `json:"edges"`
+}
+
+type AccountsEdge struct {
+	Account Account `json:"node"`
+}
+
 type Account struct {
 	Type    string `json:"type"`
 	Balance string `json:"balance"`
 	Asset   Asset  `json:"asset"`
+}
+
+type DepositsConnection struct {
+	Edges []DepositsEdge `json:"edges"`
+}
+
+type DepositsEdge struct {
+	Deposit Deposit `json:"node"`
 }
 
 type Deposit struct {
@@ -39,6 +55,14 @@ type Deposit struct {
 	Status     string    `json:"status"`
 }
 
+type WithdrawalsConnection struct {
+	Edges []WithdrawalsEdge `json:"edges"`
+}
+
+type WithdrawalsEdge struct {
+	Withdrawal Withdrawal `json:"node"`
+}
+
 type Withdrawal struct {
 	Amount     string    `json:"amount"`
 	Asset      Asset     `json:"asset"`
@@ -48,18 +72,11 @@ type Withdrawal struct {
 }
 
 type TransfersConnection struct {
-	Edges []Edge `json:"edges"`
+	Edges []TransfersEdge `json:"edges"`
 }
 
-type Edge struct {
-	Node Node `json:"node"`
-}
-
-type Node struct {
-	Id        string    `json:"id"`
-	Amount    string    `json:"amount"`
-	Asset     Asset     `json:"asset"`
-	Timestamp time.Time `json:"timestamp"`
+type TransfersEdge struct {
+	Transfer Transfer `json:"node"`
 }
 
 type Transfer struct {
@@ -69,14 +86,38 @@ type Transfer struct {
 	Timestamp time.Time `json:"timestamp"`
 }
 
+type OrdersConnection struct {
+	Edges []OrdersEdge `json:"edges"`
+}
+
+type OrdersEdge struct {
+	Order Order `json:"node"`
+}
+
 type Order struct {
 	Id        string    `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+type TradesConnection struct {
+	Edges []TradesEdge `json:"edges"`
+}
+
+type TradesEdge struct {
+	Trade Trade `json:"node"`
+}
+
 type Trade struct {
 	Id        string    `json:"id"`
 	CreatedAt time.Time `json:"createdAt"`
+}
+
+type VotesConnection struct {
+	Edges []VotesEdge `json:"edges"`
+}
+
+type VotesEdge struct {
+	Vote Vote `json:"node"`
 }
 
 type Vote struct {
@@ -103,6 +144,14 @@ type Sells struct {
 	LiquidityOrder LiquidityOrder `json:"liquidityOrder"`
 }
 
+type LiquidityProvisionsConnection struct {
+	Edges []LiquidityProvisionsEdge `json:"edges"`
+}
+
+type LiquidityProvisionsEdge struct {
+	LP LiquidityProvision `json:"node"`
+}
+
 type LiquidityProvision struct {
 	ID               string    `json:"id"`
 	Market           Market    `json:"market"`
@@ -117,19 +166,27 @@ type LiquidityProvision struct {
 	Sells            []Sells   `json:"sells"`
 }
 
+type PartiesConnection struct {
+	Edges []PartiesEdge `json:"edges"`
+}
+
+type PartiesEdge struct {
+	Party Party `json:"node"`
+}
+
 type Party struct {
-	ID                  string               `json:"id"`
-	Accounts            []Account            `json:"accounts"`
-	Deposits            []Deposit            `json:"deposits"`
-	Orders              []Order              `json:"orders"`
-	Trades              []Trade              `json:"trades"`
-	TransfersConnection TransfersConnection  `json:"transfersConnection"`
-	Votes               []PartyVote          `json:"votes"`
-	Withdrawals         []Withdrawal         `json:"withdrawals"`
-	LPs                 []LiquidityProvision `json:"liquidityProvisions"`
-	social              string
-	twitterID           int64
-	blacklisted         bool
+	ID                    string                        `json:"id"`
+	AccountsConnection    AccountsConnection            `json:"accountsConnection"`
+	DepositsConnection    DepositsConnection            `json:"depositsConnection"`
+	OrdersConnection      OrdersConnection              `json:"ordersConnection"`
+	TradesConnection      TradesConnection              `json:"tradesConnection"`
+	TransfersConnection   TransfersConnection           `json:"transfersConnection"`
+	VotesConnection       VotesConnection               `json:"votesConnection"`
+	WithdrawalsConnection WithdrawalsConnection         `json:"withdrawalsConnection"`
+	LPsConnection         LiquidityProvisionsConnection `json:"liquidityProvisionsConnection"`
+	social                string
+	twitterID             int64
+	blacklisted           bool
 }
 
 type Market struct {
@@ -150,9 +207,9 @@ func (p *Party) Balance(assetId string, decimalPlaces int, accountTypes ...strin
 	var accu float64
 	accu = 0
 
-	for _, acc := range p.Accounts {
-		if acc.Asset.Id == assetId && hasString(accountTypes, acc.Type) {
-			v, err := strconv.ParseFloat(acc.Balance, 64)
+	for _, acc := range p.AccountsConnection.Edges {
+		if acc.Account.Asset.Id == assetId && hasString(accountTypes, acc.Account.Type) {
+			v, err := strconv.ParseFloat(acc.Account.Balance, 64)
 			if err != nil {
 				log.WithError(err).Errorf(
 					"Failed to parse %s/%s balance [Balance]", assetId, accountTypes)
@@ -172,9 +229,9 @@ func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int) float64 
 	// Total deposits made in asset
 	var total float64
 	total = 0
-	for _, d := range p.Deposits {
-		if d.Asset.Id == asset && d.Status == "Finalized" {
-			amount, err := strconv.ParseFloat(d.Amount, 10)
+	for _, d := range p.DepositsConnection.Edges {
+		if d.Deposit.Asset.Id == asset && d.Deposit.Status == "Finalized" {
+			amount, err := strconv.ParseFloat(d.Deposit.Amount, 10)
 			if err != nil {
 				log.WithError(err).Error("Cannot parse the found epoch in delegation")
 			}
@@ -190,8 +247,8 @@ func (p *Party) CalculateTotalDeposits(asset string, decimalPlaces int) float64 
 	return total
 }
 
-type PartyList struct {
-	Parties []Party `json:"parties"`
+type PartiesResponse struct {
+	PartiesConnection PartiesConnection `json:"partiesConnection"`
 }
 
 func getParties(
@@ -200,7 +257,7 @@ func getParties(
 	gqlQuery string,
 	vars map[string]string,
 	cli *http.Client,
-) ([]Party, error) {
+) ([]PartiesEdge, error) {
 
 	if cli == nil {
 		cli = &http.Client{Timeout: time.Second * 180}
@@ -211,30 +268,29 @@ func getParties(
 	for key, value := range vars {
 		req.Var(key, value)
 	}
-
-	var response PartyList
+	var response PartiesResponse
 	if err := client.Run(ctx, req, &response); err != nil {
 		return nil, err
 	}
-	return response.Parties, nil
+	return response.PartiesConnection.Edges, nil
 }
 
-func socialParties(socials map[string]verifier.Social, parties []Party) []Party {
+func socialParties(socials map[string]verifier.Social, parties []PartiesEdge) []Party {
 	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
 	sp := make([]Party, 0, len(socials))
 	for partyID, social := range socials {
 		found := false
 		for _, p := range parties {
-			if p.ID == partyID {
+			if p.Party.ID == partyID {
 				log.WithFields(log.Fields{
 					"partyID":       partyID,
 					"social":        social,
-					"account_count": len(p.Accounts),
+					"account_count": len(p.Party.AccountsConnection.Edges),
 				}).Debug("Social (found)")
-				p.social = social.TwitterHandle
-				p.twitterID = social.TwitterUserID
-				p.blacklisted = social.IsBlacklisted
-				sp = append(sp, p)
+				p.Party.social = social.TwitterHandle
+				p.Party.twitterID = social.TwitterUserID
+				p.Party.blacklisted = social.IsBlacklisted
+				sp = append(sp, p.Party)
 				found = true
 				break
 			}

@@ -14,21 +14,25 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 	// The minimum number of unique withdrawals needed to achieve this reward
 	minTransferThreshold := 4
 
-	gqlQueryPartiesAccounts := `query{
-		parties {
-		  id
-		  transfersConnection {
-			edges {
-			  node {
-				id
-				fromAccountType
-				toAccountType
-				from
-				amount
-				timestamp
-				asset {
-				  id
-				  name
+	gqlQueryPartiesAccounts := `{
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  transfersConnection {
+				edges {
+				  node {
+					id
+					fromAccountType
+					toAccountType
+					from
+					amount
+					timestamp
+					asset {
+					  id
+					  name
+					}
+				  }
 				}
 			  }
 			}
@@ -54,20 +58,16 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 	for _, party := range sParties {
 		transferCount := 0
 		if len(party.TransfersConnection.Edges) != 0 {
-			fmt.Println(party.TransfersConnection)
 			for _, w := range party.TransfersConnection.Edges {
 				// string to int
-				amount, err := strconv.Atoi(w.Node.Amount)
+				amount, err := strconv.Atoi(w.Transfer.Amount)
 				if err != nil {
 					fmt.Errorf("failed to convert Transfer amount to string", err)
 				}
-				fmt.Println(w.Node.Asset.Id)
-				fmt.Println(amount)
-				fmt.Println(w.Node.Timestamp)
-				if w.Node.Asset.Id == s.cfg.VegaAssets[0] &&
+				if w.Transfer.Asset.Id == s.cfg.VegaAssets[0] &&
 					amount >= minTransferThreshold &&
-					w.Node.Timestamp.After(s.cfg.StartTime) &&
-					w.Node.Timestamp.Before(s.cfg.EndTime) {
+					w.Transfer.Timestamp.After(s.cfg.StartTime) &&
+					w.Transfer.Timestamp.Before(s.cfg.EndTime) {
 					transferCount++
 				}
 			}

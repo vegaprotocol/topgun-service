@@ -14,32 +14,42 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 	// Grab the market ID for the market we're targeting
 	marketID, err := s.getAlgorithmConfig("marketID")
 
-	gqlQueryPartiesAccounts := `query() {
-		parties {
-			id
-			liquidityProvisions {
-				id
-				market { id, name }
-				commitmentAmount
-				createdAt 
-				reference
-				buys {
-					liquidityOrder {
+	gqlQueryPartiesAccounts := `{
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  liquidityProvisionsConnection {
+				edges {
+				  node {
+					id
+					market {
+					  id
+					}
+					commitmentAmount
+					createdAt
+					reference
+					buys {
+					  liquidityOrder {
 						reference
 						proportion
 						offset
+					  }
 					}
-				}
-				sells {
-					liquidityOrder {
+					sells {
+					  liquidityOrder {
 						reference
 						proportion
 						offset
+					  }
 					}
+				  }
 				}
-    		}
+			  }
+			}
+		  }
 		}
-	}`
+	  }`
 
 	ctx := context.Background()
 	parties, err := getParties(
@@ -60,10 +70,10 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 	for _, party := range sParties {
 		lpCount := 0
 		// Check for matching parties who have committed LP :)
-		if party.LPs != nil && len(party.LPs) > 0 {
-			for _, lp := range party.LPs {
-				if lp.Market.ID == marketID {
-					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPs)}).Info("Party has LPs on correct market")
+		if party.LPsConnection.Edges != nil && len(party.LPsConnection.Edges) > 0 {
+			for _, lpEdge := range party.LPsConnection.Edges {
+				if lpEdge.LP.Market.ID == marketID {
+					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
 					lpCount++
 				}
 			}

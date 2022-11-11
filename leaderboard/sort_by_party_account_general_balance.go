@@ -27,20 +27,28 @@ func (s *Service) sortByPartyAccountGeneralBalance(socials map[string]verifier.S
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
 
-	gqlQueryPartiesAccounts := `query($assetId: ID) {
-		parties {
-			id
-			accounts(assetId: $assetId){
-				asset {
-					id
-					symbol
-					decimals
+	gqlQueryPartiesAccounts := `query ($assetId: ID) {
+		partiesConnection {
+		  edges {
+			node {
+			  id
+			  accountsConnection(assetId: $assetId) {
+				edges {
+				  node {
+					asset {
+					  id
+					  symbol
+					  decimals
+					}
+					balance
+					type
+				  }
 				}
-				balance
-				type
+			  }
 			}
+		  }
 		}
-	}`
+	  }`
 	// gqlQueryPartiesTrades := `query($marketId: ID!, $partyId: ID!) {
 	// 	parties(id: $partyId) {
 	// 		trades(marketId: $marketId, first: 1, last: 2) {
