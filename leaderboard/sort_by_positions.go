@@ -68,8 +68,6 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 						openVolume = u
 					}
 					PnL = realisedPnL + unrealisedPnL
-					fmt.Println(PnL)
-					fmt.Println(openVolume)
 				}
 			}
 		}
