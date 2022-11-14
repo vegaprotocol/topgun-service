@@ -109,10 +109,10 @@ type PositionsEdge struct {
 
 type Position struct {
 	Market            Market `json:"market"`
-	openVolume        string `json:"openVolume"`
-	averageEntryPrice string `json:"averageEntryPrice"`
-	unrealisedPNL     string `json:"unrealisedPNL"`
-	realisedPNL       string `json:"realisedPNL"`
+	OpenVolume        string `json:"openVolume"`
+	AverageEntryPrice string `json:"averageEntryPrice"`
+	UnrealisedPNL     string `json:"unrealisedPNL"`
+	RealisedPNL       string `json:"realisedPNL"`
 }
 
 type TradesConnection struct {
