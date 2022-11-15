@@ -184,9 +184,11 @@ func (s *Service) update() {
 	case "ByPartyAccountGeneralLoser":
 		p, err = s.sortByPartyAccountGeneralLoser(socials)
 	case "ByPartyPositions":
-		p, err = s.sortByPartyPositionsInitial(socials)
+		p, err = s.sortByPartyPositions(socials)
 	case "ByPartyPositionsJSON":
 		p, err = s.sortByPartyPositionsJSON(socials)
+	case "ByPartyPositionsExisting":
+		p, err = s.sortByPartyPositionsExisting(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}

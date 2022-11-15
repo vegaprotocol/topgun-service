@@ -11,7 +11,7 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyPositionsInitial(socials map[string]verifier.Social) ([]Participant, error) {
+func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Participant, error) {
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
 	partiesConnection {
