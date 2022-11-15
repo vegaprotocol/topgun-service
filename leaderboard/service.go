@@ -184,7 +184,7 @@ func (s *Service) update() {
 	case "ByPartyAccountGeneralLoser":
 		p, err = s.sortByPartyAccountGeneralLoser(socials)
 	case "ByPartyPositions":
-		p, err = s.sortByPartyPositions(socials)
+		p, err = s.sortByPartyPositionsInitial(socials)
 	case "ByPartyPositionsJSON":
 		p, err = s.sortByPartyPositionsJSON(socials)
 	default:
