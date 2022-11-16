@@ -2,7 +2,10 @@ package leaderboard
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"sort"
 	"strconv"
 	"time"
@@ -12,28 +15,49 @@ import (
 )
 
 func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Social) ([]Participant, error) {
+
+	// Open our jsonFile
+	jsonFile, err := os.Open("test.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// read our opened jsonFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	alreadyTraded := []Participant{}
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'alreadyTraded' which we defined above
+	json.Unmarshal(byteValue, &alreadyTraded)
+
+	fmt.Println(alreadyTraded)
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-	partiesConnection {
-      edges {
-        node {
-          id
-          positionsConnection() {
-            edges {
-              node {
-              market{id}
-              openVolume
-              realisedPNL
-              averageEntryPrice
-              unrealisedPNL
-              realisedPNL
-              }
-            }
+		partiesConnection {
+	      edges {
+	        node {
+	          id
+	          positionsConnection() {
+	            edges {
+	              node {
+	              market{id}
+	              openVolume
+	              realisedPNL
+	              averageEntryPrice
+	              unrealisedPNL
+	              realisedPNL
+	              }
+	            }
+			  }
+			}
 		  }
-		}
-	  }
-    }
-}`
+	    }
+	}`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
@@ -49,9 +73,17 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 	// filter parties and add social handles
 	sParties := socialParties(socials, parties)
 	participants := []Participant{}
-	// if participant in JSON, PNL = json data, otherwise starting PnL 0 
+	// if participant in JSON, PNL = json data, otherwise starting PnL 0
 	for _, party := range sParties {
 		PnL := 0.0
+		for _, traded := range alreadyTraded {
+			if traded.PublicKey == party.ID {
+				if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+					PnL = s
+				}
+				fmt.Println(PnL)
+			}
+		}
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
 		openVolume := 0.0
@@ -68,7 +100,7 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 					if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
 						openVolume = u
 					}
-					PnL = realisedPnL + unrealisedPnL
+					PnL += (realisedPnL + unrealisedPnL)
 				}
 			}
 		}
