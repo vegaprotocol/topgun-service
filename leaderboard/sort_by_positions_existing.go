@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"sort"
 	"strconv"
@@ -16,8 +17,18 @@ import (
 
 func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Social) ([]Participant, error) {
 
+	// Grab the DP we're targeting (for the asset we're interested in for the market specified
+	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+	decimalPlaces, err := strconv.ParseFloat(decimalPlacesStr, 64)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+
 	// Open our jsonFile
-	jsonFile, err := os.Open("test.json")
+	jsonFile, err := os.Open("initial_results.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -76,14 +87,6 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 	// if participant in JSON, PNL = json data, otherwise starting PnL 0
 	for _, party := range sParties {
 		PnL := 0.0
-		for _, traded := range alreadyTraded {
-			if traded.PublicKey == party.ID {
-				if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-					PnL = -s
-				}
-				fmt.Println(PnL)
-			}
-		}
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
 		openVolume := 0.0
@@ -111,11 +114,25 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 			}
 
 			t := time.Now().UTC()
+			dataFormatted := ""
+			if PnL != 0 {
+				dpMultiplier := math.Pow(10, decimalPlaces)
+				total := PnL / dpMultiplier
+				for _, traded := range alreadyTraded {
+					if traded.PublicKey == party.ID {
+						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+							total -= s
+						}
+					}
+				}
+				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
+			}
+
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
-				Data:          []string{strconv.FormatFloat(PnL, 'f', 10, 32)},
+				Data:          []string{dataFormatted},
 				sortNum:       PnL,
 				CreatedAt:     t,
 				UpdatedAt:     t,
