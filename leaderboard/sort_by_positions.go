@@ -90,10 +90,10 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 
 			t := time.Now().UTC()
 			dataFormatted := ""
-			if PnL >= 0 {
+			if PnL != 0 {
 				dpMultiplier := math.Pow(10, decimalPlaces)
 				total := PnL / dpMultiplier
-				dataFormatted =  strconv.FormatFloat(total, 'f', 10, 32)
+				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
 			}
 
 			participants = append(participants, Participant{
