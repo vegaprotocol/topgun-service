@@ -3,6 +3,7 @@ package leaderboard
 import (
 	"context"
 	"fmt"
+	"math"
 	"sort"
 	"strconv"
 	"time"
@@ -12,6 +13,16 @@ import (
 )
 
 func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Participant, error) {
+	// Grab the DP we're targeting (for the asset we're interested in for the market specified
+	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+	decimalPlaces, err := strconv.ParseFloat(decimalPlacesStr, 64)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
 	partiesConnection {
@@ -78,11 +89,18 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 			}
 
 			t := time.Now().UTC()
+			dataFormatted := ""
+			if PnL >= 0 {
+				dpMultiplier := math.Pow(10, decimalPlaces)
+				total := PnL / dpMultiplier
+				dataFormatted =  strconv.FormatFloat(total, 'f', 10, 32)
+			}
+
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
-				Data:          []string{strconv.FormatFloat(PnL, 'f', 10, 32)},
+				Data:          []string{dataFormatted},
 				sortNum:       PnL,
 				CreatedAt:     t,
 				UpdatedAt:     t,
