@@ -79,7 +79,7 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 		for _, traded := range alreadyTraded {
 			if traded.PublicKey == party.ID {
 				if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-					PnL = s
+					PnL = -s
 				}
 				fmt.Println(PnL)
 			}
