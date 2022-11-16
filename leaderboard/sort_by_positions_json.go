@@ -117,7 +117,7 @@ func (s *Service) sortByPartyPositionsJSON(socials map[string]verifier.Social) (
 
 	file, _ := json.MarshalIndent(participants, "", " ")
 
-	_ = ioutil.WriteFile("inital_results.json", file, 0644)
+	_ = ioutil.WriteFile("initial_results.json", file, 0644)
 
 	return participants, nil
 }
