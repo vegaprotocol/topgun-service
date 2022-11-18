@@ -43,7 +43,6 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 	// jsonFile's content into 'alreadyTraded' which we defined above
 	json.Unmarshal(byteValue, &alreadyTraded)
 
-	fmt.Println(alreadyTraded)
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
@@ -115,9 +114,10 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 
 			t := time.Now().UTC()
 			dataFormatted := ""
+			total := 0.0
 			if PnL != 0 {
 				dpMultiplier := math.Pow(10, decimalPlaces)
-				total := PnL / dpMultiplier
+				total = PnL / dpMultiplier
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
@@ -133,7 +133,7 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
-				sortNum:       PnL,
+				sortNum:       total,
 				CreatedAt:     t,
 				UpdatedAt:     t,
 				isBlacklisted: party.blacklisted,
