@@ -42,6 +42,8 @@ type Config struct {
 
 	VegaAssets []string `yaml:"vegaAssets"`
 
+	MarketIDs []string `yaml:"marketIDs"`
+
 	VegaGraphQLURL *url.URL `yaml:"vegaGraphQLURL"`
 
 	VegaPoll time.Duration `yaml:"vegaPoll"`
@@ -132,6 +134,7 @@ func (c *Config) String() string {
 		"headers:%v" +
 		"socialURL:%s, " +
 		"vegaAssets:%v, " +
+		"marketIDs:%v, " +
 		"vegaGraphQLURL:%s, " +
 		"vegaPoll:%s" +
 		"startTime:%s" +
@@ -152,6 +155,7 @@ func (c *Config) String() string {
 		c.Headers,
 		c.SocialURL.String(),
 		c.VegaAssets,
+		c.MarketIDs,
 		c.VegaGraphQLURL.String(),
 		c.VegaPoll.String(),
 		c.StartTime,
@@ -179,6 +183,7 @@ func (c *Config) LogFields() log.Fields {
 		"headers":                 c.Headers,
 		"socialURL":               c.SocialURL.String(),
 		"vegaAssets":              c.VegaAssets,
+		"marketIDs":               c.MarketIDs,
 		"vegaGraphQLURL":          c.VegaGraphQLURL.String(),
 		"vegaPoll":                c.VegaPoll.String(),
 		"startTime":               c.StartTime,

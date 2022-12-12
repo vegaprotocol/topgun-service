@@ -65,20 +65,21 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
 		openVolume := 0.0
-		marketID, err := s.getAlgorithmConfig("marketID")
 		if err == nil {
 			for _, acc := range party.PositionsConnection.Edges {
-				if acc.Position.Market.ID == marketID {
-					if s, err := strconv.ParseFloat(acc.Position.RealisedPNL, 32); err == nil {
-						realisedPnL = s
+				for _, marketID := range s.cfg.MarketIDs {
+					if acc.Position.Market.ID == marketID {
+						if s, err := strconv.ParseFloat(acc.Position.RealisedPNL, 32); err == nil {
+							realisedPnL += s
+						}
+						if t, err := strconv.ParseFloat(acc.Position.UnrealisedPNL, 32); err == nil {
+							unrealisedPnL += t
+						}
+						if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
+							openVolume += u
+						}
+						PnL = realisedPnL + unrealisedPnL
 					}
-					if t, err := strconv.ParseFloat(acc.Position.UnrealisedPNL, 32); err == nil {
-						unrealisedPnL = t
-					}
-					if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
-						openVolume = u
-					}
-					PnL = realisedPnL + unrealisedPnL
 				}
 			}
 		}
