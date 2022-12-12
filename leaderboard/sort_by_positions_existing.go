@@ -102,15 +102,8 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 						if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
 							openVolume += u
 						}
-						PnL += (realisedPnL + unrealisedPnL)
+						PnL = (realisedPnL + unrealisedPnL)
 					}
-					if t, err := strconv.ParseFloat(acc.Position.UnrealisedPNL, 32); err == nil {
-						unrealisedPnL = t
-					}
-					if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
-						openVolume = u
-					}
-					PnL = (realisedPnL + unrealisedPnL)
 				}
 
 			}
