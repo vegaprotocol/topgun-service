@@ -3,10 +3,10 @@ logFormat: text  # json, text (default), textcolour, textnocolour
 logLevel: Info
 LogMethodName: false
 vegaAssets: 
-- fdf0ec118d98393a7702cf72e46fc87ad680b152f64b2aac59e093ac2d688fbb
+- befde6d78ea1c996ae1d959342730220e274992097aeeae00c908a971314e6ae
 marketIDs: 
-- 236c14c7f31574a2654fc45618cbd892429dc5f38000f43d8d817055131d768b
-- dad90c1e90197d064f842b050e0c89b7b809881b17512ecde4297119deca5e8e
+- 06cc8960d987cd4c7ba1364b7d849e5b92fd70267d2d1d91896b418951fe94a4
+- 08500fa5bacb8b381c95524d171c7146b524d1fbd1012e72f063510f41c614a9
 algorithm: ByPartyPositions
 algorithmConfig:
   decimalPlaces: 18
@@ -25,8 +25,8 @@ vegaGraphQLURL:
   host: api.n12.testnet.vega.xyz
   path: /graphql
 vegaPoll: 30s
-startTime: 2022-12-09T09:00:00Z
-endTime: 2022-12-12T14:00:00Z
+startTime: 2022-12-23T09:00:00Z
+endTime: 2022-12-27T14:00:00Z
 mongoConnectionString: mongodb+srv://not-required
 mongoCollectionName: not-required
 mongoDatabaseName: not-required
