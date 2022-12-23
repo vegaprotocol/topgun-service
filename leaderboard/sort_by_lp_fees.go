@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
@@ -68,11 +67,8 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 			for _, lpEdge := range party.LPsConnection.Edges {
 				for _, marketID := range s.cfg.MarketIDs {
 					if lpEdge.LP.Market.ID == marketID {
-						log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
-						fmt.Println(lpEdge.LP.Fee)
 						if u, err := strconv.ParseFloat(lpEdge.LP.Fee, 32); err == nil {
 							lpFees = u
-							fmt.Println(lpFees)
 						}
 					}
 				}
@@ -80,23 +76,25 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 			}
 		}
 
-		t := time.Now().UTC()
-		dataFormatted := ""
-		if lpFees != 0 {
+		if lpFees > 0 {
+			t := time.Now().UTC()
+			dataFormatted := ""
+
 			dpMultiplier := math.Pow(10, decimalPlaces)
 			total := lpFees / dpMultiplier
 			dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
+
+			participants = append(participants, Participant{
+				PublicKey:     party.ID,
+				TwitterUserID: party.twitterID,
+				TwitterHandle: party.social,
+				Data:          []string{dataFormatted},
+				sortNum:       lpFees,
+				CreatedAt:     t,
+				UpdatedAt:     t,
+				isBlacklisted: party.blacklisted,
+			})
 		}
-		participants = append(participants, Participant{
-			PublicKey:     party.ID,
-			TwitterUserID: party.twitterID,
-			TwitterHandle: party.social,
-			Data:          []string{dataFormatted},
-			sortNum:       lpFees,
-			CreatedAt:     t,
-			UpdatedAt:     t,
-			isBlacklisted: party.blacklisted,
-		})
 		break
 
 	}
