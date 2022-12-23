@@ -3,6 +3,7 @@ package leaderboard
 import (
 	"context"
 	"fmt"
+	"math"
 	"sort"
 	"strconv"
 	"time"
@@ -12,8 +13,14 @@ import (
 )
 
 func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participant, error) {
-	// Grab the market ID for the market we're targeting
-	marketID, err := s.getAlgorithmConfig("marketID")
+	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
+	decimalPlaces, err := strconv.ParseFloat(decimalPlacesStr, 64)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
+	}
 
 	gqlQueryPartiesAccounts := `{
 		partiesConnection {
@@ -59,29 +66,37 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 		// Check for matching parties who have committed LP :)
 		if party.LPsConnection.Edges != nil && len(party.LPsConnection.Edges) > 0 {
 			for _, lpEdge := range party.LPsConnection.Edges {
-				if lpEdge.LP.Market.ID == marketID {
-					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
+				for _, marketID := range s.cfg.MarketIDs {
+					if lpEdge.LP.Market.ID == marketID {
+						log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
 
-					if u, err := strconv.ParseFloat(lpEdge.LP.Fee, 32); err == nil {
-						lpFees = u
+						if u, err := strconv.ParseFloat(lpEdge.LP.Fee, 32); err == nil {
+							lpFees = u
+						}
 					}
 				}
+
 			}
 		}
 
-		if lpFees > 0 {
-			utcNow := time.Now().UTC()
-			participants = append(participants, Participant{
-				PublicKey:     party.ID,
-				TwitterHandle: party.social,
-				TwitterUserID: party.twitterID,
-				Data:          []string{"Provided Liquidity"},
-				CreatedAt:     utcNow,
-				UpdatedAt:     utcNow,
-				isBlacklisted: party.blacklisted,
-			})
-			break
+		t := time.Now().UTC()
+		dataFormatted := ""
+		if lpFees != 0 {
+			dpMultiplier := math.Pow(10, decimalPlaces)
+			total := lpFees / dpMultiplier
+			dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
 		}
+		participants = append(participants, Participant{
+			PublicKey:     party.ID,
+			TwitterUserID: party.twitterID,
+			TwitterHandle: party.social,
+			Data:          []string{dataFormatted},
+			sortNum:       lpFees,
+			CreatedAt:     t,
+			UpdatedAt:     t,
+			isBlacklisted: party.blacklisted,
+		})
+		break
 
 	}
 
