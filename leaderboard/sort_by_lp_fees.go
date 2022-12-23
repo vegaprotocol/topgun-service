@@ -69,9 +69,10 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 				for _, marketID := range s.cfg.MarketIDs {
 					if lpEdge.LP.Market.ID == marketID {
 						log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
-
+						fmt.Println(lpEdge.LP.Fee)
 						if u, err := strconv.ParseFloat(lpEdge.LP.Fee, 32); err == nil {
 							lpFees = u
+							fmt.Println(lpFees)
 						}
 					}
 				}
