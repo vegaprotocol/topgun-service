@@ -171,6 +171,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyGovernanceVotedList(socials)
 	case "ByLPCommittedList":
 		p, err = s.sortByLPCommittedList(socials)
+	case "ByLPFees":
+		p, err = s.sortByLPFees(socials)
 	case "ByAssetDepositWithdrawal":
 		p, err = s.sortByAssetDepositWithdrawal(socials)
 	case "ByAssetWithdrawalLimit":
