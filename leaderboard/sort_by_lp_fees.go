@@ -25,6 +25,7 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 		partiesConnection {
 		  edges {
 			node {
+			  id
 			  liquidityProvisionsConnection {
 				edges {
 				  node {
