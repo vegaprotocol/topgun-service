@@ -121,7 +121,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 				PublicKey:     party.ID,
 				TwitterHandle: party.social,
 				TwitterUserID: party.twitterID,
-				Data:          []string{"Withdrawal Completed"},
+				Data:          []string{"Deposit and Withdrawal Completed"},
 				CreatedAt:     utcNow,
 				UpdatedAt:     utcNow,
 				isBlacklisted: party.blacklisted,
