@@ -14,8 +14,8 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 
 	// The minimum number of unique deposits and withdrawals needed to achieve this reward
 	minDepositAndWithdrawals := 1
-	minWithdrawalThreshold := 2000
-	minDepositThreshold := 2000
+	minWithdrawalThreshold := 0
+	minDepositThreshold := 0
 
 	// Default: 1 unique asset deposit and 1 unique withdrawal1 from the erc20 bridge
 
