@@ -1,607 +1,46 @@
 [
  {
   "position": 0,
-  "publicKey": "1327cfaf252743922eb0bc2cbede5bef020ffd9b432bb1ccd4d7e21d78e36127",
-  "twitterHandle": "Crypto23091991",
-  "twitterUserID": 1430153708516507653,
-  "createdAt": "2022-11-18T09:19:18.652472Z",
-  "updatedAt": "2022-11-18T09:19:18.652472Z",
+  "publicKey": "db010ceb5e4a282ab08ac99fd0379d7ccebdac2bdb01c6d1d2adcd7ee69b439c",
+  "twitterHandle": "dkumzy",
+  "twitterUserID": 1678211438,
+  "createdAt": "2023-02-03T10:21:51.619901Z",
+  "updatedAt": "2023-02-03T10:21:51.619901Z",
   "data": [
-   "355.5855102539"
+   "5290.8095703125"
   ]
  },
  {
   "position": 0,
-  "publicKey": "8fca825b09d232743fb7dbc9e4163fe85e0b92297e86203fb67b91f5f32ce54d",
-  "twitterHandle": "D78434512",
-  "twitterUserID": 1459066883395653632,
-  "createdAt": "2022-11-18T09:19:18.652554Z",
-  "updatedAt": "2022-11-18T09:19:18.652554Z",
+  "publicKey": "4a8706d4b81732aa557c0584ab178c043e4870ea3c63797cddb1ca06cb101306",
+  "twitterHandle": "Xalacomm",
+  "twitterUserID": 1885565227,
+  "createdAt": "2023-02-03T10:21:51.619954Z",
+  "updatedAt": "2023-02-03T10:21:51.619954Z",
   "data": [
-   "337.0424194336"
+   "3587.7402343750"
   ]
  },
  {
   "position": 0,
-  "publicKey": "6a240489579f83392d06b38c623c46bd278d06dd09a1c862db52513be9ca4e89",
-  "twitterHandle": "phancong2111",
-  "twitterUserID": 1434191987230404621,
-  "createdAt": "2022-11-18T09:19:18.652405Z",
-  "updatedAt": "2022-11-18T09:19:18.652405Z",
+  "publicKey": "299c078b2d9644b0d37e87c05f68ce81d0ec1ff1d0e30d66fe543260d75b3cde",
+  "twitterHandle": "arturoqezada",
+  "twitterUserID": 1470537564805337088,
+  "createdAt": "2023-02-03T10:21:51.620037Z",
+  "updatedAt": "2023-02-03T10:21:51.620037Z",
   "data": [
-   "322.4061584473"
+   "2183.2587890625"
   ]
  },
  {
   "position": 0,
-  "publicKey": "9aefe4bec6b6788d82a2083f793121156e6057cfd98a3084b62d3f52ac8d6b90",
-  "twitterHandle": "LaDucHoan",
-  "twitterUserID": 1308280490936340486,
-  "createdAt": "2022-11-18T09:19:18.652489Z",
-  "updatedAt": "2022-11-18T09:19:18.652489Z",
+  "publicKey": "0ab4eff04606da53d728fd6fa128c3d233f1e333515956f323c71bd4825315a0",
+  "twitterHandle": "ds_danlee",
+  "twitterUserID": 1357565642782613504,
+  "createdAt": "2023-02-03T10:21:51.619934Z",
+  "updatedAt": "2023-02-03T10:21:51.619934Z",
   "data": [
-   "238.8147125244"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "6724a6d339125d56863703b77a33323441b7c9f01666bcefbe6f6ed4a60980f0",
-  "twitterHandle": "LeHo48687357",
-  "twitterUserID": 1470640208127299589,
-  "createdAt": "2022-11-18T09:19:18.652498Z",
-  "updatedAt": "2022-11-18T09:19:18.652498Z",
-  "data": [
-   "219.9387359619"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "a3f6e98f834614c6f8dc8d2fe574b4d05ee0559cc98a9fc9226138f9886dcb7e",
-  "twitterHandle": "hello_enmin",
-  "twitterUserID": 1042053853510873092,
-  "createdAt": "2022-11-18T09:19:18.652565Z",
-  "updatedAt": "2022-11-18T09:19:18.652565Z",
-  "data": [
-   "204.6285552979"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "0cdf561869dcb7a76d8852ff5fa273dfdd9235d7a334db057dbf5bc8d7be9c12",
-  "twitterHandle": "khongtuoc123",
-  "twitterUserID": 1459054767150284802,
-  "createdAt": "2022-11-18T09:19:18.652438Z",
-  "updatedAt": "2022-11-18T09:19:18.652438Z",
-  "data": [
-   "196.6884307861"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "1bbcafacae30385d0061b813aa3a4582922c41829e2f9d2176c6622d847a739e",
-  "twitterHandle": "386Hsk",
-  "twitterUserID": 1413340490460655616,
-  "createdAt": "2022-11-18T09:19:18.652416Z",
-  "updatedAt": "2022-11-18T09:19:18.652416Z",
-  "data": [
-   "181.7049865723"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "8dba38bd55c63112266e58320fd5e9344fd8dea467ade8b798a823dd679b4516",
-  "twitterHandle": "filip_tudamun",
-  "twitterUserID": 991360323318927361,
-  "createdAt": "2022-11-18T09:19:18.652471Z",
-  "updatedAt": "2022-11-18T09:19:18.652471Z",
-  "data": [
-   "181.3691864014"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "981b3ab58325d6a8259d5d896029f4e703ba90775700ef7fef03c19ec49a7a3f",
-  "twitterHandle": "ChukwuobasiK",
-  "twitterUserID": 1382571876145360896,
-  "createdAt": "2022-11-18T09:19:18.652508Z",
-  "updatedAt": "2022-11-18T09:19:18.652508Z",
-  "data": [
-   "179.8831176758"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "b48b5e725a87930fd3d94f1b4b54dea8c50075dee1738d1b5d660cf88fdd2d54",
-  "twitterHandle": "ZarTaCH_0x",
-  "twitterUserID": 54234228,
-  "createdAt": "2022-11-18T09:19:18.652432Z",
-  "updatedAt": "2022-11-18T09:19:18.652432Z",
-  "data": [
-   "173.8578033447"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "f72c0f412c7ac9a982ae222af433cdb28735c264b9a65b95f5fff726bab67762",
-  "twitterHandle": "snowletters2",
-  "twitterUserID": 1402902670436749320,
-  "createdAt": "2022-11-18T09:19:18.652448Z",
-  "updatedAt": "2022-11-18T09:19:18.652448Z",
-  "data": [
-   "162.4425048828"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "62145d76b482c1006017dc29e9424ff1f8bcaa2d9767a523fdbd6b85b32354aa",
-  "twitterHandle": "best_girl32",
-  "twitterUserID": 1542477294299668481,
-  "createdAt": "2022-11-18T09:19:18.652494Z",
-  "updatedAt": "2022-11-18T09:19:18.652494Z",
-  "data": [
-   "147.6109008789"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "476fc2843ba2d64aa1c73a1e1b7215843f581cf4d6c8f46587b12b37e27cc8fa",
-  "twitterHandle": "DTDaun",
-  "twitterUserID": 53010830,
-  "createdAt": "2022-11-18T09:19:18.65261Z",
-  "updatedAt": "2022-11-18T09:19:18.65261Z",
-  "data": [
-   "143.1741943359"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "b28c9f4182851111e299d50c20a0eeea16bfe21a718a9f2ee00c9e0028c32fca",
-  "twitterHandle": "snow91444199",
-  "twitterUserID": 1402070299361697793,
-  "createdAt": "2022-11-18T09:19:18.652641Z",
-  "updatedAt": "2022-11-18T09:19:18.652641Z",
-  "data": [
-   "132.4425048828"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "79ee393969ec09067c848144fa6fec17faa5c2527470e28c690feb2bb7698876",
-  "twitterHandle": "Ashley60200",
-  "twitterUserID": 1570505932760649729,
-  "createdAt": "2022-11-18T09:19:18.652432Z",
-  "updatedAt": "2022-11-18T09:19:18.652432Z",
-  "data": [
-   "117.4424972534"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "574a62582db399b750c8d13b3759e4c2a29e2ce0d0aca5b5f8b133f92e7f334b",
-  "twitterHandle": "GaboTalbott",
-  "twitterUserID": 1578168142471352321,
-  "createdAt": "2022-11-18T09:19:18.652505Z",
-  "updatedAt": "2022-11-18T09:19:18.652505Z",
-  "data": [
-   "115.5389633179"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "8e9246cbcf806727cb64abd492c4a1ba900ef1b1170e5d817512f46024da4662",
-  "twitterHandle": "HyginusAfamefu1",
-  "twitterUserID": 1514617311251951621,
-  "createdAt": "2022-11-18T09:19:18.652423Z",
-  "updatedAt": "2022-11-18T09:19:18.652423Z",
-  "data": [
-   "109.6129989624"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "955a7aec32c25494f2d1757564f914ad400fc5e8364f8a5aeee5b90170c54a68",
-  "twitterHandle": "HngPhm45105709",
-  "twitterUserID": 1459037460848005126,
-  "createdAt": "2022-11-18T09:19:18.652507Z",
-  "updatedAt": "2022-11-18T09:19:18.652507Z",
-  "data": [
-   "107.6427536011"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "c9006c2ed6cb7f76e9e9b9894c3de9521bdca7fea6950bb26db2df41927f91b1",
-  "twitterHandle": "ninh_cuc",
-  "twitterUserID": 1459064297636900864,
-  "createdAt": "2022-11-18T09:19:18.652562Z",
-  "updatedAt": "2022-11-18T09:19:18.652562Z",
-  "data": [
-   "101.0723190308"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "2a74ce2fcecc78b72995bca844c2591f9595da725516e0e35329023a82154964",
-  "twitterHandle": "onelldandy",
-  "twitterUserID": 1555451367707316224,
-  "createdAt": "2022-11-18T09:19:18.652482Z",
-  "updatedAt": "2022-11-18T09:19:18.652482Z",
-  "data": [
-   "98.0460052490"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "b29c549b0fa2544c72c8d60c2081b7a9a1c211565e717c6fe0865127107350f3",
-  "twitterHandle": "AcidMonkey_4259",
-  "twitterUserID": 1570231450770743296,
-  "createdAt": "2022-11-18T09:19:18.652422Z",
-  "updatedAt": "2022-11-18T09:19:18.652422Z",
-  "data": [
-   "94.0575027466"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "74d22286ac1180a67684f76dcff2575b6f8f819a1b2db8441b476cd785f82c5f",
-  "twitterHandle": "ChumelWorked",
-  "twitterUserID": 1570849838060691456,
-  "createdAt": "2022-11-18T09:19:18.652574Z",
-  "updatedAt": "2022-11-18T09:19:18.652574Z",
-  "data": [
-   "81.2500076294"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "acd1c3a8335aa5a33ef54381aa00d8c6665592da41f286993fe874cebd234e16",
-  "twitterHandle": "LONDONJOE7",
-  "twitterUserID": 1181977565252202496,
-  "createdAt": "2022-11-18T09:19:18.652459Z",
-  "updatedAt": "2022-11-18T09:19:18.652459Z",
-  "data": [
-   "75.7834930420"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "9081a053d8592433250b823037ddc01b4002771c2774b8beb940016098b3eff1",
-  "twitterHandle": "singwin1",
-  "twitterUserID": 1400380396848746498,
-  "createdAt": "2022-11-18T09:19:18.652402Z",
-  "updatedAt": "2022-11-18T09:19:18.652402Z",
-  "data": [
-   "70.2674560547"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "eedd5e3efdc1df77f3c2356f347c53fb4b2f555666d6c11418bcee4a85c42659",
-  "twitterHandle": "xyztung123",
-  "twitterUserID": 1458981885632077832,
-  "createdAt": "2022-11-18T09:19:18.652468Z",
-  "updatedAt": "2022-11-18T09:19:18.652468Z",
-  "data": [
-   "58.9769973755"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "11f67a03879114578101b341072d5511829f3a52dade3fc5bd81dd31125aeb9d",
-  "twitterHandle": "Arrow65819731",
-  "twitterUserID": 1556521324629172226,
-  "createdAt": "2022-11-18T09:19:18.652511Z",
-  "updatedAt": "2022-11-18T09:19:18.652511Z",
-  "data": [
-   "57.6044311523"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "f3b2fd3a52db64da0bb5e7eaa329743612f711c8220e23983a9fa7631176d832",
-  "twitterHandle": "riri_baebae",
-  "twitterUserID": 1509919184154681349,
-  "createdAt": "2022-11-18T09:19:18.652491Z",
-  "updatedAt": "2022-11-18T09:19:18.652491Z",
-  "data": [
-   "56.8754997253"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "eb9b7525d8014243bf8cc94dc8a8964e7ce2d8458d1b62ec1a51c9d0985e25bf",
-  "twitterHandle": "francin08321606",
-  "twitterUserID": 1409756384237916161,
-  "createdAt": "2022-11-18T09:19:18.652442Z",
-  "updatedAt": "2022-11-18T09:19:18.652442Z",
-  "data": [
-   "55.3804779053"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "96b31b9e6b8a74d3a6b0f8aaa6897fc5f14337259127f7e02e399b6c0c485134",
-  "twitterHandle": "Zainab_kan",
-  "twitterUserID": 1570523334529503232,
-  "createdAt": "2022-11-18T09:19:18.652451Z",
-  "updatedAt": "2022-11-18T09:19:18.652451Z",
-  "data": [
-   "53.6129989624"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "6c9278815ff0b68c26399854d73c61807100dcca679116f882642805cb76aa33",
-  "twitterHandle": "xthi14",
-  "twitterUserID": 1430364955589562369,
-  "createdAt": "2022-11-18T09:19:18.652446Z",
-  "updatedAt": "2022-11-18T09:19:18.652446Z",
-  "data": [
-   "50.1015815735"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "73b4a07d07d9f151736cc156d359d70925d997c0e21e0525e8d6a197ee58436c",
-  "twitterHandle": "davies_monk",
-  "twitterUserID": 1541789557951168512,
-  "createdAt": "2022-11-18T09:19:18.652567Z",
-  "updatedAt": "2022-11-18T09:19:18.652567Z",
-  "data": [
-   "48.6000022888"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "0491324a6c6e23c77cf64e823e1dab2c9dccb2a248666741fc36c034c48531fc",
-  "twitterHandle": "hp91991",
-  "twitterUserID": 1470594977591803905,
-  "createdAt": "2022-11-18T09:19:18.652437Z",
-  "updatedAt": "2022-11-18T09:19:18.652437Z",
-  "data": [
-   "47.6509399414"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "6bf1c385fc9a5191e8b3ed5b5a052d698121a93a027d24e5a87554c0ce09eca2",
-  "twitterHandle": "IanAdrino",
-  "twitterUserID": 1575053919469830144,
-  "createdAt": "2022-11-18T09:19:18.652569Z",
-  "updatedAt": "2022-11-18T09:19:18.652569Z",
-  "data": [
-   "47.2950019836"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "f7f365cc9597abf06c8f28d7fc8656657a1bec62c91e8c2200516176497b0ee0",
-  "twitterHandle": "ValerieRico12",
-  "twitterUserID": 1580590347150921728,
-  "createdAt": "2022-11-18T09:19:18.652504Z",
-  "updatedAt": "2022-11-18T09:19:18.652504Z",
-  "data": [
-   "46.2000007629"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "a2b3d3949f66975173d874cb6e232887a64d0e385e6b918d5a3f4e9210bd98b7",
-  "twitterHandle": "MiHui100",
-  "twitterUserID": 1575742703685337088,
-  "createdAt": "2022-11-18T09:19:18.652497Z",
-  "updatedAt": "2022-11-18T09:19:18.652497Z",
-  "data": [
-   "45.3647842407"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "5c96d9086203bb5e9ce7ee62195908798a49ab71e41b6579de113210aa98598f",
-  "twitterHandle": "Yourmajorgirl",
-  "twitterUserID": 1098391446820925441,
-  "createdAt": "2022-11-18T09:19:18.652488Z",
-  "updatedAt": "2022-11-18T09:19:18.652488Z",
-  "data": [
-   "36.7229042053"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "b9bdfddb49e1fdb5aac2635e7a2e98f9c179165c493f96e784640385fa30f352",
-  "twitterHandle": "Williamblecker",
-  "twitterUserID": 1575059089192796164,
-  "createdAt": "2022-11-18T09:19:18.652454Z",
-  "updatedAt": "2022-11-18T09:19:18.652454Z",
-  "data": [
-   "35.3129463196"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "7e48511a74dcba1036aa32c3456fde0d91da547bea723b1ca6dfa73653852745",
-  "twitterHandle": "hpkhongsoai",
-  "twitterUserID": 1459008105216294916,
-  "createdAt": "2022-11-18T09:19:18.652465Z",
-  "updatedAt": "2022-11-18T09:19:18.652465Z",
-  "data": [
-   "34.2157936096"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "cfb2f253521829ac1b5618dd460c1c64272870d78c1156074be83d988c05eae9",
-  "twitterHandle": "menninh92",
-  "twitterUserID": 1549751797400477696,
-  "createdAt": "2022-11-18T09:19:18.652408Z",
-  "updatedAt": "2022-11-18T09:19:18.652408Z",
-  "data": [
-   "32.7234992981"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "e205559088154628e8b90ce59282459cff06c757d07da51b0ffdb41d925a51db",
-  "twitterHandle": "imtestdog",
-  "twitterUserID": 1470596425113341955,
-  "createdAt": "2022-11-18T09:19:18.652637Z",
-  "updatedAt": "2022-11-18T09:19:18.652637Z",
-  "data": [
-   "31.7049999237"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "b811bfa682c7cf356d49bd788b8db019bdf395303c413e6bcf5c36870ae5a779",
-  "twitterHandle": "hptrancung",
-  "twitterUserID": 1459009142551498752,
-  "createdAt": "2022-11-18T09:19:18.652611Z",
-  "updatedAt": "2022-11-18T09:19:18.652611Z",
-  "data": [
-   "31.1304206848"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "21370e4f83127296997eaf64a8e1feb3fce6c3760b65af13bb8b1a60051995eb",
-  "twitterHandle": "lizzyandria",
-  "twitterUserID": 1580583424288497664,
-  "createdAt": "2022-11-18T09:19:18.652466Z",
-  "updatedAt": "2022-11-18T09:19:18.652466Z",
-  "data": [
-   "27.4424991608"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "827e7397d0cccaafc2d9ef8fc4446adb96e24be0915cdf9de60fb25da520dd54",
-  "twitterHandle": "MHaihong",
-  "twitterUserID": 1430362418295623683,
-  "createdAt": "2022-11-18T09:19:18.65256Z",
-  "updatedAt": "2022-11-18T09:19:18.65256Z",
-  "data": [
-   "23.4661998749"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "554b4da2fcdb0cd8477c2596e8b0ab8c18361796edac25227d4539aa31bc619c",
-  "twitterHandle": "hppro199x",
-  "twitterUserID": 1459007219148550149,
-  "createdAt": "2022-11-18T09:19:18.652441Z",
-  "updatedAt": "2022-11-18T09:19:18.652441Z",
-  "data": [
-   "22.8868713379"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "6ea357bed706c5fc5867f29c2c3ec8e33d27751fd2998108f252cc50351b701f",
-  "twitterHandle": "BrayanRex6",
-  "twitterUserID": 1575427099774558209,
-  "createdAt": "2022-11-18T09:19:18.652483Z",
-  "updatedAt": "2022-11-18T09:19:18.652483Z",
-  "data": [
-   "18.2950000763"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "62accb6899b4ebd6196b7172d2fc6fadd9646d49f3b58f6913b80ba2242fe810",
-  "twitterHandle": "ur_nonone",
-  "twitterUserID": 1464502565454979078,
-  "createdAt": "2022-11-18T09:19:18.652564Z",
-  "updatedAt": "2022-11-18T09:19:18.652564Z",
-  "data": [
-   "13.7552995682"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "f4c8c31514926f157738e6bfd9a8348236fea41e8d31eee8e1d2c2c7878717a4",
-  "twitterHandle": "emikoxtabell",
-  "twitterUserID": 1580623102945464334,
-  "createdAt": "2022-11-18T09:19:18.652633Z",
-  "updatedAt": "2022-11-18T09:19:18.652633Z",
-  "data": [
-   "13.5244998932"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "1763a2edc51de081fb49eecd9efdc65dc19c1735ab68fcc967ad69031b9206de",
-  "twitterHandle": "monica_brown91",
-  "twitterUserID": 1541802179031437319,
-  "createdAt": "2022-11-18T09:19:18.65257Z",
-  "updatedAt": "2022-11-18T09:19:18.65257Z",
-  "data": [
-   "11.5761404037"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "f1d3e4338b83e632ac8beb075c9d8d0e2b0a76b2fdd07871c0c90efc82ac9d1f",
-  "twitterHandle": "beaxshella",
-  "twitterUserID": 1580624017987407873,
-  "createdAt": "2022-11-18T09:19:18.652429Z",
-  "updatedAt": "2022-11-18T09:19:18.652429Z",
-  "data": [
-   "9.1475000381"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "fab1e290bd6ee0d86a37d7018d47d0d93fd5887d53805885573ab1aada964ef9",
-  "twitterHandle": "NinhThiHong",
-  "twitterUserID": 1404760030524547077,
-  "createdAt": "2022-11-18T09:19:18.652501Z",
-  "updatedAt": "2022-11-18T09:19:18.652501Z",
-  "data": [
-   "8.3524999619"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "a76c25829c8d9963ba695197e04567944753cf3ff2ab3bf6942bb75087d8f78b",
-  "twitterHandle": "xdpro1234",
-  "twitterUserID": 1458989859612205069,
-  "createdAt": "2022-11-18T09:19:18.652576Z",
-  "updatedAt": "2022-11-18T09:19:18.652576Z",
-  "data": [
-   "2.8985002041"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "5306f4892bcd8d1e2545ad42ab2820c2eb4f89b3dc9822f551a9944ac3154f2b",
-  "twitterHandle": "dragonnd8x",
-  "twitterUserID": 1458984097217318917,
-  "createdAt": "2022-11-18T09:19:18.652452Z",
-  "updatedAt": "2022-11-18T09:19:18.652452Z",
-  "data": [
-   "2.7328498363"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "6a80926478aa4d68bc216e0dac906b2818a96bb40e9a718620599f86ec3575e4",
-  "twitterHandle": "AnLao10",
-  "twitterUserID": 1470593315972153347,
-  "createdAt": "2022-11-18T09:19:18.652554Z",
-  "updatedAt": "2022-11-18T09:19:18.652554Z",
-  "data": [
-   "2.3450498581"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "abda69bd102eb7f19800fea93f2336a30ae5f3c14bac06a0c97b28f933eab5fa",
-  "twitterHandle": "hanselbennet1",
-  "twitterUserID": 1572000056433164289,
-  "createdAt": "2022-11-18T09:19:18.6525Z",
-  "updatedAt": "2022-11-18T09:19:18.6525Z",
-  "data": [
-   "1.1280000210"
+   "2153.1083984375"
   ]
  },
  {
@@ -609,219 +48,197 @@
   "publicKey": "2debf8bd2d7aee8179ca4ee8db0b27fc58c48c17710ad11771b74859c6c6a55b",
   "twitterHandle": "johnmil98377562",
   "twitterUserID": 1579719570973233152,
-  "createdAt": "2022-11-18T09:19:18.652566Z",
-  "updatedAt": "2022-11-18T09:19:18.652566Z",
+  "createdAt": "2023-02-03T10:21:51.619961Z",
+  "updatedAt": "2023-02-03T10:21:51.619961Z",
   "data": [
-   "1.0575000048"
+   "2072.9570312500"
   ]
  },
  {
   "position": 0,
-  "publicKey": "bb8ad4cd49a6f9ff4f535ea59a368a30fa820566cc09ca8f97c9c7c5d4dfc4b3",
-  "twitterHandle": "LaCanh131191",
-  "twitterUserID": 1405074951447531524,
-  "createdAt": "2022-11-18T09:19:18.652414Z",
-  "updatedAt": "2022-11-18T09:19:18.652414Z",
+  "publicKey": "e73a4f8d48f90fd6cf5d4181e84375f8f3954cba98e3277d9a602805acf05cc7",
+  "twitterHandle": "LanternZh",
+  "twitterUserID": 1515262944443248640,
+  "createdAt": "2023-02-03T10:21:51.620038Z",
+  "updatedAt": "2023-02-03T10:21:51.620038Z",
   "data": [
-   "0.1916449964"
+   "1426.2900390625"
   ]
  },
  {
   "position": 0,
-  "publicKey": "9b0b3ddcb7e6daade66855bfeac727dee30bf28ab6fa7026d25adc5a2a7fe79c",
-  "twitterHandle": "ThuNguy78360658",
-  "twitterUserID": 1459065464231895044,
-  "createdAt": "2022-11-18T09:19:18.652556Z",
-  "updatedAt": "2022-11-18T09:19:18.652556Z",
+  "publicKey": "102e25e5db6a7a9786225e9b915922e18824a569f28ab62364bc8ed824264dad",
+  "twitterHandle": "mawarchan5",
+  "twitterUserID": 1375551934061408256,
+  "createdAt": "2023-02-03T10:21:51.620019Z",
+  "updatedAt": "2023-02-03T10:21:51.620019Z",
   "data": [
-   "0.1039500013"
+   "1303.0000000000"
   ]
  },
  {
   "position": 0,
-  "publicKey": "b83230e6b1dc81d1d3c3946cf35618f4243bb1d2eefe29eddd10f9ae249be54f",
-  "twitterHandle": "Godwin020199",
-  "twitterUserID": 1321828500861521920,
-  "createdAt": "2022-11-18T09:19:18.652572Z",
-  "updatedAt": "2022-11-18T09:19:18.652572Z",
+  "publicKey": "5979bf531996a270b34fec9d00451c39f0a613962c5e05ef57ac3c49334f5a0b",
+  "twitterHandle": "MarialeS_07",
+  "twitterUserID": 410459283,
+  "createdAt": "2023-02-03T10:21:51.619863Z",
+  "updatedAt": "2023-02-03T10:21:51.619863Z",
   "data": [
-   "-18.2950000763"
+   "1247.6499023438"
   ]
  },
  {
   "position": 0,
-  "publicKey": "b7f4663c17fdbef8e42e0428df9bfa765e548d392c2b06d88d0b3570f0b272de",
-  "twitterHandle": "precious_Cater",
-  "twitterUserID": 1509081935238377477,
-  "createdAt": "2022-11-18T09:19:18.652461Z",
-  "updatedAt": "2022-11-18T09:19:18.652461Z",
+  "publicKey": "e205559088154628e8b90ce59282459cff06c757d07da51b0ffdb41d925a51db",
+  "twitterHandle": "imtestdog",
+  "twitterUserID": 1470596425113341955,
+  "createdAt": "2023-02-03T10:21:51.619935Z",
+  "updatedAt": "2023-02-03T10:21:51.619935Z",
   "data": [
-   "-24.3224983215"
+   "1206.4709472656"
   ]
  },
  {
   "position": 0,
-  "publicKey": "3813e2de67a1882a7be77c649e60e717462d5ddc5daeff1297bc66b891cf7803",
-  "twitterHandle": "finnberg31",
-  "twitterUserID": 1541762308539572224,
-  "createdAt": "2022-11-18T09:19:18.652504Z",
-  "updatedAt": "2022-11-18T09:19:18.652504Z",
+  "publicKey": "f1acbe378c95381bc1427b96f3c42d052b9cafa425c0237f3e3a87cf6e119000",
+  "twitterHandle": "show_zou",
+  "twitterUserID": 1400004772682416130,
+  "createdAt": "2023-02-03T10:21:51.62004Z",
+  "updatedAt": "2023-02-03T10:21:51.62004Z",
   "data": [
-   "-27.4424991608"
+   "1175.5999755859"
   ]
  },
  {
   "position": 0,
-  "publicKey": "03cc0e2fbafccb9bb6aadb3b3ff5578f96a5ab5356374368ce480aff05818b7f",
-  "twitterHandle": "khalidboa4",
-  "twitterUserID": 1555499926557265922,
-  "createdAt": "2022-11-18T09:19:18.652444Z",
-  "updatedAt": "2022-11-18T09:19:18.652444Z",
+  "publicKey": "7a356d9e7fdfb7a8a900032a057e5a1ee5561eee84325510f113f1f1e74c5195",
+  "twitterHandle": "tcn101010",
+  "twitterUserID": 988642333179576320,
+  "createdAt": "2023-02-03T10:21:51.619885Z",
+  "updatedAt": "2023-02-03T10:21:51.619885Z",
   "data": [
-   "-31.1015014648"
+   "1151.7299804688"
   ]
  },
  {
   "position": 0,
-  "publicKey": "c3789221849aacebd140eca97a7b09b66fe141bd556e60f6ea25e879f53aef21",
-  "twitterHandle": "Jojo68240837",
-  "twitterUserID": 1556532723208290304,
-  "createdAt": "2022-11-18T09:19:18.652413Z",
-  "updatedAt": "2022-11-18T09:19:18.652413Z",
+  "publicKey": "87b2411a293fc9b4f28892acdf9544712182d085c1ebbf45704016a008835154",
+  "twitterHandle": "ReinaSual9",
+  "twitterUserID": 1619664247473979393,
+  "createdAt": "2023-02-03T10:21:51.62076Z",
+  "updatedAt": "2023-02-03T10:21:51.62076Z",
   "data": [
-   "-34.5132942200"
+   "1076.8360595703"
   ]
  },
  {
   "position": 0,
-  "publicKey": "51612f6d4d0c65ddefbc2644442d91046be9744adb9b62b1f3d2aab6172a57b5",
-  "twitterHandle": "davidbatta4",
-  "twitterUserID": 1577037896728645652,
-  "createdAt": "2022-11-18T09:19:18.652439Z",
-  "updatedAt": "2022-11-18T09:19:18.652439Z",
+  "publicKey": "476fc2843ba2d64aa1c73a1e1b7215843f581cf4d6c8f46587b12b37e27cc8fa",
+  "twitterHandle": "DTDaun",
+  "twitterUserID": 53010830,
+  "createdAt": "2023-02-03T10:21:51.620799Z",
+  "updatedAt": "2023-02-03T10:21:51.620799Z",
   "data": [
-   "-42.4545059204"
+   "968.0654907227"
   ]
  },
  {
   "position": 0,
-  "publicKey": "cd640714c8826c8b4b7925a80653abc9d3bd5388186bfc746abed715c5e0864c",
-  "twitterHandle": "Kokop40749556",
-  "twitterUserID": 2216259236,
-  "createdAt": "2022-11-18T09:19:18.652426Z",
-  "updatedAt": "2022-11-18T09:19:18.652426Z",
+  "publicKey": "abda69bd102eb7f19800fea93f2336a30ae5f3c14bac06a0c97b28f933eab5fa",
+  "twitterHandle": "hanselbennet1",
+  "twitterUserID": 1572000056433164289,
+  "createdAt": "2023-02-03T10:21:51.620026Z",
+  "updatedAt": "2023-02-03T10:21:51.620026Z",
   "data": [
-   "-53.1380958557"
+   "905.2999877930"
   ]
  },
  {
   "position": 0,
-  "publicKey": "44f60b1c32b992f7751d66a5fb1e41033d772d6ef7914c5c49a021fdd6c727fd",
-  "twitterHandle": "MinaLeg3nd",
-  "twitterUserID": 1444454011067850755,
-  "createdAt": "2022-11-18T09:19:18.652486Z",
-  "updatedAt": "2022-11-18T09:19:18.652486Z",
+  "publicKey": "5ca0f1a6811f234cba269b9c48b82a0bf9198107ab01364ff0c151329aaac866",
+  "twitterHandle": "icryptosystem",
+  "twitterUserID": 900362833451520000,
+  "createdAt": "2023-02-03T10:21:51.620009Z",
+  "updatedAt": "2023-02-03T10:21:51.620009Z",
   "data": [
-   "-62.4822463989"
+   "863.6166992188"
   ]
  },
  {
   "position": 0,
-  "publicKey": "dd25c5f969c45f37edc9f8888ca7d52e264bdcb201ae35c5a3f11099e7dd3ab1",
-  "twitterHandle": "chiayanam_agi",
-  "twitterUserID": 1514622984341884930,
-  "createdAt": "2022-11-18T09:19:18.652456Z",
-  "updatedAt": "2022-11-18T09:19:18.652456Z",
+  "publicKey": "4c413a78f112bb4e0b752804118bd97dd221210e5869bd8b7517de35186c11e3",
+  "twitterHandle": "nino_chaan",
+  "twitterUserID": 1484963331849220097,
+  "createdAt": "2023-02-03T10:21:51.620763Z",
+  "updatedAt": "2023-02-03T10:21:51.620763Z",
   "data": [
-   "-64.2949981689"
+   "800.0703735352"
   ]
  },
  {
   "position": 0,
-  "publicKey": "e6354f4e894f6008b394919bd32a014e5b2cccc8d80f41e776340093ee716e4c",
-  "twitterHandle": "sotillojj",
-  "twitterUserID": 1546062714,
-  "createdAt": "2022-11-18T09:19:18.652639Z",
-  "updatedAt": "2022-11-18T09:19:18.652639Z",
+  "publicKey": "4f41c11b4e73232a1f1dac7844f36ccbcc77935359efe4fd4c815763a68d4b63",
+  "twitterHandle": "FluffCatto",
+  "twitterUserID": 1286182201638260737,
+  "createdAt": "2023-02-03T10:21:51.619995Z",
+  "updatedAt": "2023-02-03T10:21:51.619995Z",
   "data": [
-   "-67.9049987793"
+   "739.4099731445"
   ]
  },
  {
   "position": 0,
-  "publicKey": "db010ceb5e4a282ab08ac99fd0379d7ccebdac2bdb01c6d1d2adcd7ee69b439c",
-  "twitterHandle": "dkumzy",
-  "twitterUserID": 1678211438,
-  "createdAt": "2022-11-18T09:19:18.652435Z",
-  "updatedAt": "2022-11-18T09:19:18.652435Z",
+  "publicKey": "74d22286ac1180a67684f76dcff2575b6f8f819a1b2db8441b476cd785f82c5f",
+  "twitterHandle": "ChumelWorked",
+  "twitterUserID": 1570849838060691456,
+  "createdAt": "2023-02-03T10:21:51.619984Z",
+  "updatedAt": "2023-02-03T10:21:51.619984Z",
   "data": [
-   "-73.7550888062"
+   "654.7600097656"
   ]
  },
  {
   "position": 0,
-  "publicKey": "b297d9ece6dd6bc1c0e1c22c949c6b3bfa4bddb4ff4e05967e15ea41d8f5458c",
-  "twitterHandle": "Chioma_damsel",
-  "twitterUserID": 1509904616762323015,
-  "createdAt": "2022-11-18T09:19:18.652407Z",
-  "updatedAt": "2022-11-18T09:19:18.652407Z",
+  "publicKey": "49b16e2ee9c8c7860d7ef06c6292654c86ecf3054f282e2cfc0b54a00d06941d",
+  "twitterHandle": "Zoe_Bankz",
+  "twitterUserID": 1500057250790092804,
+  "createdAt": "2023-02-03T10:21:51.61999Z",
+  "updatedAt": "2023-02-03T10:21:51.61999Z",
   "data": [
-   "-75.1880874634"
+   "614.8800048828"
   ]
  },
  {
   "position": 0,
-  "publicKey": "48e09b41f836f3c0b86c00231195db4cf70105d8852f390b2489525d5ffa7ef9",
-  "twitterHandle": "eleganza_p",
-  "twitterUserID": 1509877136026447872,
-  "createdAt": "2022-11-18T09:19:18.652421Z",
-  "updatedAt": "2022-11-18T09:19:18.652421Z",
+  "publicKey": "308f433251823d35252ac59330f99404c98f9583a212ad34afe779468002d184",
+  "twitterHandle": "onthe_hedge",
+  "twitterUserID": 1456196072406233090,
+  "createdAt": "2023-02-03T10:21:51.61992Z",
+  "updatedAt": "2023-02-03T10:21:51.61992Z",
   "data": [
-   "-77.5575027466"
+   "561.8501586914"
   ]
  },
  {
   "position": 0,
-  "publicKey": "a21856f12757cabacd1bea37fe9ac71720a8cf14205114790f70db949aa55112",
-  "twitterHandle": "AcidMonkey4190",
-  "twitterUserID": 1571494571497979907,
-  "createdAt": "2022-11-18T09:19:18.652575Z",
-  "updatedAt": "2022-11-18T09:19:18.652575Z",
+  "publicKey": "1e92e9c6de569d5fd02b67c8a4dea8ac2f9982da21aae2c39883ea3e2cebd74c",
+  "twitterHandle": "Jakub_cr",
+  "twitterUserID": 1382670258172002304,
+  "createdAt": "2023-02-03T10:21:51.619969Z",
+  "updatedAt": "2023-02-03T10:21:51.619969Z",
   "data": [
-   "-78.3241348267"
+   "557.2368164062"
   ]
  },
  {
   "position": 0,
-  "publicKey": "328ed2de73f41e6e5ce62364f9f5a97c7aef0dac403a40ab08483c2c203b0dd9",
-  "twitterHandle": "chididavid31",
-  "twitterUserID": 1521889164056223744,
-  "createdAt": "2022-11-18T09:19:18.652395Z",
-  "updatedAt": "2022-11-18T09:19:18.652395Z",
+  "publicKey": "a67b77cfb0a40a9454ffa768f00aa2df860c3a56cd8e68079aea2a8ddbb24496",
+  "twitterHandle": "Schina111",
+  "twitterUserID": 1428289888747593735,
+  "createdAt": "2023-02-03T10:21:51.620783Z",
+  "updatedAt": "2023-02-03T10:21:51.620783Z",
   "data": [
-   "-87.4424972534"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "047889236683627e02bd6c60624d7bc83e2a6e6220d0c88f1ae9826173a5fbb5",
-  "twitterHandle": "AnthonyNnamdi26",
-  "twitterUserID": 956852890240536577,
-  "createdAt": "2022-11-18T09:19:18.65241Z",
-  "updatedAt": "2022-11-18T09:19:18.65241Z",
-  "data": [
-   "-90.4425048828"
-  ]
- },
- {
-  "position": 0,
-  "publicKey": "5e658b00936ad882b4ee59dcd93f64b43064ebd51ada4096b7748de8b137874a",
-  "twitterHandle": "omah_rae_",
-  "twitterUserID": 1491381251726614529,
-  "createdAt": "2022-11-18T09:19:18.652552Z",
-  "updatedAt": "2022-11-18T09:19:18.652552Z",
-  "data": [
-   "-1474.1984863281"
+   "552.4763793945"
   ]
  },
  {
@@ -829,10 +246,1583 @@
   "publicKey": "8269035a5b606ec94441fce94942156219a6f324414d4cff1673e0a708c9360e",
   "twitterHandle": "weirdkris_",
   "twitterUserID": 1225144558318735363,
-  "createdAt": "2022-11-18T09:19:18.652571Z",
-  "updatedAt": "2022-11-18T09:19:18.652571Z",
+  "createdAt": "2023-02-03T10:21:51.619899Z",
+  "updatedAt": "2023-02-03T10:21:51.619899Z",
   "data": [
-   "-1484.1500244141"
+   "544.5000000000"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "57b6768cb89a5bff0a909365dcfcac93902f1e0cb33269d00b7150f89a9016ab",
+  "twitterHandle": "tangantitik",
+  "twitterUserID": 205284158,
+  "createdAt": "2023-02-03T10:21:51.61987Z",
+  "updatedAt": "2023-02-03T10:21:51.61987Z",
+  "data": [
+   "541.7000122070"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "6007e923a1b8d172dd77e5ae030737c3c3269e791527aef88f2e7d9ab579c1dc",
+  "twitterHandle": "1bitresearch",
+  "twitterUserID": 1427744477414834178,
+  "createdAt": "2023-02-03T10:21:51.620001Z",
+  "updatedAt": "2023-02-03T10:21:51.620001Z",
+  "data": [
+   "455.2799987793"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e6354f4e894f6008b394919bd32a014e5b2cccc8d80f41e776340093ee716e4c",
+  "twitterHandle": "sotillojj",
+  "twitterUserID": 1546062714,
+  "createdAt": "2023-02-03T10:21:51.619906Z",
+  "updatedAt": "2023-02-03T10:21:51.619906Z",
+  "data": [
+   "455.1000061035"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "2772d851ee6e509c3f51598c50cb97ceabe93c77cddac84d52e10739faf5c166",
+  "twitterHandle": "Batu2941",
+  "twitterUserID": 1404149846286667778,
+  "createdAt": "2023-02-03T10:21:51.619869Z",
+  "updatedAt": "2023-02-03T10:21:51.619869Z",
+  "data": [
+   "414.2000122070"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b48b5e725a87930fd3d94f1b4b54dea8c50075dee1738d1b5d660cf88fdd2d54",
+  "twitterHandle": "ZarTaCH_0x",
+  "twitterUserID": 54234228,
+  "createdAt": "2023-02-03T10:21:51.620803Z",
+  "updatedAt": "2023-02-03T10:21:51.620803Z",
+  "data": [
+   "405.5000000000"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "383d327173f0785da392d739f09b1dfeb0ae03039e41649388ccd6bf51a2146f",
+  "twitterHandle": "RaftCrypto",
+  "twitterUserID": 1213492087997337601,
+  "createdAt": "2023-02-03T10:21:51.619876Z",
+  "updatedAt": "2023-02-03T10:21:51.619876Z",
+  "data": [
+   "380.7260131836"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b29c549b0fa2544c72c8d60c2081b7a9a1c211565e717c6fe0865127107350f3",
+  "twitterHandle": "AcidMonkey_4259",
+  "twitterUserID": 1570231450770743296,
+  "createdAt": "2023-02-03T10:21:51.619986Z",
+  "updatedAt": "2023-02-03T10:21:51.619986Z",
+  "data": [
+   "323.2799987793"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "a60c8b7876f81c6b4aed6b82b8a488194793f684e1431e5af6fff4ade94e89ce",
+  "twitterHandle": "Al3k547",
+  "twitterUserID": 1425158209698996231,
+  "createdAt": "2023-02-03T10:21:51.620778Z",
+  "updatedAt": "2023-02-03T10:21:51.620778Z",
+  "data": [
+   "320.5000000000"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "09dc61b036d2ff71efd7d04518577cfc0f0e34d47f6d84b40681fc9ae1f80be7",
+  "twitterHandle": "SudoLic",
+  "twitterUserID": 1082036894685454338,
+  "createdAt": "2023-02-03T10:21:51.619921Z",
+  "updatedAt": "2023-02-03T10:21:51.619921Z",
+  "data": [
+   "313.8913879395"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "9081a053d8592433250b823037ddc01b4002771c2774b8beb940016098b3eff1",
+  "twitterHandle": "singwin1",
+  "twitterUserID": 1400380396848746498,
+  "createdAt": "2023-02-03T10:21:51.619912Z",
+  "updatedAt": "2023-02-03T10:21:51.619912Z",
+  "data": [
+   "311.4303894043"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "574a62582db399b750c8d13b3759e4c2a29e2ce0d0aca5b5f8b133f92e7f334b",
+  "twitterHandle": "GaboTalbott",
+  "twitterUserID": 1578168142471352321,
+  "createdAt": "2023-02-03T10:21:51.620018Z",
+  "updatedAt": "2023-02-03T10:21:51.620018Z",
+  "data": [
+   "297.7214965820"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "9aefe4bec6b6788d82a2083f793121156e6057cfd98a3084b62d3f52ac8d6b90",
+  "twitterHandle": "LaDucHoan",
+  "twitterUserID": 1308280490936340486,
+  "createdAt": "2023-02-03T10:21:51.620858Z",
+  "updatedAt": "2023-02-03T10:21:51.620858Z",
+  "data": [
+   "261.9200134277"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "73ce9e7fbda4e8ae4dec66e9786c17fd7a31a32a616b3287615b421877e3a8a6",
+  "twitterHandle": "wgawlikowicz",
+  "twitterUserID": 1381576981133791234,
+  "createdAt": "2023-02-03T10:21:51.619848Z",
+  "updatedAt": "2023-02-03T10:21:51.619848Z",
+  "data": [
+   "243.6499938965"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "da9da4cb8253169fadb995db93117e638b7a78ad3e68065d83f09f42fddb7a20",
+  "twitterHandle": "hans54761150",
+  "twitterUserID": 1000555180201562113,
+  "createdAt": "2023-02-03T10:21:51.619966Z",
+  "updatedAt": "2023-02-03T10:21:51.619966Z",
+  "data": [
+   "231.4395904541"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8e52e3f76fac90436507571191966656f809656b0933dcc22363923dd2770ddc",
+  "twitterHandle": "amorftrade",
+  "twitterUserID": 1257924095431213056,
+  "createdAt": "2023-02-03T10:21:51.619976Z",
+  "updatedAt": "2023-02-03T10:21:51.619976Z",
+  "data": [
+   "179.8035888672"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "2a246863ed965dfd3d13826273c7935ce51c01922fd63e3a416d1138416a46d3",
+  "twitterHandle": "VictoryZou",
+  "twitterUserID": 1457647566473076736,
+  "createdAt": "2023-02-03T10:21:51.619884Z",
+  "updatedAt": "2023-02-03T10:21:51.619884Z",
+  "data": [
+   "176.7400054932"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "0e0b8745f7b0eba35f7eb1fbeea76d7347788be4b5733448fba4a481040b0d99",
+  "twitterHandle": "noserioustrader",
+  "twitterUserID": 1276950392996159488,
+  "createdAt": "2023-02-03T10:21:51.619989Z",
+  "updatedAt": "2023-02-03T10:21:51.619989Z",
+  "data": [
+   "160.0240020752"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "228dc0952208d44ea85f75af419c9e364e39d1ab983a2b93dfc6aa13e5d67f72",
+  "twitterHandle": "fly2univ",
+  "twitterUserID": 1472094467079430146,
+  "createdAt": "2023-02-03T10:21:51.619953Z",
+  "updatedAt": "2023-02-03T10:21:51.619953Z",
+  "data": [
+   "157.3399963379"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "d697e9ade3c909a01ddcadc7fafb22a49780d66aa4d4b92b185db610a9a1af15",
+  "twitterHandle": "xiaoyingli260",
+  "twitterUserID": 1493070371972550657,
+  "createdAt": "2023-02-03T10:21:51.619977Z",
+  "updatedAt": "2023-02-03T10:21:51.619977Z",
+  "data": [
+   "144.9958953857"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "3d6dd58898d07346f35c93c0f6259aca8344941907c22e55f5957dddc197b8d0",
+  "twitterHandle": "boy_0420",
+  "twitterUserID": 1067565152231256064,
+  "createdAt": "2023-02-03T10:21:51.619878Z",
+  "updatedAt": "2023-02-03T10:21:51.619878Z",
+  "data": [
+   "117.2468948364"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "cda102a607e2902376edcca75a2f29bc485d38b4ead62996991f0980f7aaa09d",
+  "twitterHandle": "mehmetkoksal29",
+  "twitterUserID": 386191563,
+  "createdAt": "2023-02-03T10:21:51.61996Z",
+  "updatedAt": "2023-02-03T10:21:51.61996Z",
+  "data": [
+   "115.6307983398"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ae069ed196532f851c9f56637bb198ab9825869372833ec3835ff9cc1456bc2f",
+  "twitterHandle": "thehonest0ne",
+  "twitterUserID": 38378651,
+  "createdAt": "2023-02-03T10:21:51.620013Z",
+  "updatedAt": "2023-02-03T10:21:51.620013Z",
+  "data": [
+   "104.8499069214"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f9982447fb4128f9968f9981612c5ea85d19b62058ec2636efc812dcbbc745ca",
+  "twitterHandle": "joet586",
+  "twitterUserID": 439341806,
+  "createdAt": "2023-02-03T10:21:51.620774Z",
+  "updatedAt": "2023-02-03T10:21:51.620774Z",
+  "data": [
+   "79.5381011963"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "64c4acf58babbcf40bd5fc9393c368eb867cca50815226cc3df52d55011cd53e",
+  "twitterHandle": "AyhanYzyl",
+  "twitterUserID": 537168516,
+  "createdAt": "2023-02-03T10:21:51.619938Z",
+  "updatedAt": "2023-02-03T10:21:51.619938Z",
+  "data": [
+   "65.0205993652"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "658cc0ced3cc7216c491663d2215be5d27916c61854757ac30cb3c89f0e15bea",
+  "twitterHandle": "rampelonian",
+  "twitterUserID": 1106223313,
+  "createdAt": "2023-02-03T10:21:51.62Z",
+  "updatedAt": "2023-02-03T10:21:51.62Z",
+  "data": [
+   "63.0843009949"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ea8aab8647ef264363711bdb78c89bc8dbe20ddd6b5b802d689f4c6ddb1b4e72",
+  "twitterHandle": "Tinkard1",
+  "twitterUserID": 1445547771591753747,
+  "createdAt": "2023-02-03T10:21:51.619996Z",
+  "updatedAt": "2023-02-03T10:21:51.619996Z",
+  "data": [
+   "59.7619018555"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "4258f4c5f381beb4ecbb20d166c1979be116b8cd9fbaac655ddc5d4ef982368d",
+  "twitterHandle": "DemirOndort",
+  "twitterUserID": 1601938694411255811,
+  "createdAt": "2023-02-03T10:21:51.619888Z",
+  "updatedAt": "2023-02-03T10:21:51.619888Z",
+  "data": [
+   "53.3999977112"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "32081dd366f1a7b241b27244c9388837b8b466947cfa8f4dc58a5e41df25dbe9",
+  "twitterHandle": "ademshn6",
+  "twitterUserID": 1585519274654932992,
+  "createdAt": "2023-02-03T10:21:51.620015Z",
+  "updatedAt": "2023-02-03T10:21:51.620015Z",
+  "data": [
+   "47.8000030518"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "1ef8f8531e7765ae0f01903bce912fd290eaa9f019f232be7b0fd607d91b6d74",
+  "twitterHandle": "MrMOnkEyZEr0",
+  "twitterUserID": 1448190491246440448,
+  "createdAt": "2023-02-03T10:21:51.619928Z",
+  "updatedAt": "2023-02-03T10:21:51.619928Z",
+  "data": [
+   "45.9659996033"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "612d88cfa91ff51d0c501178393f994a7f984cde96fab66ba74f8c6d5bceb384",
+  "twitterHandle": "cryptoplant1",
+  "twitterUserID": 1131552274646425600,
+  "createdAt": "2023-02-03T10:21:51.619936Z",
+  "updatedAt": "2023-02-03T10:21:51.619936Z",
+  "data": [
+   "44.9899940491"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "867dd9a8d7eda592d4cc5ebc4aec6ba6d2cd77ca3335346a2425113fd83f8803",
+  "twitterHandle": "altestalt",
+  "twitterUserID": 1349038232210726913,
+  "createdAt": "2023-02-03T10:21:51.61998Z",
+  "updatedAt": "2023-02-03T10:21:51.61998Z",
+  "data": [
+   "34.7077980042"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e5f22f4894765a8fbd95805cf281b010094fa497130094ac8cfd953af278a45f",
+  "twitterHandle": "proofofjake_",
+  "twitterUserID": 3436446945,
+  "createdAt": "2023-02-03T10:21:51.620754Z",
+  "updatedAt": "2023-02-03T10:21:51.620754Z",
+  "data": [
+   "33.0853996277"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "a1e611bca57452c859ecaf5c37aee35496636387308b478524ba71cb6d3018e4",
+  "twitterHandle": "thatinvestrader",
+  "twitterUserID": 1468234650472620039,
+  "createdAt": "2023-02-03T10:21:51.619916Z",
+  "updatedAt": "2023-02-03T10:21:51.619916Z",
+  "data": [
+   "28.8663997650"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "c33285a1bc03e723900547ee1d59bcf458e405667d4ac33bc22516bd3c195fc9",
+  "twitterHandle": "TomMcLn",
+  "twitterUserID": 1483932628919197698,
+  "createdAt": "2023-02-03T10:21:51.619933Z",
+  "updatedAt": "2023-02-03T10:21:51.619933Z",
+  "data": [
+   "18.2838993073"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e2d60f07b2f2011e0b4f45202a01cc8cddecd453097f57f9d3c836f87548d794",
+  "twitterHandle": "0xnaire",
+  "twitterUserID": 1101746848492969984,
+  "createdAt": "2023-02-03T10:21:51.62082Z",
+  "updatedAt": "2023-02-03T10:21:51.62082Z",
+  "data": [
+   "11.9329996109"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "c3b094dcc296a3c6de2e1e139cab9fa2f5fe7b7b167da01213acc1ae64c3fca5",
+  "twitterHandle": "trader_swift",
+  "twitterUserID": 1402930922803105793,
+  "createdAt": "2023-02-03T10:21:51.619958Z",
+  "updatedAt": "2023-02-03T10:21:51.619958Z",
+  "data": [
+   "2.7804999352"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "1307042acd6029bbc01713a4d6a320a202739e0734dfd970bf507d4218c8c853",
+  "twitterHandle": "fahrimii",
+  "twitterUserID": 1347665248162095104,
+  "createdAt": "2023-02-03T10:21:51.619852Z",
+  "updatedAt": "2023-02-03T10:21:51.619852Z",
+  "data": [
+   "1.6283019781"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b282a3e3878f004b0ee64cee29075cd72af4c4a4105d414ccb4becaef8361a12",
+  "twitterHandle": "CharlieDummett",
+  "twitterUserID": 1567915146160357376,
+  "createdAt": "2023-02-03T10:21:51.619952Z",
+  "updatedAt": "2023-02-03T10:21:51.619952Z",
+  "data": [
+   "1.4726999998"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "cf40975f116aaa55801d0d1f22e00ca7aea5d9ffdaae9f8a9b61aebf29af5122",
+  "twitterHandle": "Mushroomer162",
+  "twitterUserID": 1543688447751249922,
+  "createdAt": "2023-02-03T10:21:51.620027Z",
+  "updatedAt": "2023-02-03T10:21:51.620027Z",
+  "data": [
+   "0.3484000266"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "07cf96d290af5621085b68690be6cd8f97039af0758ff60207557b6d1894dd9d",
+  "twitterHandle": "28_Babi_",
+  "twitterUserID": 885194790530428942,
+  "createdAt": "2023-02-03T10:21:51.619905Z",
+  "updatedAt": "2023-02-03T10:21:51.619905Z",
+  "data": [
+   "-0.0432000011"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "10ef2024531fef3f069e47a2640c9bba59efe41c02b516b3b39d51f07680ec38",
+  "twitterHandle": "Arnold_CNS",
+  "twitterUserID": 585704983,
+  "createdAt": "2023-02-03T10:21:51.619907Z",
+  "updatedAt": "2023-02-03T10:21:51.619907Z",
+  "data": [
+   "-0.2926999927"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "fc8c8696946e13e4adf93302cc88eb268be19a496f0dd30c4a736c7b5f876cdc",
+  "twitterHandle": "0xJavvanBoy",
+  "twitterUserID": 1488536412068667403,
+  "createdAt": "2023-02-03T10:21:51.61986Z",
+  "updatedAt": "2023-02-03T10:21:51.61986Z",
+  "data": [
+   "-0.3603999913"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8bea0440f951a14eae72330f0a6c50c9c2258a14804e0d5e9440591000748f2f",
+  "twitterHandle": "SahTeymurov",
+  "twitterUserID": 1489124009040097281,
+  "createdAt": "2023-02-03T10:21:51.619985Z",
+  "updatedAt": "2023-02-03T10:21:51.619985Z",
+  "data": [
+   "-0.9095999599"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "de55301a8d94053fae03ffbf865b27fad4d38c18f27070246732b3e74e855de4",
+  "twitterHandle": "ykbianto",
+  "twitterUserID": 113846347,
+  "createdAt": "2023-02-03T10:21:51.619855Z",
+  "updatedAt": "2023-02-03T10:21:51.619855Z",
+  "data": [
+   "-0.9262000322"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "31d9d53fd99f28a784bc6f998948fd2da2fd72f8bf1ca031df53ca49ddba838d",
+  "twitterHandle": "alfan_rahadian_",
+  "twitterUserID": 713173660173881345,
+  "createdAt": "2023-02-03T10:21:51.620853Z",
+  "updatedAt": "2023-02-03T10:21:51.620853Z",
+  "data": [
+   "-0.9794999957"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "9e4b25b0e31491b2013c5cc35b6d1d1b218dea34a0c3d43e8703b9bacdfed7af",
+  "twitterHandle": "n00_be",
+  "twitterUserID": 1216578063678394368,
+  "createdAt": "2023-02-03T10:21:51.619982Z",
+  "updatedAt": "2023-02-03T10:21:51.619982Z",
+  "data": [
+   "-1.0679999590"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8e7803ee9618728f6c01df694ba46df841c64c862fe2a41b5b37eb1ceb05bef6",
+  "twitterHandle": "seskia28",
+  "twitterUserID": 2589280322,
+  "createdAt": "2023-02-03T10:21:51.620849Z",
+  "updatedAt": "2023-02-03T10:21:51.620849Z",
+  "data": [
+   "-1.2902001143"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f664f826432c75517b446e87f7b4846ac2d6b2d12ff65bfaeb63d6672cf08e22",
+  "twitterHandle": "kaptanyosun24",
+  "twitterUserID": 159410023,
+  "createdAt": "2023-02-03T10:21:51.620012Z",
+  "updatedAt": "2023-02-03T10:21:51.620012Z",
+  "data": [
+   "-2.8699998856"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "c4aeeed626e98e8f212b43fdb1d00506fdf46ebd750c1069cecc6a24cd9d0e76",
+  "twitterHandle": "firat_urc",
+  "twitterUserID": 1570533037263273987,
+  "createdAt": "2023-02-03T10:21:51.620006Z",
+  "updatedAt": "2023-02-03T10:21:51.620006Z",
+  "data": [
+   "-3.8306999207"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "bd221d3b0e0b5429788191be013dd2620c4a81aec879a793c4bd737ef5a11454",
+  "twitterHandle": "bit12ex",
+  "twitterUserID": 1455936143950811140,
+  "createdAt": "2023-02-03T10:21:51.62002Z",
+  "updatedAt": "2023-02-03T10:21:51.62002Z",
+  "data": [
+   "-7.4140000343"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "bcb26057b1519d82832f3ba7483102d7267261cabc001e3259a8c7cabbd85fcd",
+  "twitterHandle": "snapfireee",
+  "twitterUserID": 1285600539779031040,
+  "createdAt": "2023-02-03T10:21:51.619861Z",
+  "updatedAt": "2023-02-03T10:21:51.619861Z",
+  "data": [
+   "-10.2309999466"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "49d0d173d126bb143511c704b1eb1a0af83d6838e45f46873e477a9495b185a9",
+  "twitterHandle": "DellanoScholl",
+  "twitterUserID": 1486395028616495113,
+  "createdAt": "2023-02-03T10:21:51.620781Z",
+  "updatedAt": "2023-02-03T10:21:51.620781Z",
+  "data": [
+   "-11.6859998703"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8b2a03bd122fe69877613e2908bbd7002cc188e6d3c56e0fefd8e971b7e501fc",
+  "twitterHandle": "jobnick515",
+  "twitterUserID": 1422366860868083718,
+  "createdAt": "2023-02-03T10:21:51.619997Z",
+  "updatedAt": "2023-02-03T10:21:51.619997Z",
+  "data": [
+   "-12.0446996689"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "253b2bc9b087b157747f9ad550a263e58278ca96ffd1a004ed9ef0e7b442ab4f",
+  "twitterHandle": "Mad_Irishman_",
+  "twitterUserID": 1201756241804038144,
+  "createdAt": "2023-02-03T10:21:51.620017Z",
+  "updatedAt": "2023-02-03T10:21:51.620017Z",
+  "data": [
+   "-17.3770999908"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "dcdbbcca2d42dcb7dcf38ea40bd7e3e97f907936b4bab33b5eeb19636507b689",
+  "twitterHandle": "MaksimK12534806",
+  "twitterUserID": 1450710063816056833,
+  "createdAt": "2023-02-03T10:21:51.619904Z",
+  "updatedAt": "2023-02-03T10:21:51.619904Z",
+  "data": [
+   "-22.8519992828"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "745c38e7445a37d02ccfb9930a49355125dca2b6def8f84b98f7e4c12d81abdd",
+  "twitterHandle": "wtfman861154651",
+  "twitterUserID": 1429092997468151808,
+  "createdAt": "2023-02-03T10:21:51.620821Z",
+  "updatedAt": "2023-02-03T10:21:51.620821Z",
+  "data": [
+   "-27.9100017548"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "4c7d440e2593ddce73c8b80dc9cdb80f767c628ba04c434ad52e85e8818fc86b",
+  "twitterHandle": "Voland04",
+  "twitterUserID": 875651084043210752,
+  "createdAt": "2023-02-03T10:21:51.620023Z",
+  "updatedAt": "2023-02-03T10:21:51.620023Z",
+  "data": [
+   "-34.0273971558"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "d587dc74b66f606d143bd1df69d469f627b86b7171ce704ae2862c38682a094f",
+  "twitterHandle": "winswinner1",
+  "twitterUserID": 1396076311676956675,
+  "createdAt": "2023-02-03T10:21:51.620824Z",
+  "updatedAt": "2023-02-03T10:21:51.620824Z",
+  "data": [
+   "-41.6749992371"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "2c2f560b234469cbe3d1b56895aa761b7c043835f64a3be16587e61c7b431558",
+  "twitterHandle": "senewe10",
+  "twitterUserID": 1748212860,
+  "createdAt": "2023-02-03T10:21:51.620845Z",
+  "updatedAt": "2023-02-03T10:21:51.620845Z",
+  "data": [
+   "-42.0485000610"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b2805ac3ed8b4db55f54bb0909f3d8e51c1b5a4ab0789f64324cd2583a298ba8",
+  "twitterHandle": "stackedbig",
+  "twitterUserID": 1293375903574228992,
+  "createdAt": "2023-02-03T10:21:51.619867Z",
+  "updatedAt": "2023-02-03T10:21:51.619867Z",
+  "data": [
+   "-54.3157005310"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "dc57a77fbe9b6f6181a5ed74ef61924c72983ba378905f7e9838b73ea9260e92",
+  "twitterHandle": "3ndHand",
+  "twitterUserID": 1521055127519383552,
+  "createdAt": "2023-02-03T10:21:51.620843Z",
+  "updatedAt": "2023-02-03T10:21:51.620843Z",
+  "data": [
+   "-92.4199981689"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ca4424dbe5741829b5b9960a80d7a45ae804ea4a1dd87ba410bcc0f5fbf08dda",
+  "twitterHandle": "waarhy",
+  "twitterUserID": 1365045846186856449,
+  "createdAt": "2023-02-03T10:21:51.61997Z",
+  "updatedAt": "2023-02-03T10:21:51.61997Z",
+  "data": [
+   "-102.4235000610"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e0df55a1762fb5b88a19ba838579add66c33fc514ef7690f10eda690831f485c",
+  "twitterHandle": "DracoTheWizard",
+  "twitterUserID": 1402387828051427343,
+  "createdAt": "2023-02-03T10:21:51.619887Z",
+  "updatedAt": "2023-02-03T10:21:51.619887Z",
+  "data": [
+   "-124.6347961426"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f43feb22fb56d89575ec00ddbe6122e40f282084fbc9a81e4a5779134a857c44",
+  "twitterHandle": "AndaniVinay",
+  "twitterUserID": 1026724531283447808,
+  "createdAt": "2023-02-03T10:21:51.620859Z",
+  "updatedAt": "2023-02-03T10:21:51.620859Z",
+  "data": [
+   "-125.1999969482"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "44168464710e973426a62a60382e48b1131d4618d89be177b31525ecb4d7ca88",
+  "twitterHandle": "hastwen",
+  "twitterUserID": 1275179136986877953,
+  "createdAt": "2023-02-03T10:21:51.619941Z",
+  "updatedAt": "2023-02-03T10:21:51.619941Z",
+  "data": [
+   "-130.9217987061"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f3e575839de982b916f1adc6b65a39796e36c08b9672944030a36fb0d6533988",
+  "twitterHandle": "sanitizere",
+  "twitterUserID": 3171921715,
+  "createdAt": "2023-02-03T10:21:51.620016Z",
+  "updatedAt": "2023-02-03T10:21:51.620016Z",
+  "data": [
+   "-132.1262054443"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "c1ad3ce98581c89caa57fcc559726c03da03bc8eba5c5f41f5a03e202c7f9db3",
+  "twitterHandle": "GidellaF",
+  "twitterUserID": 1231995224496443394,
+  "createdAt": "2023-02-03T10:21:51.619872Z",
+  "updatedAt": "2023-02-03T10:21:51.619872Z",
+  "data": [
+   "-137.6499938965"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f2d67b99534887a7efc66d6bdc1cd232b9f351c190356b260f497285ef375c3b",
+  "twitterHandle": "Felipe_cnc",
+  "twitterUserID": 184780403,
+  "createdAt": "2023-02-03T10:21:51.619992Z",
+  "updatedAt": "2023-02-03T10:21:51.619992Z",
+  "data": [
+   "-163.9956054688"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "00c716ee6730bb74ae90e5074b73eba3fd65435b538ce865e4621dc2fd4d3b8f",
+  "twitterHandle": "Miguel23923766",
+  "twitterUserID": 1319559918161199104,
+  "createdAt": "2023-02-03T10:21:51.620007Z",
+  "updatedAt": "2023-02-03T10:21:51.620007Z",
+  "data": [
+   "-169.7959136963"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "5f963a019092383a616bd063ff4fac6e9b50a481b59ac5643ad03c8579fc602b",
+  "twitterHandle": "planets4peace",
+  "twitterUserID": 1404023202595094529,
+  "createdAt": "2023-02-03T10:21:51.619993Z",
+  "updatedAt": "2023-02-03T10:21:51.619993Z",
+  "data": [
+   "-169.8300018311"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "37025df0449e9c54bddc27112dd198324bc2698465ee587b653d0c697634c137",
+  "twitterHandle": "hoonihoho",
+  "twitterUserID": 1396058983706759170,
+  "createdAt": "2023-02-03T10:21:51.620021Z",
+  "updatedAt": "2023-02-03T10:21:51.620021Z",
+  "data": [
+   "-178.7600097656"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b1edfc2c8332b1c1e6253108b27366d6f27b59f599a398353d7b523defecac91",
+  "twitterHandle": "AngelDelN",
+  "twitterUserID": 942049077495304193,
+  "createdAt": "2023-02-03T10:21:51.620039Z",
+  "updatedAt": "2023-02-03T10:21:51.620039Z",
+  "data": [
+   "-184.7537078857"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f3def636060532a7b74529a18e1d2c2284356f2edd70548a40287a37e96bc02d",
+  "twitterHandle": "akbarilahi_",
+  "twitterUserID": 1191226415695327233,
+  "createdAt": "2023-02-03T10:21:51.619968Z",
+  "updatedAt": "2023-02-03T10:21:51.619968Z",
+  "data": [
+   "-187.3509979248"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "424df506ab9b238516ea8ea34600b181aee9944f6db0a1952ec689bae248f6fb",
+  "twitterHandle": "SMobiApp",
+  "twitterUserID": 846825853,
+  "createdAt": "2023-02-03T10:21:51.620022Z",
+  "updatedAt": "2023-02-03T10:21:51.620022Z",
+  "data": [
+   "-226.7999877930"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "a8493a42c8c6a1d6268c64b83bd36cc801df2788036d67e139e07763bf9460df",
+  "twitterHandle": "LeopardSleeping",
+  "twitterUserID": 1363939906616254468,
+  "createdAt": "2023-02-03T10:21:51.619947Z",
+  "updatedAt": "2023-02-03T10:21:51.619947Z",
+  "data": [
+   "-237.8567047119"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "701536499e4d161587d6917efc0cc3d74f144dd297de7d5f7470b71316d5a7cc",
+  "twitterHandle": "LeTuanNam16",
+  "twitterUserID": 1430418295472103428,
+  "createdAt": "2023-02-03T10:21:51.620039Z",
+  "updatedAt": "2023-02-03T10:21:51.620039Z",
+  "data": [
+   "-270.9429931641"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "4f03c4f54dc299e07abe600de76adf441308a2293e65ac947657621338981ffd",
+  "twitterHandle": "bittxt",
+  "twitterUserID": 1105993269656195072,
+  "createdAt": "2023-02-03T10:21:51.619865Z",
+  "updatedAt": "2023-02-03T10:21:51.619865Z",
+  "data": [
+   "-296.5579833984"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ef5afa1c2754a7c50225cceb905a02ae2e8348a18a6129eb7e76e7943cd2f7ab",
+  "twitterHandle": "markpowen",
+  "twitterUserID": 175927810,
+  "createdAt": "2023-02-03T10:21:51.620002Z",
+  "updatedAt": "2023-02-03T10:21:51.620002Z",
+  "data": [
+   "-311.9100036621"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "5489cb4c2ad27a8a217f4657bdabd69bb846e70e50639280e789b808209e4194",
+  "twitterHandle": "darkbluechain",
+  "twitterUserID": 1149464218065952768,
+  "createdAt": "2023-02-03T10:21:51.620801Z",
+  "updatedAt": "2023-02-03T10:21:51.620801Z",
+  "data": [
+   "-342.2999877930"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "4db1fa851b8c417845fc097bc4e170d884ec14dba7f1882b4878178213b4a30e",
+  "twitterHandle": "degatarif",
+  "twitterUserID": 1228208208323330048,
+  "createdAt": "2023-02-03T10:21:51.619978Z",
+  "updatedAt": "2023-02-03T10:21:51.619978Z",
+  "data": [
+   "-382.4794921875"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "5e775e933e8069702027375a4ce4b03b017a751e3bc6f68421f71d5654503315",
+  "twitterHandle": "airdrop_wins",
+  "twitterUserID": 1197987795928834048,
+  "createdAt": "2023-02-03T10:21:51.619959Z",
+  "updatedAt": "2023-02-03T10:21:51.619959Z",
+  "data": [
+   "-496.3934020996"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b0a40358e8b83594d6f7b858d76ca4a51cb136c1a1ba5986bc16848c89c0ae8d",
+  "twitterHandle": "LHMeBe9mnNMbD9a",
+  "twitterUserID": 1413459001673539584,
+  "createdAt": "2023-02-03T10:21:51.619913Z",
+  "updatedAt": "2023-02-03T10:21:51.619913Z",
+  "data": [
+   "-552.8186035156"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "d4b8c46d3bdd1bf34c5cff8712492cec523d769bbeceebaae89e83fed4fc3813",
+  "twitterHandle": "jgsbennett",
+  "twitterUserID": 965155542,
+  "createdAt": "2023-02-03T10:21:51.620815Z",
+  "updatedAt": "2023-02-03T10:21:51.620815Z",
+  "data": [
+   "-582.8070068359"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "49804cf1641e18b1ecfe721b5438a1e86a740a048ac0c64b99eacf2b966a16ff",
+  "twitterHandle": "panji_cm",
+  "twitterUserID": 459949655,
+  "createdAt": "2023-02-03T10:21:51.620852Z",
+  "updatedAt": "2023-02-03T10:21:51.620852Z",
+  "data": [
+   "-641.9899902344"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "f0ce41f07f47d9afe5a8e25ea43aeac8489100499862be337371f1eb6585a7c9",
+  "twitterHandle": "1618BTC",
+  "twitterUserID": 1301762539777191936,
+  "createdAt": "2023-02-03T10:21:51.620004Z",
+  "updatedAt": "2023-02-03T10:21:51.620004Z",
+  "data": [
+   "-652.8399658203"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "35b7e783963c3cf5fd0682e12667e80568de804e3ede98cfd65137b8b8e4ba22",
+  "twitterHandle": "OnLyneNFT",
+  "twitterUserID": 1506629192850546691,
+  "createdAt": "2023-02-03T10:21:51.619939Z",
+  "updatedAt": "2023-02-03T10:21:51.619939Z",
+  "data": [
+   "-666.1559448242"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "2a5a640c31e4f6835a79198402f876bd3a01426e1e1cf10176751c3c9df41f06",
+  "twitterHandle": "merUzunmehmeto1",
+  "twitterUserID": 1194101871016923136,
+  "createdAt": "2023-02-03T10:21:51.620021Z",
+  "updatedAt": "2023-02-03T10:21:51.620021Z",
+  "data": [
+   "-691.3553466797"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "c491cab1f425a2f0396b7b34caaa03a496e8e5f402a3020420fa2049677a8eeb",
+  "twitterHandle": "MANYRIOS56",
+  "twitterUserID": 80494762,
+  "createdAt": "2023-02-03T10:21:51.620042Z",
+  "updatedAt": "2023-02-03T10:21:51.620042Z",
+  "data": [
+   "-740.8778686523"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "57ca540e98a6eb41f425e8f87acca6348a18b491170091844e37c5a076a0f85d",
+  "twitterHandle": "BennyBe23384114",
+  "twitterUserID": 1470815261104168962,
+  "createdAt": "2023-02-03T10:21:51.620769Z",
+  "updatedAt": "2023-02-03T10:21:51.620769Z",
+  "data": [
+   "-772.2000122070"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ab46a23f0d7115efd68a76f19ba008def3dd54818c9705e2774ef24ccd8fea7c",
+  "twitterHandle": "sfynft",
+  "twitterUserID": 1472584790121406466,
+  "createdAt": "2023-02-03T10:21:51.620779Z",
+  "updatedAt": "2023-02-03T10:21:51.620779Z",
+  "data": [
+   "-795.8083496094"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "0cdb00e11860394438e65fd9659d7bf98af9be6afe5e13f8d3ccbd05f4426558",
+  "twitterHandle": "Nkwochabukky",
+  "twitterUserID": 1734669048,
+  "createdAt": "2023-02-03T10:21:51.619882Z",
+  "updatedAt": "2023-02-03T10:21:51.619882Z",
+  "data": [
+   "-896.9318847656"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "047889236683627e02bd6c60624d7bc83e2a6e6220d0c88f1ae9826173a5fbb5",
+  "twitterHandle": "AnthonyNnamdi26",
+  "twitterUserID": 956852890240536577,
+  "createdAt": "2023-02-03T10:21:51.619937Z",
+  "updatedAt": "2023-02-03T10:21:51.619937Z",
+  "data": [
+   "-949.1517944336"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ccda4c8fc0755f99a8fb15aeb4cc7f55c4445ae8d1efe889cf464c2996abce62",
+  "twitterHandle": "OssThuMus",
+  "twitterUserID": 1423640925310492673,
+  "createdAt": "2023-02-03T10:21:51.620027Z",
+  "updatedAt": "2023-02-03T10:21:51.620027Z",
+  "data": [
+   "-959.7609252930"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "dbd663f86ee2e1f7c5ea0a951244a68b03c7da052c3cce3727299a2017de8110",
+  "twitterHandle": "miriam_store",
+  "twitterUserID": 1619672760531275776,
+  "createdAt": "2023-02-03T10:21:51.619871Z",
+  "updatedAt": "2023-02-03T10:21:51.619871Z",
+  "data": [
+   "-978.6129760742"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e5fb44c809310eef34c7b63c427d02cd81c7d3e433023c12707ada36c97d0a34",
+  "twitterHandle": "Erdian87016366",
+  "twitterUserID": 1123601455250698240,
+  "createdAt": "2023-02-03T10:21:51.620024Z",
+  "updatedAt": "2023-02-03T10:21:51.620024Z",
+  "data": [
+   "-1075.8477783203"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "af7a42e4ae89818447f66e034db1e68fe105c2c858e880dc3cc77319fb80f2b9",
+  "twitterHandle": "ChomskyPoel",
+  "twitterUserID": 1619649622594420736,
+  "createdAt": "2023-02-03T10:21:51.62001Z",
+  "updatedAt": "2023-02-03T10:21:51.62001Z",
+  "data": [
+   "-1114.0999755859"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "0eeb11dc5c8cb99194d48be2682bac7acc7bd05e98901923169b91e8a67c3e8e",
+  "twitterHandle": "nvrwlcm",
+  "twitterUserID": 1364371755238907905,
+  "createdAt": "2023-02-03T10:21:51.619887Z",
+  "updatedAt": "2023-02-03T10:21:51.619887Z",
+  "data": [
+   "-1233.7812500000"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "c44a778dd850cb0ccd5ffaf6c8e9f9340f7839027a016489a7668f1d3fffbcc2",
+  "twitterHandle": "NeddleRain",
+  "twitterUserID": 1467414409182330881,
+  "createdAt": "2023-02-03T10:21:51.619874Z",
+  "updatedAt": "2023-02-03T10:21:51.619874Z",
+  "data": [
+   "-1287.8299560547"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "a75411b6ada8671bdc2d25aec483858b9fdb1b61fea6b6b10bd151dd862381be",
+  "twitterHandle": "AAAA53325783",
+  "twitterUserID": 1516959847388160002,
+  "createdAt": "2023-02-03T10:21:51.619999Z",
+  "updatedAt": "2023-02-03T10:21:51.619999Z",
+  "data": [
+   "-1349.7561035156"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e0b563ecb332b7a3a04aa774bb15e2fcb2dd0bdc0c327038bcb45014594e9921",
+  "twitterHandle": "nohaha32182870",
+  "twitterUserID": 1527880514140401664,
+  "createdAt": "2023-02-03T10:21:51.62084Z",
+  "updatedAt": "2023-02-03T10:21:51.62084Z",
+  "data": [
+   "-1362.4000244141"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "1ab68be9572d27a3b6f17e6c065d12cb8b8a8c27d32c9eb9096d2680e989f1fb",
+  "twitterHandle": "Sukdea1",
+  "twitterUserID": 1451159928928755713,
+  "createdAt": "2023-02-03T10:21:51.619857Z",
+  "updatedAt": "2023-02-03T10:21:51.619857Z",
+  "data": [
+   "-1363.2785644531"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "625063e84baab9978a27a743c9502e11ec3fcd700ad2552ad0122421812e426f",
+  "twitterHandle": "GfxSakke",
+  "twitterUserID": 1519574212545069056,
+  "createdAt": "2023-02-03T10:21:51.620838Z",
+  "updatedAt": "2023-02-03T10:21:51.620838Z",
+  "data": [
+   "-1400.9300537109"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "16ccd5a357b62bacb058870f10fcfa8e1320c2148304ff8eaa16ce79b9a20bbe",
+  "twitterHandle": "ScarorAKcome",
+  "twitterUserID": 1527875651273117696,
+  "createdAt": "2023-02-03T10:21:51.620806Z",
+  "updatedAt": "2023-02-03T10:21:51.620806Z",
+  "data": [
+   "-1402.0609130859"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "885660cb6aa1de2e38778378e5d535c3f34417a199847befdc9a6d352bbb5ac6",
+  "twitterHandle": "bangu991",
+  "twitterUserID": 1392326235791839236,
+  "createdAt": "2023-02-03T10:21:51.619979Z",
+  "updatedAt": "2023-02-03T10:21:51.619979Z",
+  "data": [
+   "-1425.6549072266"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "51612f6d4d0c65ddefbc2644442d91046be9744adb9b62b1f3d2aab6172a57b5",
+  "twitterHandle": "davidbatta4",
+  "twitterUserID": 1577037896728645652,
+  "createdAt": "2023-02-03T10:21:51.619999Z",
+  "updatedAt": "2023-02-03T10:21:51.619999Z",
+  "data": [
+   "-1441.0051269531"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "10d9d4dccc3412ec13f9a86f583a648eb970d6e6f854033487873024f49ecede",
+  "twitterHandle": "dumbdumbdumbd10",
+  "twitterUserID": 1598336920697929728,
+  "createdAt": "2023-02-03T10:21:51.619858Z",
+  "updatedAt": "2023-02-03T10:21:51.619858Z",
+  "data": [
+   "-1457.2603759766"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "1be2d772d8167a5d53dcbb1086213f1d4b72f43f3d151cf8f6da781e5d5d3064",
+  "twitterHandle": "CesarMaguia2",
+  "twitterUserID": 1574437368848961537,
+  "createdAt": "2023-02-03T10:21:51.619916Z",
+  "updatedAt": "2023-02-03T10:21:51.619916Z",
+  "data": [
+   "-1461.1744384766"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8aa28ffc5f1e4f422ca7b2f08e547e60b1ec4b60e60c8f80b6462bcfe827fe7b",
+  "twitterHandle": "brain_hunter07",
+  "twitterUserID": 1590773367598190599,
+  "createdAt": "2023-02-03T10:21:51.619879Z",
+  "updatedAt": "2023-02-03T10:21:51.619879Z",
+  "data": [
+   "-1463.8920898438"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "5a9fd0fcf8a3b4aac90359cf811cbbf6dc4ddb8a80be137e3137a914e7ea4528",
+  "twitterHandle": "kingRivenJevi",
+  "twitterUserID": 1527874120243085318,
+  "createdAt": "2023-02-03T10:21:51.619917Z",
+  "updatedAt": "2023-02-03T10:21:51.619917Z",
+  "data": [
+   "-1465.3531494141"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "d2bfd313939b397f3dd1f3634086b4d8ec65a86428fff32462963fc89c93614d",
+  "twitterHandle": "tld2128",
+  "twitterUserID": 1393540466461741068,
+  "createdAt": "2023-02-03T10:21:51.61989Z",
+  "updatedAt": "2023-02-03T10:21:51.61989Z",
+  "data": [
+   "-1466.8134765625"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8dba38bd55c63112266e58320fd5e9344fd8dea467ade8b798a823dd679b4516",
+  "twitterHandle": "filip_tudamun",
+  "twitterUserID": 991360323318927361,
+  "createdAt": "2023-02-03T10:21:51.620851Z",
+  "updatedAt": "2023-02-03T10:21:51.620851Z",
+  "data": [
+   "-1470.9543457031"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "1dc259dc7cf8dc480f624d76385d83bb63cf369a0f826724e9d99086497b6527",
+  "twitterHandle": "diablo34341",
+  "twitterUserID": 1397612971170439182,
+  "createdAt": "2023-02-03T10:21:51.619914Z",
+  "updatedAt": "2023-02-03T10:21:51.619914Z",
+  "data": [
+   "-1722.8260498047"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "02ae6d9a5e75aeb9e37b1cac5bf03d0b9f0b042751c4da37e7e00dd94fee623a",
+  "twitterHandle": "WlKrypto",
+  "twitterUserID": 1403067621952700416,
+  "createdAt": "2023-02-03T10:21:51.620025Z",
+  "updatedAt": "2023-02-03T10:21:51.620025Z",
+  "data": [
+   "-1816.9329833984"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e8baef1d49c8df178cde6a7d153cb46bbd91261d6b8420c20e64392862a5709c",
+  "twitterHandle": "MarkeringGc",
+  "twitterUserID": 1619657317607251971,
+  "createdAt": "2023-02-03T10:21:51.619987Z",
+  "updatedAt": "2023-02-03T10:21:51.619987Z",
+  "data": [
+   "-1965.2749023438"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "212d15fef12a8aed073305a78141c04d26c89624a47675ff494389ce2a17d664",
+  "twitterHandle": "nigelsp82866740",
+  "twitterUserID": 1578170640355528706,
+  "createdAt": "2023-02-03T10:21:51.619964Z",
+  "updatedAt": "2023-02-03T10:21:51.619964Z",
+  "data": [
+   "-1978.4348144531"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "dc9ca8217cd7cc0e42d18fd4f9700d3b539ca19f280c4e586e077d7222ba7e25",
+  "twitterHandle": "wamda2326",
+  "twitterUserID": 804902072,
+  "createdAt": "2023-02-03T10:21:51.619963Z",
+  "updatedAt": "2023-02-03T10:21:51.619963Z",
+  "data": [
+   "-2331.2875976562"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "33147051261d7b359c05779b42d033b5fd2905c60c146eee9d3d4883237bd796",
+  "twitterHandle": "letsgo861",
+  "twitterUserID": 1582636443977015297,
+  "createdAt": "2023-02-03T10:21:51.620008Z",
+  "updatedAt": "2023-02-03T10:21:51.620008Z",
+  "data": [
+   "-2461.3398437500"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "cec6144d1ce055e792480f0fb7dcde91f429564194660be3ca1f0d7775e6ff7b",
+  "twitterHandle": "airdrop_minion",
+  "twitterUserID": 1392868555553746954,
+  "createdAt": "2023-02-03T10:21:51.620856Z",
+  "updatedAt": "2023-02-03T10:21:51.620856Z",
+  "data": [
+   "-2502.3857421875"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "603176fe5240b1e1db00ceb1871281c72dec2c9dd5f1fea8bb04d7a3bdf0a20c",
+  "twitterHandle": "CCT_hedgehog",
+  "twitterUserID": 1524260425856024576,
+  "createdAt": "2023-02-03T10:21:51.619919Z",
+  "updatedAt": "2023-02-03T10:21:51.619919Z",
+  "data": [
+   "-2505.6442871094"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "ad2802799409f32a5efde9f07b02585c874bc6888b9754d664aec1a419c0f774",
+  "twitterHandle": "boy65810288",
+  "twitterUserID": 1376339417212719108,
+  "createdAt": "2023-02-03T10:21:51.620005Z",
+  "updatedAt": "2023-02-03T10:21:51.620005Z",
+  "data": [
+   "-2524.5856933594"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e0864e7f13ffe4f38676ab3831bc83ddfb7ca775eb2d11427407fcf7055669d7",
+  "twitterHandle": "caveman_punk",
+  "twitterUserID": 1576793669427945473,
+  "createdAt": "2023-02-03T10:21:51.619881Z",
+  "updatedAt": "2023-02-03T10:21:51.619881Z",
+  "data": [
+   "-2548.8220214844"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "10c36272e050adafe1b274a6194939e22d356a0ed8e3bacb7e02510abb9818ee",
+  "twitterHandle": "Rekt_Pepe_",
+  "twitterUserID": 1355164907327524864,
+  "createdAt": "2023-02-03T10:21:51.619922Z",
+  "updatedAt": "2023-02-03T10:21:51.619922Z",
+  "data": [
+   "-2566.1889648438"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e6811590537a3a1d0a8ce27e0c9aa7647edea53c47d5dbddb73692b225081020",
+  "twitterHandle": "010l0110",
+  "twitterUserID": 1412551451818274817,
+  "createdAt": "2023-02-03T10:21:51.620028Z",
+  "updatedAt": "2023-02-03T10:21:51.620028Z",
+  "data": [
+   "-2676.5756835938"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b6eb16590266dfeee77a4c713b8b0e60606d84c49e61a6b42e0492fde013766b",
+  "twitterHandle": "Gordsport",
+  "twitterUserID": 1060118280,
+  "createdAt": "2023-02-03T10:21:51.620036Z",
+  "updatedAt": "2023-02-03T10:21:51.620036Z",
+  "data": [
+   "-2677.6835937500"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "6ea7ec235c66a67d557250e1a73361ec3ab78126f788f0bd8731359f929193cb",
+  "twitterHandle": "aNVLtZhKRxEzCuJ",
+  "twitterUserID": 1444268957574189056,
+  "createdAt": "2023-02-03T10:21:51.619867Z",
+  "updatedAt": "2023-02-03T10:21:51.619867Z",
+  "data": [
+   "-2735.7329101562"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "1fbdac34daafb92d1fd6fdc4fa9eeb40f0350e30dcee047d0c16467409bd8014",
+  "twitterHandle": "charles12014719",
+  "twitterUserID": 1619721009715908608,
+  "createdAt": "2023-02-03T10:21:51.619883Z",
+  "updatedAt": "2023-02-03T10:21:51.619883Z",
+  "data": [
+   "-2759.8571777344"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "2274a705d7930618ba310411d57351100d32d132ac5c100af42f8f780338ed71",
+  "twitterHandle": "ademsahim",
+  "twitterUserID": 1693090094,
+  "createdAt": "2023-02-03T10:21:51.620841Z",
+  "updatedAt": "2023-02-03T10:21:51.620841Z",
+  "data": [
+   "-2778.5168457031"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "908e81954a866b43bcc08e554948802df4b09dd77237b13f0bfbf26f47d6d98d",
+  "twitterHandle": "0x21Sahil",
+  "twitterUserID": 1255004323463008257,
+  "createdAt": "2023-02-03T10:21:51.619877Z",
+  "updatedAt": "2023-02-03T10:21:51.619877Z",
+  "data": [
+   "-2784.0144042969"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "e287c092c7d9cf0622814367851fe29f0fd8803c683ee6c6cd92b7a7a9f34f54",
+  "twitterHandle": "designa2m_art",
+  "twitterUserID": 1443874088154550279,
+  "createdAt": "2023-02-03T10:21:51.620847Z",
+  "updatedAt": "2023-02-03T10:21:51.620847Z",
+  "data": [
+   "-2799.8347167969"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "6593d9f93ac398da6446cb433174666f48f1da2627694d073816e7d2d8376e4e",
+  "twitterHandle": "MtnzLautaro",
+  "twitterUserID": 1574120965499396099,
+  "createdAt": "2023-02-03T10:21:51.620835Z",
+  "updatedAt": "2023-02-03T10:21:51.620835Z",
+  "data": [
+   "-2920.0532226562"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "44f60b1c32b992f7751d66a5fb1e41033d772d6ef7914c5c49a021fdd6c727fd",
+  "twitterHandle": "MinaLeg3nd",
+  "twitterUserID": 1444454011067850755,
+  "createdAt": "2023-02-03T10:21:51.61998Z",
+  "updatedAt": "2023-02-03T10:21:51.61998Z",
+  "data": [
+   "-2928.6735839844"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "a21856f12757cabacd1bea37fe9ac71720a8cf14205114790f70db949aa55112",
+  "twitterHandle": "AcidMonkey4190",
+  "twitterUserID": 1571494571497979907,
+  "createdAt": "2023-02-03T10:21:51.620012Z",
+  "updatedAt": "2023-02-03T10:21:51.620012Z",
+  "data": [
+   "-2928.8015136719"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "61ced39f3b10f4cea05b211699eda1f18fee18132945bd205fb1a609c0aeb9f9",
+  "twitterHandle": "BigBossPleasure",
+  "twitterUserID": 1122884021523030017,
+  "createdAt": "2023-02-03T10:21:51.619983Z",
+  "updatedAt": "2023-02-03T10:21:51.619983Z",
+  "data": [
+   "-3005.7407226562"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "0030e6419a94c6e73343cabbc5c6c024b63140f2985bedaf74ade9901984a72e",
+  "twitterHandle": "javierivashb",
+  "twitterUserID": 745232431616299008,
+  "createdAt": "2023-02-03T10:21:51.620817Z",
+  "updatedAt": "2023-02-03T10:21:51.620817Z",
+  "data": [
+   "-3006.3920898438"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8aa13b367625ca8f760d5368b10b6973e77086ba61139bb855671e0e51cf64a6",
+  "twitterHandle": "cookieb13446856",
+  "twitterUserID": 1618370489470124032,
+  "createdAt": "2023-02-03T10:21:51.619863Z",
+  "updatedAt": "2023-02-03T10:21:51.619863Z",
+  "data": [
+   "-3045.0571289062"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "94f764f4d195031edcf58ed386d3a615a849ec06870dad9384b8f14edaa31eba",
+  "twitterHandle": "cryptomirek",
+  "twitterUserID": 1392749634620166145,
+  "createdAt": "2023-02-03T10:21:51.619918Z",
+  "updatedAt": "2023-02-03T10:21:51.619918Z",
+  "data": [
+   "-3249.4667968750"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "0dad78dd2c8254c0d78486fb5a61f0b32485951b26d5b826970b8727f6f2d3f6",
+  "twitterHandle": "XRPJohnTitor",
+  "twitterUserID": 1050000182966927360,
+  "createdAt": "2023-02-03T10:21:51.620776Z",
+  "updatedAt": "2023-02-03T10:21:51.620776Z",
+  "data": [
+   "-3258.9938964844"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "6611c9f7638054294270c85bf460746ecab88a5dac207c85ccaad69d003e4c4e",
+  "twitterHandle": "14000I",
+  "twitterUserID": 1378633259471548416,
+  "createdAt": "2023-02-03T10:21:51.620758Z",
+  "updatedAt": "2023-02-03T10:21:51.620758Z",
+  "data": [
+   "-4275.2856445312"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "0088cf72cbfa220cd4c7076703890260294848c6da79b845e900c3a0437ca529",
+  "twitterHandle": "melidiast",
+  "twitterUserID": 1953717703,
+  "createdAt": "2023-02-03T10:21:51.620762Z",
+  "updatedAt": "2023-02-03T10:21:51.620762Z",
+  "data": [
+   "-4285.8500976562"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "a3f6e98f834614c6f8dc8d2fe574b4d05ee0559cc98a9fc9226138f9886dcb7e",
+  "twitterHandle": "hello_enmin",
+  "twitterUserID": 1042053853510873092,
+  "createdAt": "2023-02-03T10:21:51.620003Z",
+  "updatedAt": "2023-02-03T10:21:51.620003Z",
+  "data": [
+   "-4332.3422851562"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "8ccec81c487f2e751b1bd5d6ba739f32ff4b87e7506e11324b31a6a103b5ef56",
+  "twitterHandle": "OBaranta",
+  "twitterUserID": 1470864024975855625,
+  "createdAt": "2023-02-03T10:21:51.619968Z",
+  "updatedAt": "2023-02-03T10:21:51.619968Z",
+  "data": [
+   "-4370.6342773438"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "b2c03d656a1bb461a4c9c8f06f40150042454b30ab7932ef9e36ed872f589670",
+  "twitterHandle": "everygain2",
+  "twitterUserID": 1404672597581647878,
+  "createdAt": "2023-02-03T10:21:51.619962Z",
+  "updatedAt": "2023-02-03T10:21:51.619962Z",
+  "data": [
+   "-4402.3808593750"
+  ]
+ },
+ {
+  "position": 0,
+  "publicKey": "adc83bf57bb510a75a5180918e9decd84febcf0f29b9bf68388e9f474d1e999c",
+  "twitterHandle": "ladder4uss",
+  "twitterUserID": 1466033383218511872,
+  "createdAt": "2023-02-03T10:21:51.620837Z",
+  "updatedAt": "2023-02-03T10:21:51.620837Z",
+  "data": [
+   "-4411.1518554688"
   ]
  }
 ]

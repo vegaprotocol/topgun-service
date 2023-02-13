@@ -12,7 +12,7 @@ import (
 
 func (s *Service) sortByAssetWithdrawalLimit(socials map[string]verifier.Social) ([]Participant, error) {
 	// The minimum number of unique withdrawals needed to achieve this reward
-	minWithdrawalThreshold := 2000
+	minWithdrawalThreshold := 0
 
 	gqlQuery := `{
 		partiesConnection {
