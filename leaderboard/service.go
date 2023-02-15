@@ -191,6 +191,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyPositionsJSON(socials)
 	case "ByPartyPositionsExisting":
 		p, err = s.sortByPartyPositionsExisting(socials)
+	case "ByPartyPositionsExistingNew":
+		p, err = s.sortByPartyPositionsExistingNew(socials)
 	case "ByPartyPositionsInternal":
 		p, err = s.sortByPartyPositionsInternal(socials)
 	default:
