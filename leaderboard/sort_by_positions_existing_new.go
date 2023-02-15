@@ -124,7 +124,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							percentagePnL = ((total - s) / (s + 4500)) * 100
+							percentagePnL = ((total - s) / (s + 2000)) * 100
 						}
 					}
 				}
