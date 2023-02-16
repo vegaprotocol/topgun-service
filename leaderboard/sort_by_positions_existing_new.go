@@ -91,6 +91,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 		openVolume := 0.0
 		percentagePnL := 0.0
 		dataFormatted := ""
+		dpMultiplier := math.Pow(10, decimalPlaces)
 		if err == nil {
 			for _, acc := range party.PositionsConnection.Edges {
 				for _, marketID := range s.cfg.MarketIDs {
@@ -105,7 +106,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = (PnL / 2000) * 100
+						percentagePnL = ((PnL / dpMultiplier) / 2000) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
@@ -121,7 +122,6 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 			t := time.Now().UTC()
 			total := 0.0
 			if PnL != 0 {
-				dpMultiplier := math.Pow(10, decimalPlaces)
 				total = PnL / dpMultiplier
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
