@@ -28,7 +28,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 	}
 
 	// Open our jsonFile
-	jsonFile, err := os.Open("/data/initial_results.json")
+	jsonFile, err := os.Open("initial_results.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -48,11 +48,11 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-		partiesConnection {
+		partiesConnection (pagination: {first: 1000000}) {
 	      edges {
 	        node {
 	          id
-	          positionsConnection() {
+	          positionsConnection {
 	            edges {
 	              node {
 	              market{id}
@@ -63,6 +63,12 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 	              realisedPNL
 	              }
 	            }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+              }
 			  }
 			}
 		  }

@@ -48,11 +48,11 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-		partiesConnection {
+		partiesConnection (pagination: {first: 1000000}) {
 	      edges {
 	        node {
 	          id
-	          positionsConnection() {
+	          positionsConnection {
 	            edges {
 	              node {
 	              market{id}
@@ -63,6 +63,12 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 	              realisedPNL
 	              }
 	            }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+              }
 			  }
 			}
 		  }

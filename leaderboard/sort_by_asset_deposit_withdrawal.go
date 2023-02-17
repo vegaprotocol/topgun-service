@@ -20,7 +20,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 	// Default: 1 unique asset deposit and 1 unique withdrawal1 from the erc20 bridge
 
 	gqlQuery := `{
-		partiesConnection {
+		partiesConnection () {
 		  edges {
 			node {
 			  id
