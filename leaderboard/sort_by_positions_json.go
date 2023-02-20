@@ -27,26 +27,32 @@ func (s *Service) sortByPartyPositionsJSON(socials map[string]verifier.Social) (
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-	partiesConnection {
-      edges {
-        node {
-          id
-          positionsConnection() {
-            edges {
-              node {
-              market{id}
-              openVolume
-              realisedPNL
-              averageEntryPrice
-              unrealisedPNL
-              realisedPNL
+		partiesConnection (pagination: {first: 1000000}) {
+	      edges {
+	        node {
+	          id
+	          positionsConnection {
+	            edges {
+	              node {
+	              market{id}
+	              openVolume
+	              realisedPNL
+	              averageEntryPrice
+	              unrealisedPNL
+	              realisedPNL
+	              }
+	            }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
               }
-            }
+			  }
+			}
 		  }
-		}
-	  }
-    }
-}`
+	    }
+	}`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
