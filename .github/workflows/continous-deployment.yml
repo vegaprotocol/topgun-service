@@ -1,15 +1,12 @@
 # FILE IS AUTOMATICALLY MANAGED BY github.com/vegaprotocol/terraform//github
 name: "Continous Deployment Workflow"
 "on":
-  
   push:
     branches:
-      
       - develop
-      
+
       - master
-      
-  
+
 jobs:
   integration:
     uses: ./.github/workflows/continous-integration.yml
@@ -30,22 +27,23 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VEGA_CI_SSH_KEY }}
       - run: |
-          
+
           version=${{ github.sha }}
-          
+
           git config --global user.name 'vega-ci-bot'
           git config --global user.email 'dev@vega.xyz'
           git clone git@github.com:vegaprotocol/k8s.git
                     
           if [ "$(git rev-parse --abbrev-ref HEAD)" = "develop" ]; then
             echo -n "$version" > k8s/charts/apps/topgun-service/dev/VERSION
+            echo -n "$version" > k8s/charts/apps/topgun-service/dev2/VERSION
           fi
-          
+
                     
           if [ "$(git rev-parse --abbrev-ref HEAD)" = "master" ]; then
             echo -n "$version" > k8s/charts/apps/topgun-service/prod/VERSION
           fi
-          
+
                     (
             cd k8s
             git add -A
