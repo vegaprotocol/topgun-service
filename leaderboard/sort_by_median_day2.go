@@ -130,7 +130,7 @@ func (s *Service) sortByPartyPositionsMedianDay2(socials map[string]verifier.Soc
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							NewTotal = math.Min(total, s)
+							NewTotal = median([]float64{total, s, 0.0})
 						}
 					}
 				}
