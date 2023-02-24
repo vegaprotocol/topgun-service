@@ -112,7 +112,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = ((PnL / dpMultiplier) / 2000) * 100
+						percentagePnL = ((PnL / dpMultiplier) / 3000) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
