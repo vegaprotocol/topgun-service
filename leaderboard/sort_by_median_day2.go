@@ -61,8 +61,6 @@ func (s *Service) sortByPartyPositionsMedianDay2(socials map[string]verifier.Soc
 	// we unmarshal our byteArray which contains our
 	// jsonFile's content into 'alreadyTraded' which we defined above
 	json.Unmarshal(byteValue1, &day1Traded)
-	fmt.Println("Day1 Traded array is:")
-	fmt.Println(day1Traded)
 
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile1.Close()
@@ -162,8 +160,6 @@ func (s *Service) sortByPartyPositionsMedianDay2(socials map[string]verifier.Soc
 				for _, traded := range day1Traded {
 					if traded.PublicKey == party.ID {
 						if t, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							fmt.Println("Does it get here???")
-							fmt.Println(t)
 							day1Total = t
 						}
 					}
