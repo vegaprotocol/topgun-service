@@ -28,7 +28,26 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 	}
 
 	// Open our jsonFile
-	jsonFile1, err := os.Open("/data/day1.json")
+	jsonFile, err := os.Open("initial_results.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// read our opened jsonFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	alreadyTraded := []Participant{}
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'alreadyTraded' which we defined above
+	json.Unmarshal(byteValue, &alreadyTraded)
+
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	// Open our jsonFile
+	jsonFile1, err := os.Open("day1.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -47,7 +66,7 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 	defer jsonFile1.Close()
 
 	// Open our jsonFile
-	jsonFile2, err := os.Open("/data/day2.json")
+	jsonFile2, err := os.Open("day2.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -59,11 +78,11 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 	day2Traded := []Participant{}
 
 	// we unmarshal our byteArray which contains our
-	// jsonFile's content into 'day2Traded' which we defined above
+	// jsonFile's content into 'alreadyTraded' which we defined above
 	json.Unmarshal(byteValue2, &day2Traded)
 
 	// defer the closing of our jsonFile so that we can parse it later on
-	defer jsonFile1.Close()
+	defer jsonFile2.Close()
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
@@ -114,6 +133,9 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
 		openVolume := 0.0
+		percentagePnL := 0.0
+		dataFormatted := ""
+		dpMultiplier := math.Pow(10, decimalPlaces)
 		if err == nil {
 			for _, acc := range party.PositionsConnection.Edges {
 				for _, marketID := range s.cfg.MarketIDs {
@@ -128,6 +150,8 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
+						percentagePnL = ((PnL / dpMultiplier) / 2000) * 100
+						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
 
@@ -140,33 +164,37 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 			}
 
 			t := time.Now().UTC()
-			dataFormatted := ""
 			total := 0.0
-			NewTotal := 0.0
 			day1Total := 0.0
 			day2Total := 0.0
+			NewTotal := 0.0
 			if PnL != 0 {
-				dpMultiplier := math.Pow(10, decimalPlaces)
 				total = PnL / dpMultiplier
-				for _, traded := range day1Traded {
+				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							day1Total = s
+							percentagePnL = ((total - s) / (s + 2000)) * 100
+						}
+					}
+				}
+				for _, traded := range day1Traded {
+					if traded.PublicKey == party.ID {
+						if t, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+							day1Total = t
 						}
 					}
 				}
 				for _, traded := range day2Traded {
 					if traded.PublicKey == party.ID {
-						if t, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							day2Total = t
+						if u, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+							day2Total = u
 						}
 					}
 				}
+				NewTotal = median([]float64{percentagePnL, day1Total, day2Total})
+
+				dataFormatted = strconv.FormatFloat(NewTotal, 'f', 10, 32)
 			}
-
-			NewTotal = median([]float64{total, day1Total, day2Total})
-
-			dataFormatted = strconv.FormatFloat(NewTotal, 'f', 10, 32)
 
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
