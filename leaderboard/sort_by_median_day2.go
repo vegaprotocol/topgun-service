@@ -47,7 +47,7 @@ func (s *Service) sortByPartyPositionsMedianDay2(socials map[string]verifier.Soc
 	defer jsonFile.Close()
 
 	// Open our jsonFile
-	jsonFile1, err := os.Open("initial_results.json")
+	jsonFile1, err := os.Open("day1.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
