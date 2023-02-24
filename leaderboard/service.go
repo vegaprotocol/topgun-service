@@ -195,7 +195,7 @@ func (s *Service) update() {
 		p, err = s.sortByPartyPositionsExistingNew(socials)
 	case "ByPartyPositionsInternal":
 		p, err = s.sortByPartyPositionsInternal(socials)
-	case "ByPartyPositionsMedianDay2":
+	case "ByPartyPositionsMedianSecond":
 		p, err = s.sortByPartyPositionsMedianDay2(socials)
 	case "ByPartyPositionsMedianDay3":
 		p, err = s.sortByPartyPositionsMedianDay3(socials)
