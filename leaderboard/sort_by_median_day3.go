@@ -15,7 +15,7 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.Social) ([]Participant, error) {
+func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Social) ([]Participant, error) {
 
 	// Grab the DP we're targeting (for the asset we're interested in for the market specified
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -45,6 +45,44 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
+
+	// Open our jsonFile
+	jsonFile1, err := os.Open("/data/day1.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// read our opened jsonFile as a byte array.
+	byteValue1, _ := ioutil.ReadAll(jsonFile1)
+
+	day1Traded := []Participant{}
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'alreadyTraded' which we defined above
+	json.Unmarshal(byteValue1, &day1Traded)
+
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile1.Close()
+
+	// Open our jsonFile
+	jsonFile2, err := os.Open("/data/day2.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// read our opened jsonFile as a byte array.
+	byteValue2, _ := ioutil.ReadAll(jsonFile2)
+
+	day2Traded := []Participant{}
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'alreadyTraded' which we defined above
+	json.Unmarshal(byteValue2, &day2Traded)
+
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile2.Close()
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
@@ -112,7 +150,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = ((PnL / dpMultiplier) / 3000) * 100
+						percentagePnL = ((PnL / dpMultiplier) / 2000) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
@@ -127,6 +165,9 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 
 			t := time.Now().UTC()
 			total := 0.0
+			day1Total := 0.0
+			day2Total := 0.0
+			NewTotal := 0.0
 			if PnL != 0 {
 				total = PnL / dpMultiplier
 				for _, traded := range alreadyTraded {
@@ -136,7 +177,23 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 						}
 					}
 				}
-				dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
+				for _, traded := range day1Traded {
+					if traded.PublicKey == party.ID {
+						if t, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+							day1Total = t
+						}
+					}
+				}
+				for _, traded := range day2Traded {
+					if traded.PublicKey == party.ID {
+						if u, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+							day2Total = u
+						}
+					}
+				}
+				NewTotal = median([]float64{percentagePnL, day1Total, day2Total})
+
+				dataFormatted = strconv.FormatFloat(NewTotal, 'f', 10, 32)
 			}
 
 			participants = append(participants, Participant{
@@ -144,7 +201,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
-				sortNum:       percentagePnL,
+				sortNum:       NewTotal,
 				CreatedAt:     t,
 				UpdatedAt:     t,
 				isBlacklisted: party.blacklisted,
