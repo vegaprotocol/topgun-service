@@ -173,7 +173,7 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							percentagePnL = ((total - s) / (s + 2000)) * 100
+							percentagePnL = ((total - s) / (s + 3000)) * 100
 						}
 					}
 				}
