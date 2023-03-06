@@ -3,16 +3,16 @@ logFormat: text # json, text (default), textcolour, textnocolour
 logLevel: Info
 LogMethodName: false
 vegaAssets:
-  - 638b4dbe4f3ce5b81546bef29108e8374a7293012c6189ca00f287f8c62a98a5
+  - a0cf0835cb5af7bd03c56d12d846eed81c182eab36ea61c074961c115da9c8c4
 marketIDs:
-  - a445647e31d778777dd4e093b01210927dd951bb4f4d29d05606ca6db12a807b
-  - 734a42802816b625e32c07f372e0a946bf608b96cb947aed66405315e4b22860
-algorithm: ByPartyPositions
+  - 0f4d06abbf87b989f613bf3a651842b88874d70c4b8b3161c7257837447c34f9
+  - bf48b3d7919b0ca281f39fe696365fe829f5d4b3b9ab4ea18ccade89252de4b8
+algorithm: ByPartyPositionsMedianFinal
 algorithmConfig:
   decimalPlaces: 18
 defaultDisplay: Balance
 defaultSort: Balance
-description: A trading competition on the XRP & ADA markets
+description: A trading competition on two different markets
 gracefulShutdownTimeout: 5s
 headers:
   - Balance
@@ -22,11 +22,11 @@ socialURL:
   path: /smv/parties
 vegaGraphQLURL:
   scheme: https
-  host: api.n12.testnet.vega.xyz
+  host: api.n08.testnet.vega.xyz
   path: /graphql
 vegaPoll: 30s
-startTime: 2023-02-15T10:00:00Z
-endTime: 2023-02-17T17:30:00Z
+startTime: 2023-03-05T10:00:00Z
+endTime: 2023-03-06T17:30:00Z
 mongoConnectionString: mongodb+srv://not-required
 mongoCollectionName: not-required
 mongoDatabaseName: not-required
@@ -126,3 +126,4 @@ twitterBlacklist:
   965155542: jgsbennett
   1620100666310987798: tqq_vega
   1567915146160357376: CharlieDummett
+  1618260560264499200: WatEnderas
