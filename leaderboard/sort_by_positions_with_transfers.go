@@ -48,32 +48,50 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-		partiesConnection (pagination: {first: 1000000}) {
-	      edges {
-	        node {
-	          id
-	          positionsConnection {
-	            edges {
-	              node {
-	              market{id}
-	              openVolume
-	              realisedPNL
-	              averageEntryPrice
-	              unrealisedPNL
-	              realisedPNL
-	              }
-	            }
-              pageInfo {
-                hasNextPage
-                hasPreviousPage
-                startCursor
-                endCursor
-              }
+		partiesConnection(pagination: {first: 1000000}) {
+		  edges {
+			node {
+			  id
+			  positionsConnection {
+				edges {
+				  node {
+					market {
+					  id
+					}
+					openVolume
+					realisedPNL
+					averageEntryPrice
+					unrealisedPNL
+					realisedPNL
+				  }
+				}
+				pageInfo {
+				  hasNextPage
+				  hasPreviousPage
+				  startCursor
+				  endCursor
+				}
+			  }
+			  transfersConnection(direction: To) {
+				edges {
+				  node {
+					id
+					fromAccountType
+					toAccountType
+					from
+					amount
+					timestamp
+					asset {
+					  id
+					  name
+					}
+				  }
+				}
 			  }
 			}
 		  }
-	    }
-	}`
+		}
+	  }`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
@@ -91,6 +109,20 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 	participants := []Participant{}
 	// if participant in JSON, PNL = json data, otherwise starting PnL 0
 	for _, party := range sParties {
+		transfer := 1000.0
+		if len(party.TransfersConnection.Edges) != 0 {
+			for _, w := range party.TransfersConnection.Edges {
+				if err != nil {
+					fmt.Errorf("failed to convert Transfer amount to string", err)
+				}
+				if w.Transfer.Asset.Id == s.cfg.VegaAssets[0] &&
+					w.Transfer.Timestamp.After(s.cfg.StartTime) &&
+					w.Transfer.Timestamp.Before(s.cfg.EndTime) {
+					transfer, err = strconv.ParseFloat(w.Transfer.Amount, 64)
+				}
+			}
+
+		}
 		PnL := 0.0
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
@@ -112,7 +144,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = ((PnL / dpMultiplier) / 6500) * 100
+						percentagePnL = ((PnL / dpMultiplier) / transfer) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
@@ -132,7 +164,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							percentagePnL = ((total - s) / (s + 6500)) * 100
+							percentagePnL = ((total - s) / (s + transfer)) * 100
 						}
 					}
 				}
