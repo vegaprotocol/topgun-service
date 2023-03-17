@@ -199,6 +199,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyPositionsMedianDay2(socials)
 	case "ByPartyPositionsMedianDay3":
 		p, err = s.sortByPartyPositionsMedianDay3(socials)
+	case "ByPartyPositionsWithTransfers":
+		p, err = s.sortByPartyPositionsWithTransfers(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
