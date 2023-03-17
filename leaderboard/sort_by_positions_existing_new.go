@@ -112,7 +112,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = ((PnL / dpMultiplier) / 4500) * 100
+						percentagePnL = ((PnL / dpMultiplier) / 6500) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
@@ -132,7 +132,7 @@ func (s *Service) sortByPartyPositionsExistingNew(socials map[string]verifier.So
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							percentagePnL = ((total - s) / (s + 4500)) * 100
+							percentagePnL = ((total - s) / (s + 6500)) * 100
 						}
 					}
 				}
