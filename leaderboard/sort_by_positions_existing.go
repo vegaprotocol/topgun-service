@@ -123,17 +123,18 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 			t := time.Now().UTC()
 			dataFormatted := ""
 			total := 0.0
+			percentagePnL := 0.0
 			if PnL != 0 {
 				dpMultiplier := math.Pow(10, decimalPlaces)
 				total = PnL / dpMultiplier
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							total -= s
+							percentagePnL = ((total - s) / (s + 4500)) * 100
 						}
 					}
 				}
-				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
+				dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 			}
 
 			participants = append(participants, Participant{
@@ -141,7 +142,7 @@ func (s *Service) sortByPartyPositionsExisting(socials map[string]verifier.Socia
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
-				sortNum:       total,
+				sortNum:       percentagePnL,
 				CreatedAt:     t,
 				UpdatedAt:     t,
 				isBlacklisted: party.blacklisted,
