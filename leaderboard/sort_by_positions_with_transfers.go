@@ -174,7 +174,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = ((PnL / dpMultiplier) / (transfer + deposit)) * 100
+						percentagePnL = ((PnL / dpMultiplier) / ((transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
@@ -199,7 +199,6 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 					}
 				}
 				dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
-				fmt.Println(dataFormatted)
 			}
 
 			participants = append(participants, Participant{
