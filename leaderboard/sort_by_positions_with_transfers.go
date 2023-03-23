@@ -127,7 +127,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 	// if participant in JSON, PNL = json data, otherwise starting PnL 0
 	for _, party := range sParties {
 		transfer := 1000.0
-		deposit := 0.0
+		deposit := 1000.0
 		if len(party.TransfersConnection.Edges) != 0 {
 			for _, w := range party.TransfersConnection.Edges {
 				if err != nil {
@@ -194,11 +194,12 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							percentagePnL = ((total - s) / (s + transfer + deposit)) * 100
+							percentagePnL = ((total - s) / (s + (transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
 						}
 					}
 				}
 				dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
+				fmt.Println(dataFormatted)
 			}
 
 			participants = append(participants, Participant{
