@@ -51,6 +51,34 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 		  }
 	    }
 	}`
+
+	gqlQueryPartiesAccountsLast := `{
+		partiesConnection (pagination: {last: 500}) {
+	      edges {
+	        node {
+	          id
+	          positionsConnection {
+	            edges {
+	              node {
+	              market{id}
+	              openVolume
+	              realisedPNL
+	              averageEntryPrice
+	              unrealisedPNL
+	              realisedPNL
+	              }
+	            }
+              pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+              }
+			  }
+			}
+		  }
+	    }
+	}`
 	ctx := context.Background()
 	parties, err := getParties(
 		ctx,
@@ -59,6 +87,15 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 		nil,
 		nil,
 	)
+	parties2, err := getParties(
+		ctx,
+		s.cfg.VegaGraphQLURL.String(),
+		gqlQueryPartiesAccountsLast,
+		nil,
+		nil,
+	)
+
+	parties = append(parties, parties2...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get list of parties: %w", err)
 	}
