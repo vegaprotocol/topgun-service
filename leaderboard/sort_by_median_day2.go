@@ -67,7 +67,7 @@ func (s *Service) sortByPartyPositionsMedianDay2(socials map[string]verifier.Soc
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-		partiesConnection (pagination: {first: 1000000}) {
+		partiesConnection (pagination: {first: 500}) {
 	      edges {
 	        node {
 	          id
