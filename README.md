@@ -1,6 +1,6 @@
 # Leaderboard API service for Fairground incentives (code name TOPGUN)
 
-API service that provides a **sorted leaderboard for incentives/games operating on the Fairground testnet.**
+API service that provides a **sorted leaderboard for incentives/games/Mainnet Sims operating on the Fairground testnet.**
 
 The leaderboard is filtered to include ONLY participants that are found on a verified 'allow-list' provided by an external API service. On which each user will verify their public key using Twitter. This service is known internally as **Social Media Verification** or "Twitter Registration". An optional blacklist can be configured to exclude users from the main public leaderboard, this feature is useful for team members or known bots/scammers.
 
