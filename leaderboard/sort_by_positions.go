@@ -57,8 +57,16 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 
 	// filter parties and add social handles
 	sPositions := socialPositions(socials, positions)
+	parties := []Party{}
 	participants := []Participant{}
 	for _, position := range sPositions {
+		for _, party := range parties {
+			if party.ID == position.Party.ID {
+				
+			}
+		}
+		
+		parties = append(parties, position.Party)
 		PnL := 0.0
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
@@ -75,7 +83,7 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 					if u, err := strconv.ParseFloat(position.OpenVolume, 32); err == nil {
 						openVolume += u
 					}
-					PnL += realisedPnL + unrealisedPnL
+					PnL = realisedPnL + unrealisedPnL
 				}
 			}
 		}
