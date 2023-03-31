@@ -31,18 +31,14 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 			  market {
 				id
 			  }
+			  party {
+				id
+			  }
 			  openVolume
 			  realisedPNL
 			  averageEntryPrice
 			  unrealisedPNL
 			  realisedPNL
-			}
-		  }
-		}
-		partiesConnection {
-		  edges {
-			node {
-			  id
 			}
 		  }
 		}
