@@ -99,6 +99,10 @@ type Order struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
+type PositionsResponse struct {
+	PositionsConnection PositionsConnection `json:"positions"`
+}
+
 type PositionsConnection struct {
 	Edges []PositionsEdge `json:"edges"`
 }
@@ -113,6 +117,11 @@ type Position struct {
 	AverageEntryPrice string `json:"averageEntryPrice"`
 	UnrealisedPNL     string `json:"unrealisedPNL"`
 	RealisedPNL       string `json:"realisedPNL"`
+	Party             Party  `json:"party"`
+	PartyID           string
+	Partysocial       string
+	PartytwitterID    int64
+	Partyblacklisted  bool
 }
 
 type TradesConnection struct {
@@ -292,6 +301,30 @@ func getParties(
 	return response.PartiesConnection.Edges, nil
 }
 
+func getPositions(
+	ctx context.Context,
+	gqlURL string,
+	gqlQuery string,
+	vars map[string]string,
+	cli *http.Client,
+) ([]PositionsEdge, error) {
+
+	if cli == nil {
+		cli = &http.Client{Timeout: time.Second * 180}
+	}
+	client := graphql.NewClient(gqlURL, graphql.WithHTTPClient(cli))
+	req := graphql.NewRequest(gqlQuery)
+	req.Header.Set("Cache-Control", "no-cache")
+	for key, value := range vars {
+		req.Var(key, value)
+	}
+	var response PositionsResponse
+	if err := client.Run(ctx, req, &response); err != nil {
+		return nil, err
+	}
+	return response.PositionsConnection.Edges, nil
+}
+
 func socialParties(socials map[string]verifier.Social, parties []PartiesEdge) []Party {
 	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
 	sp := make([]Party, 0, len(socials))
@@ -318,6 +351,43 @@ func socialParties(socials map[string]verifier.Social, parties []PartiesEdge) []
 				social:      social.TwitterHandle,
 				twitterID:   social.TwitterUserID,
 				blacklisted: social.IsBlacklisted,
+			})
+			log.WithFields(log.Fields{
+				"partyID":       partyID,
+				"social":        social,
+				"account_count": "zero",
+			}).Debug("Social (not found)")
+		}
+	}
+	return sp
+}
+
+func socialPositions(socials map[string]verifier.Social, positions []PositionsEdge) []Position {
+	// Must show in the leaderboard ALL parties registered in the socials list, regardless of whether they exist in Vega
+	sp := make([]Position, 0, len(socials))
+	for partyID, social := range socials {
+		found := false
+		for _, p := range positions {
+			if p.Position.Party.ID == partyID {
+				log.WithFields(log.Fields{
+					"partyID":       partyID,
+					"social":        social,
+					"account_count": len(p.Position.Party.AccountsConnection.Edges),
+				}).Debug("Social (found)")
+				p.Position.Party.social = social.TwitterHandle
+				p.Position.Party.twitterID = social.TwitterUserID
+				p.Position.Party.blacklisted = social.IsBlacklisted
+				sp = append(sp, p.Position)
+				found = true
+				break
+			}
+		}
+		if !found {
+			sp = append(sp, Position{
+				PartyID:          partyID,
+				Partysocial:      social.TwitterHandle,
+				PartytwitterID:   social.TwitterUserID,
+				Partyblacklisted: social.IsBlacklisted,
 			})
 			log.WithFields(log.Fields{
 				"partyID":       partyID,
