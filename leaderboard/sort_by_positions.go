@@ -24,69 +24,66 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 	}
 
 	// Query all accounts for parties on Vega network
-	gqlQueryPartiesAccounts := `{
-		positions {
-		  edges {
-			node {
-			  market {
-				id
-			  }
-			  party {
-				id
-			  }
-			  openVolume
-			  realisedPNL
-			  averageEntryPrice
-			  unrealisedPNL
-			  realisedPNL
+	gqlQueryPositionsParties := `{
+	positions {
+		edges {
+		node {
+			market {
+			id
 			}
-		  }
+			party {
+			id
+			}
+			openVolume
+			realisedPNL
+			averageEntryPrice
+			unrealisedPNL
+			realisedPNL
 		}
-	  }`
+		}
+	}
+	}`
 	ctx := context.Background()
-	parties, err := getParties(
+	positions, err := getPositions(
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
-		gqlQueryPartiesAccounts,
+		gqlQueryPositionsParties,
 		nil,
 		nil,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get list of parties: %w", err)
+		return nil, fmt.Errorf("failed to get list of positions: %w", err)
 	}
 
 	// filter parties and add social handles
-	sParties := socialParties(socials, parties)
+	sPositions := socialPositions(socials, positions)
 	participants := []Participant{}
-	for _, party := range sParties {
+	for _, position := range sPositions {
 		PnL := 0.0
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
 		openVolume := 0.0
 		if err == nil {
-			for _, acc := range party.PositionsConnection.Edges {
-				for _, marketID := range s.cfg.MarketIDs {
-					if acc.Position.Market.ID == marketID {
-						if s, err := strconv.ParseFloat(acc.Position.RealisedPNL, 32); err == nil {
-							realisedPnL += s
-						}
-						if t, err := strconv.ParseFloat(acc.Position.UnrealisedPNL, 32); err == nil {
-							unrealisedPnL += t
-						}
-						if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
-							openVolume += u
-						}
-						PnL = realisedPnL + unrealisedPnL
+			for _, marketID := range s.cfg.MarketIDs {
+				if position.Market.ID == marketID {
+					if s, err := strconv.ParseFloat(position.RealisedPNL, 32); err == nil {
+						realisedPnL += s
 					}
+					if t, err := strconv.ParseFloat(position.UnrealisedPNL, 32); err == nil {
+						unrealisedPnL += t
+					}
+					if u, err := strconv.ParseFloat(position.OpenVolume, 32); err == nil {
+						openVolume += u
+					}
+					PnL = realisedPnL + unrealisedPnL
 				}
 			}
 		}
 
 		if (realisedPnL != 0.0) || (unrealisedPnL != 0.0) || (openVolume != 0.0) {
-			if party.blacklisted {
-				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
+			if position.Party.blacklisted {
+				log.Infof("Blacklisted party added: %d, %s, %s", position.PartytwitterID, position.Partysocial, position.PartyID)
 			}
-
 			t := time.Now().UTC()
 			dataFormatted := ""
 			if PnL != 0 {
@@ -94,16 +91,15 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 				total := PnL / dpMultiplier
 				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
 			}
-
 			participants = append(participants, Participant{
-				PublicKey:     party.ID,
-				TwitterUserID: party.twitterID,
-				TwitterHandle: party.social,
+				PublicKey:     position.Party.ID,
+				TwitterUserID: position.Party.twitterID,
+				TwitterHandle: position.Party.social,
 				Data:          []string{dataFormatted},
 				sortNum:       PnL,
 				CreatedAt:     t,
 				UpdatedAt:     t,
-				isBlacklisted: party.blacklisted,
+				isBlacklisted: position.Party.blacklisted,
 			})
 		}
 	}
