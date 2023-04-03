@@ -88,7 +88,8 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 		}
 	  }`
 	ctx := context.Background()
-	parties, err := getParties(
+
+	connection, err := getPartiesConnection(
 		ctx,
 		s.cfg.VegaGraphQLURL.String(),
 		gqlQueryPartiesAccounts,
@@ -99,15 +100,8 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 		return nil, fmt.Errorf("failed to get list of parties: %w", err)
 	}
 
-	pageInfo, err := getPageInfo(
-		ctx,
-		s.cfg.VegaGraphQLURL.String(),
-		gqlQueryPartiesAccounts,
-		nil,
-		nil,
-	)
-
-	endCursor := pageInfo.EndCursor
+	parties := connection.Edges
+	endCursor := connection.PageInfo.EndCursor
 
 	for {
 		gqlQueryPartiesAccounts2 := `query ($endCursor: String!) {
@@ -172,7 +166,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 			  }
 			}
 		  }`
-		parties2, err := getParties(
+		connection2, err := getPartiesConnection(
 			ctx,
 			s.cfg.VegaGraphQLURL.String(),
 			gqlQueryPartiesAccounts2,
@@ -183,23 +177,13 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 			return nil, fmt.Errorf("failed to get list of parties in loop: %w", err)
 		}
 
-		parties = append(parties, parties2...)
+		parties = append(parties, connection2.Edges...)
+		pageInfo := connection2.PageInfo
 
-		pageInfo, err = getPageInfo(
-			ctx,
-			s.cfg.VegaGraphQLURL.String(),
-			gqlQueryPartiesAccounts2,
-			map[string]string{"endCursor": endCursor},
-			nil,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get page info: %w", err)
-		}
-
-		fmt.Println(pageInfo.NextPage)
+		fmt.Println("got ", len(parties), "end?", pageInfo.EndCursor)
 
 		if pageInfo.NextPage == false {
-			fmt.Println(pageInfo.EndCursor)
+			fmt.Println("done")
 			break
 		} else {
 			endCursor = pageInfo.EndCursor
