@@ -152,7 +152,6 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 		realisedPnL := 0.0
 		unrealisedPnL := 0.0
 		openVolume := 0.0
-		percentagePnL := 0.0
 		dataFormatted := ""
 		if err == nil {
 			for _, acc := range party.PositionsConnection.Edges {
@@ -192,7 +191,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 				TwitterUserID: party.twitterID,
 				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
-				sortNum:       percentagePnL,
+				sortNum:       PnL,
 				CreatedAt:     t,
 				UpdatedAt:     t,
 				isBlacklisted: party.blacklisted,
