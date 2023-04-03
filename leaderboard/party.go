@@ -309,6 +309,30 @@ func getParties(
 	return response.PartiesConnection.Edges, nil
 }
 
+func getPartiesConnection(
+	ctx context.Context,
+	gqlURL string,
+	gqlQuery string,
+	vars map[string]string,
+	cli *http.Client,
+) (PartiesConnection, error) {
+
+	if cli == nil {
+		cli = &http.Client{Timeout: time.Second * 180}
+	}
+	client := graphql.NewClient(gqlURL, graphql.WithHTTPClient(cli))
+	req := graphql.NewRequest(gqlQuery)
+	req.Header.Set("Cache-Control", "no-cache")
+	for key, value := range vars {
+		req.Var(key, value)
+	}
+	var response PartiesResponse
+	if err := client.Run(ctx, req, &response); err != nil {
+		return PartiesConnection{}, err
+	}
+	return response.PartiesConnection, nil
+}
+
 func getPageInfo(
 	ctx context.Context,
 	gqlURL string,
