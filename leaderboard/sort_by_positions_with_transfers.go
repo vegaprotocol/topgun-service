@@ -105,10 +105,10 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 
 		partyEdges = append(partyEdges, connection.Edges...)
 
-		fmt.Println("got ", len(partyEdges), "end?", connection.PageInfo.EndCursor)
+		// fmt.Println("got ", len(partyEdges), "end?", connection.PageInfo.EndCursor)
 
 		if !connection.PageInfo.NextPage {
-			fmt.Println("done")
+			// fmt.Println("done")
 			break
 		} else {
 			pagination.After = connection.PageInfo.EndCursor
@@ -166,7 +166,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 						if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
 							openVolume += u
 						}
-						PnL = (realisedPnL + unrealisedPnL) - transfer + deposit
+						PnL = (realisedPnL + unrealisedPnL) - transfer - deposit
 						dataFormatted = strconv.FormatFloat(PnL, 'f', 10, 32)
 					}
 				}

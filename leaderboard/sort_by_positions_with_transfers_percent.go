@@ -15,6 +15,69 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
+var gqlQueryPartiesAccountsPercent string = `query ($pagination: Pagination!) {
+	partiesConnection(pagination: $pagination) {
+	  edges {
+		node {
+		  id
+		  positionsConnection {
+			edges {
+			  node {
+				market {
+				  id
+				}
+				openVolume
+				realisedPNL
+				averageEntryPrice
+				unrealisedPNL
+				realisedPNL
+			  }
+			}
+		  }
+		  transfersConnection(direction: To) {
+			edges {
+			  node {
+				id
+				fromAccountType
+				toAccountType
+				from
+				amount
+				timestamp
+				asset {
+				  id
+				  name
+				}
+			  }
+			}
+		  }
+		  depositsConnection {
+			edges {
+			  node {
+				amount
+				createdTimestamp
+				creditedTimestamp
+				status
+				asset {
+				  id
+				  symbol
+				  source {
+					__typename
+				  }
+				}
+			  }
+			}
+		  }
+		}
+	  }
+	  pageInfo {
+		hasNextPage
+		hasPreviousPage
+		startCursor
+		endCursor
+	  }
+	}
+  }`
+
 func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string]verifier.Social) ([]Participant, error) {
 
 	// Grab the DP we're targeting (for the asset we're interested in for the market specified
@@ -46,188 +109,37 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 
-	// Query all accounts for parties on Vega network
-	gqlQueryPartiesAccounts := `{
-		partiesConnection(pagination: {first: 50 }) {
-		  edges {
-			node {
-			  id
-			  positionsConnection {
-				edges {
-				  node {
-					market {
-					  id
-					}
-					openVolume
-					realisedPNL
-					averageEntryPrice
-					unrealisedPNL
-					realisedPNL
-				  }
-				}
-			  }
-			  transfersConnection(direction: To) {
-				edges {
-				  node {
-					id
-					fromAccountType
-					toAccountType
-					from
-					amount
-					timestamp
-					asset {
-					  id
-					  name
-					}
-				  }
-				}
-			  }
-			  depositsConnection {
-				edges {
-				  node {
-					amount
-					createdTimestamp
-					creditedTimestamp
-					status
-					asset {
-					  id
-					  symbol
-					  source {
-						__typename
-					  }
-					}
-				  }
-				}
-			  }
-			}
-		  }
-		  pageInfo {
-			hasNextPage
-			hasPreviousPage
-			startCursor
-			endCursor
-		  }
-		}
-	  }`
+	pagination := Pagination{First: 50}
+
 	ctx := context.Background()
-	parties, err := getParties(
-		ctx,
-		s.cfg.VegaGraphQLURL.String(),
-		gqlQueryPartiesAccounts,
-		nil,
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get list of parties: %w", err)
-	}
-
-	pageInfo, err := getPageInfo(
-		ctx,
-		s.cfg.VegaGraphQLURL.String(),
-		gqlQueryPartiesAccounts,
-		nil,
-		nil,
-	)
-
-	endCursor := pageInfo.EndCursor
-
+	partyEdges := []PartiesEdge{}
 	for {
-		gqlQueryPartiesAccounts2 := `query($endCursor: String!){
-		partiesConnection(pagination: {first: 50, after: $endCursor}) {
-		  edges {
-			node {
-			  id
-			  positionsConnection {
-				edges {
-				  node {
-					market {
-					  id
-					}
-					openVolume
-					realisedPNL
-					averageEntryPrice
-					unrealisedPNL
-					realisedPNL
-				  }
-				}
-				pageInfo {
-				  hasNextPage
-				  hasPreviousPage
-				  startCursor
-				  endCursor
-				}
-			  }
-			  transfersConnection(direction: To) {
-				edges {
-				  node {
-					id
-					fromAccountType
-					toAccountType
-					from
-					amount
-					timestamp
-					asset {
-					  id
-					  name
-					}
-				  }
-				}
-			  }
-			  depositsConnection {
-				edges {
-				  node {
-					amount
-					createdTimestamp
-					creditedTimestamp
-					status
-					asset {
-					  id
-					  symbol
-					  source {
-						__typename
-					  }
-					}
-				  }
-				}
-			  }
-			}
-		  }
-		}
-	  }`
-		parties2, err := getParties(
+		connection, err := getPartiesConnection(
 			ctx,
 			s.cfg.VegaGraphQLURL.String(),
-			gqlQueryPartiesAccounts2,
-			map[string]string{"endCursor": endCursor},
+			gqlQueryPartiesAccountsPercent,
+			map[string]interface{}{"pagination": pagination},
 			nil,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get list of parties in loop: %w", err)
 		}
 
-		parties = append(parties, parties2...)
+		partyEdges = append(partyEdges, connection.Edges...)
 
-		pageInfo, err = getPageInfo(
-			ctx,
-			s.cfg.VegaGraphQLURL.String(),
-			gqlQueryPartiesAccounts2,
-			map[string]string{"endCursor": endCursor},
-			nil,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get page info: %w", err)
-		}
+		// fmt.Println("got ", len(partyEdges), "end?", connection.PageInfo.EndCursor)
 
-		if pageInfo.NextPage == false {
-			fmt.Println(pageInfo.StartCursor)
-			fmt.Println(pageInfo.EndCursor)
+		if !connection.PageInfo.NextPage {
+			// fmt.Println("done")
 			break
+		} else {
+			pagination.After = connection.PageInfo.EndCursor
 		}
 
 	}
 
 	// filter parties and add social handles
-	sParties := socialParties(socials, parties)
+	sParties := socialParties(socials, partyEdges)
 	participants := []Participant{}
 	// if participant in JSON, PNL = json data, otherwise starting PnL 0
 	for _, party := range sParties {
