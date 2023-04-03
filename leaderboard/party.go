@@ -192,7 +192,8 @@ type LiquidityProvision struct {
 }
 
 type PartiesConnection struct {
-	Edges []PartiesEdge `json:"edges"`
+	Edges    []PartiesEdge `json:"edges"`
+	PageInfo PageInfo      `json:"pageInfo"`
 }
 
 type PartiesEdge struct {
@@ -218,6 +219,13 @@ type Party struct {
 type Market struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+}
+
+type PageInfo struct {
+	NextPage     bool   `json:"hasNextPage"`
+	PreviousPage bool   `json:"hasPreviousPage"`
+	StartCursor  string `json:"startCursor"`
+	EndCursor    string `json:"endCursor"`
 }
 
 func hasString(ss []string, s string) bool {
@@ -299,6 +307,30 @@ func getParties(
 		return nil, err
 	}
 	return response.PartiesConnection.Edges, nil
+}
+
+func getPageInfo(
+	ctx context.Context,
+	gqlURL string,
+	gqlQuery string,
+	vars map[string]string,
+	cli *http.Client,
+) (PageInfo, error) {
+
+	if cli == nil {
+		cli = &http.Client{Timeout: time.Second * 180}
+	}
+	client := graphql.NewClient(gqlURL, graphql.WithHTTPClient(cli))
+	req := graphql.NewRequest(gqlQuery)
+	req.Header.Set("Cache-Control", "no-cache")
+	for key, value := range vars {
+		req.Var(key, value)
+	}
+	var response PartiesResponse
+	if err := client.Run(ctx, req, &response); err != nil {
+		return PageInfo{}, err
+	}
+	return response.PartiesConnection.PageInfo, nil
 }
 
 func getPositions(

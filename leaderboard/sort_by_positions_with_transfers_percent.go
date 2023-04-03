@@ -2,8 +2,11 @@ package leaderboard
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math"
+	"os"
 	"sort"
 	"strconv"
 	"time"
@@ -12,7 +15,7 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.Social) ([]Participant, error) {
+func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string]verifier.Social) ([]Participant, error) {
 
 	// Grab the DP we're targeting (for the asset we're interested in for the market specified
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -23,6 +26,25 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 	if err != nil {
 		return nil, fmt.Errorf("failed to get algorithm config: %s", err)
 	}
+
+	// Open our jsonFile
+	jsonFile, err := os.Open("initial_results.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// read our opened jsonFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	alreadyTraded := []Participant{}
+
+	// we unmarshal our byteArray which contains our
+	// jsonFile's content into 'alreadyTraded' which we defined above
+	json.Unmarshal(byteValue, &alreadyTraded)
+
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
@@ -110,68 +132,68 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 	endCursor := pageInfo.EndCursor
 
 	for {
-		gqlQueryPartiesAccounts2 := `query ($endCursor: String!) {
-			partiesConnection(pagination: {first: 50, after: $endCursor}) {
-			  edges {
-				node {
-				  id
-				  positionsConnection {
-					edges {
-					  node {
-						market {
-						  id
-						}
-						openVolume
-						realisedPNL
-						averageEntryPrice
-						unrealisedPNL
-						realisedPNL
-					  }
+		gqlQueryPartiesAccounts2 := `query($endCursor: String!){
+		partiesConnection(pagination: {first: 50, after: $endCursor}) {
+		  edges {
+			node {
+			  id
+			  positionsConnection {
+				edges {
+				  node {
+					market {
+					  id
+					}
+					openVolume
+					realisedPNL
+					averageEntryPrice
+					unrealisedPNL
+					realisedPNL
+				  }
+				}
+				pageInfo {
+				  hasNextPage
+				  hasPreviousPage
+				  startCursor
+				  endCursor
+				}
+			  }
+			  transfersConnection(direction: To) {
+				edges {
+				  node {
+					id
+					fromAccountType
+					toAccountType
+					from
+					amount
+					timestamp
+					asset {
+					  id
+					  name
 					}
 				  }
-				  transfersConnection(direction: To) {
-					edges {
-					  node {
-						id
-						fromAccountType
-						toAccountType
-						from
-						amount
-						timestamp
-						asset {
-						  id
-						  name
-						}
-					  }
-					}
-				  }
-				  depositsConnection {
-					edges {
-					  node {
-						amount
-						createdTimestamp
-						creditedTimestamp
-						status
-						asset {
-						  id
-						  symbol
-						  source {
-							__typename
-						  }
-						}
+				}
+			  }
+			  depositsConnection {
+				edges {
+				  node {
+					amount
+					createdTimestamp
+					creditedTimestamp
+					status
+					asset {
+					  id
+					  symbol
+					  source {
+						__typename
 					  }
 					}
 				  }
 				}
 			  }
-			  pageInfo {
-				hasNextPage
-				hasPreviousPage
-				startCursor
-				endCursor
-			  }
 			}
-		  }`
+		  }
+		}
+	  }`
 		parties2, err := getParties(
 			ctx,
 			s.cfg.VegaGraphQLURL.String(),
@@ -196,18 +218,13 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 			return nil, fmt.Errorf("failed to get page info: %w", err)
 		}
 
-		fmt.Println(pageInfo.NextPage)
-
 		if pageInfo.NextPage == false {
+			fmt.Println(pageInfo.StartCursor)
 			fmt.Println(pageInfo.EndCursor)
 			break
-		} else {
-			pageInfo.EndCursor = endCursor
 		}
 
 	}
-
-	fmt.Println(len(parties))
 
 	// filter parties and add social handles
 	sParties := socialParties(socials, parties)
@@ -247,6 +264,7 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 		openVolume := 0.0
 		percentagePnL := 0.0
 		dataFormatted := ""
+		dpMultiplier := math.Pow(10, decimalPlaces)
 		if err == nil {
 			for _, acc := range party.PositionsConnection.Edges {
 				for _, marketID := range s.cfg.MarketIDs {
@@ -260,8 +278,9 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 						if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
 							openVolume += u
 						}
-						PnL = (realisedPnL + unrealisedPnL) - transfer + deposit
-						dataFormatted = strconv.FormatFloat(PnL, 'f', 10, 32)
+						PnL = (realisedPnL + unrealisedPnL)
+						percentagePnL = ((PnL / dpMultiplier) / (transfer + deposit)) * 100
+						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
 
@@ -274,10 +293,17 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 			}
 
 			t := time.Now().UTC()
+			total := 0.0
 			if PnL != 0 {
-				dpMultiplier := math.Pow(10, decimalPlaces)
-				total := PnL / dpMultiplier
-				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
+				total = PnL / dpMultiplier
+				for _, traded := range alreadyTraded {
+					if traded.PublicKey == party.ID {
+						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
+							percentagePnL = ((total - s) / (s + transfer + deposit)) * 100
+						}
+					}
+				}
+				dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 			}
 
 			participants = append(participants, Participant{
