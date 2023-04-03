@@ -48,7 +48,92 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 
 	// Query all accounts for parties on Vega network
 	gqlQueryPartiesAccounts := `{
-		partiesConnection(pagination: {first: 100}) {
+		partiesConnection(pagination: {first: 50 }) {
+		  edges {
+			node {
+			  id
+			  positionsConnection {
+				edges {
+				  node {
+					market {
+					  id
+					}
+					openVolume
+					realisedPNL
+					averageEntryPrice
+					unrealisedPNL
+					realisedPNL
+				  }
+				}
+			  }
+			  transfersConnection(direction: To) {
+				edges {
+				  node {
+					id
+					fromAccountType
+					toAccountType
+					from
+					amount
+					timestamp
+					asset {
+					  id
+					  name
+					}
+				  }
+				}
+			  }
+			  depositsConnection {
+				edges {
+				  node {
+					amount
+					createdTimestamp
+					creditedTimestamp
+					status
+					asset {
+					  id
+					  symbol
+					  source {
+						__typename
+					  }
+					}
+				  }
+				}
+			  }
+			}
+		  }
+		  pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		  }
+		}
+	  }`
+	ctx := context.Background()
+	parties, err := getParties(
+		ctx,
+		s.cfg.VegaGraphQLURL.String(),
+		gqlQueryPartiesAccounts,
+		nil,
+		nil,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get list of parties: %w", err)
+	}
+
+	pageInfo, err := getPageInfo(
+		ctx,
+		s.cfg.VegaGraphQLURL.String(),
+		gqlQueryPartiesAccounts,
+		nil,
+		nil,
+	)
+
+	endCursor := pageInfo.EndCursor
+
+	for {
+		gqlQueryPartiesAccounts2 := `query($endCursor: String!){
+		partiesConnection(pagination: {first: 50, after: $endCursor}) {
 		  edges {
 			node {
 			  id
@@ -109,16 +194,34 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 		  }
 		}
 	  }`
-	ctx := context.Background()
-	parties, err := getParties(
-		ctx,
-		s.cfg.VegaGraphQLURL.String(),
-		gqlQueryPartiesAccounts,
-		nil,
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get list of parties: %w", err)
+		parties2, err := getParties(
+			ctx,
+			s.cfg.VegaGraphQLURL.String(),
+			gqlQueryPartiesAccounts2,
+			map[string]string{"endCursor": endCursor},
+			nil,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get list of parties in loop: %w", err)
+		}
+
+		parties = append(parties, parties2...)
+
+		pageInfo, err = getPageInfo(
+			ctx,
+			s.cfg.VegaGraphQLURL.String(),
+			gqlQueryPartiesAccounts2,
+			map[string]string{"endCursor": endCursor},
+			nil,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get page info: %w", err)
+		}
+
+		if pageInfo.NextPage == false {
+			break
+		}
+
 	}
 
 	// filter parties and add social handles
