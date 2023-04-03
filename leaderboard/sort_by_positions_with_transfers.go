@@ -196,10 +196,10 @@ func (s *Service) sortByPartyPositionsWithTransfers(socials map[string]verifier.
 			return nil, fmt.Errorf("failed to get page info: %w", err)
 		}
 
-		fmt.Println(pageInfo.NextPage)
+		fmt.Println("got ", len(parties), "end?", pageInfo.EndCursor)
 
 		if pageInfo.NextPage == false {
-			fmt.Println(pageInfo.EndCursor)
+			fmt.Println("done")
 			break
 		} else {
 			endCursor = pageInfo.EndCursor
