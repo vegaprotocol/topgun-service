@@ -200,6 +200,13 @@ type PartiesEdge struct {
 	Party Party `json:"node"`
 }
 
+type Pagination struct {
+	First  int32  `json:"first,omitempty"`
+	After  string `json:"after,omitempty"`
+	Last   int32  `json:"last,omitempty"`
+	Before string `json:"before,omitempty"`
+}
+
 type Party struct {
 	ID                    string                        `json:"id"`
 	AccountsConnection    AccountsConnection            `json:"accountsConnection"`
@@ -313,7 +320,7 @@ func getPartiesConnection(
 	ctx context.Context,
 	gqlURL string,
 	gqlQuery string,
-	vars map[string]string,
+	vars map[string]interface{},
 	cli *http.Client,
 ) (PartiesConnection, error) {
 
