@@ -1,4 +1,4 @@
-listen: 0.0.0.0:8001 # ip:port
+listen: 0.0.0.0:80 # ip:port
 logFormat: text # json, text (default), textcolour, textnocolour
 logLevel: Info
 LogMethodName: false
