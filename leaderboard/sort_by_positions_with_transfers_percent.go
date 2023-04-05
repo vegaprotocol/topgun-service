@@ -191,7 +191,7 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = ((PnL / dpMultiplier) - (transfer / dpMultiplier) - (deposit/dpMultiplier)/(2400+(transfer/dpMultiplier)+(deposit/dpMultiplier))) * 100
+						percentagePnL = (((PnL / dpMultiplier) - (transfer / dpMultiplier) - (deposit / dpMultiplier)) / (2400 + (transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
