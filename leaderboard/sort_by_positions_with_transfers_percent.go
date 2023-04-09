@@ -91,7 +91,7 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 	}
 
 	// Open our jsonFile
-	jsonFile, err := os.Open("initial_results.json")
+	jsonFile, err := os.Open("/data/initial_results.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
