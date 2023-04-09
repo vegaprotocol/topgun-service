@@ -91,7 +91,7 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 	}
 
 	// Open our jsonFile
-	jsonFile, err := os.Open("/data/initial_results.json")
+	jsonFile, err := os.Open("initial_results.json")
 	// if we os.Open returns an error then handle it
 	if err != nil {
 		fmt.Println(err)
@@ -191,7 +191,7 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 							openVolume += u
 						}
 						PnL = (realisedPnL + unrealisedPnL)
-						percentagePnL = (((PnL / dpMultiplier) - (transfer / dpMultiplier) - (deposit / dpMultiplier)) / (14400 + (transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
+						percentagePnL = (((PnL / dpMultiplier) - (transfer) - (deposit / dpMultiplier)) / (16800 + (transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
 						dataFormatted = strconv.FormatFloat(percentagePnL, 'f', 10, 32)
 					}
 				}
@@ -211,7 +211,7 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 				for _, traded := range alreadyTraded {
 					if traded.PublicKey == party.ID {
 						if s, err := strconv.ParseFloat(traded.Data[0], 32); err == nil {
-							percentagePnL = ((total - s - (transfer / dpMultiplier) - (deposit / dpMultiplier)) / (s + 14400 + (transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
+							percentagePnL = ((total - s - (transfer) - (deposit / dpMultiplier)) / (s + 16800 + (transfer / dpMultiplier) + (deposit / dpMultiplier))) * 100
 						}
 					}
 				}
