@@ -32,7 +32,14 @@ var gqlQueryPartiesAccountsMakerPaid string = `query ($pagination: Pagination!) 
 		  }
 		}
 	  }
-	}`
+	  pageInfo {
+		hasNextPage
+		hasPreviousPage
+		startCursor
+		endCursor
+	  }
+	}
+  }`
 
 func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social) ([]Participant, error) {
 
@@ -89,9 +96,9 @@ func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social
 				}
 				if w.Reward.Asset.Id == s.cfg.VegaAssets[0] &&
 					w.Reward.ReceivedAt.After(s.cfg.StartTime) &&
-					w.Reward.ReceivedAt.Before(s.cfg.EndTime) {
+					w.Reward.ReceivedAt.Before(s.cfg.EndTime) &&
+					w.Reward.RewardType == "ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES" {
 					rewards, err = strconv.ParseFloat(w.Reward.Amount, 64)
-					fmt.Println(w.Reward.RewardType)
 				}
 			}
 		}
