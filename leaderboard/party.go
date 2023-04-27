@@ -124,6 +124,22 @@ type Position struct {
 	Partyblacklisted  bool
 }
 
+type RewardsConnection struct {
+	Edges []RewardsEdge `json:"edges"`
+}
+
+type RewardsEdge struct {
+	Reward Reward `json:"node"`
+}
+
+type Reward struct {
+	Amount     string    `json:"amount"`
+	Asset      Asset     `json:"asset"`
+	MarketId   string    `json:"marketId"`
+	RewardType string    `json:"rewardType"`
+	ReceivedAt time.Time `json:"receivedAt"`
+}
+
 type TradesConnection struct {
 	Edges []TradesEdge `json:"edges"`
 }
@@ -218,6 +234,7 @@ type Party struct {
 	WithdrawalsConnection WithdrawalsConnection         `json:"withdrawalsConnection"`
 	LPsConnection         LiquidityProvisionsConnection `json:"liquidityProvisionsConnection"`
 	PositionsConnection   PositionsConnection           `json:"positionsConnection"`
+	RewardsConnection     RewardsConnection             `json:"rewardsConnection"`
 	social                string
 	twitterID             int64
 	blacklisted           bool
