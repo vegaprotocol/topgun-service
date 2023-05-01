@@ -98,7 +98,11 @@ func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social
 					w.Reward.ReceivedAt.After(s.cfg.StartTime) &&
 					w.Reward.ReceivedAt.Before(s.cfg.EndTime) &&
 					w.Reward.RewardType == "ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES" {
-					rewards, err = strconv.ParseFloat(w.Reward.Amount, 64)
+					rewards1, err := strconv.ParseFloat(w.Reward.Amount, 64)
+					if err != nil {
+						return nil, fmt.Errorf("failed to convert reward amount into float: %w", err)
+					}
+					rewards += rewards1
 				}
 			}
 		}
