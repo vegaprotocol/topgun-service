@@ -12,10 +12,15 @@ import (
 
 func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]Participant, error) {
 	// Grab the market ID for the market we're targeting
-	marketID, err := s.getAlgorithmConfig("marketID")
+	// Algo for single market only
+	// marketID, err := s.getAlgorithmConfig("marketID")
 
-	gqlQueryPartiesAccounts := `{
-		partiesConnection {
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to get market ID: %w", err)
+	// }
+
+	gqlQueryPartiesAccounts := `query ($pagination: Pagination!) {
+		partiesConnection(pagination: $pagination) {
 		  edges {
 			node {
 			  id
@@ -48,23 +53,46 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 			  }
 			}
 		  }
+		  pageInfo {
+			hasNextPage
+			hasPreviousPage
+			startCursor
+			endCursor
+		  }
 		}
 	  }`
 
+	pagination := Pagination{First: 50}
+
 	ctx := context.Background()
-	parties, err := getParties(
-		ctx,
-		s.cfg.VegaGraphQLURL.String(),
-		gqlQueryPartiesAccounts,
-		map[string]string{"assetId": s.cfg.VegaAssets[0]},
-		nil,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get list of parties: %w", err)
+	partyEdges := []PartiesEdge{}
+	for {
+		connection, err := getPartiesConnection(
+			ctx,
+			s.cfg.VegaGraphQLURL.String(),
+			gqlQueryPartiesAccounts,
+			map[string]interface{}{"pagination": pagination},
+			nil,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get list of parties in loop: %w", err)
+		}
+
+		partyEdges = append(partyEdges, connection.Edges...)
+
+		// fmt.Println("got ", len(partyEdges), "end?", connection.PageInfo.EndCursor)
+
+		if !connection.PageInfo.NextPage {
+			// fmt.Println("done")
+			break
+		} else {
+			pagination.After = connection.PageInfo.EndCursor
+		}
+
 	}
 
 	// filter parties and add social handles
-	sParties := socialParties(socials, parties)
+	sParties := socialParties(socials, partyEdges)
 
 	participants := []Participant{}
 	for _, party := range sParties {
@@ -72,9 +100,11 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 		// Check for matching parties who have committed LP :)
 		if party.LPsConnection.Edges != nil && len(party.LPsConnection.Edges) > 0 {
 			for _, lpEdge := range party.LPsConnection.Edges {
-				if lpEdge.LP.Market.ID == marketID {
-					log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
-					lpCount++
+				for _, marketID := range s.cfg.MarketIDs {
+					if lpEdge.LP.Market.ID == marketID {
+						log.WithFields(log.Fields{"partyID": party.ID, "totalLPs": len(party.LPsConnection.Edges)}).Info("Party has LPs on correct market")
+						lpCount++
+					}
 				}
 			}
 		}
