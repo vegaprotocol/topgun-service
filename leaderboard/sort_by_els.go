@@ -87,19 +87,16 @@ func (s *Service) sortByELS() ([]Participant, error) {
 				if err != nil {
 					fmt.Errorf("failed to convert Transfer amount to string", err)
 				}
-				ELS = w.LP.Market.Data.EquitLikeShare
+				ELS, err = strconv.ParseFloat(w.LP.Market.Data.LPFeeShare.EquityLikeShare, 64)
 			}
 		}
 
-
-
-		if (ELS != 0.0) {
+		if ELS != 0.0 {
 
 			t := time.Now().UTC()
-				dpMultiplier := math.Pow(10, decimalPlaces)
-				total := ELS / dpMultiplier
-				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
-		
+			dpMultiplier := math.Pow(10, decimalPlaces)
+			total := ELS / dpMultiplier
+			dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
 
 			participants = append(participants, Participant{
 				PublicKey: party.Party.ID,

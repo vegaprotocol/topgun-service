@@ -241,8 +241,19 @@ type Party struct {
 }
 
 type Market struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string     `json:"id"`
+	Name string     `json:"name"`
+	Data MarketData `json:"data"`
+}
+
+type MarketData struct {
+	LPFeeShare LPFeeShare `json:"liquidityProviderFeeShare"`
+}
+
+type LPFeeShare struct {
+	EquityLikeShare       string `json:"equityLikeShare"`
+	AverageEntryValuation string `json:"averageEntryValuation"`
+	AverageScore          string `json:"averageScore"`
 }
 
 type PageInfo struct {
