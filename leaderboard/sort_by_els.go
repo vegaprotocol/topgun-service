@@ -7,8 +7,6 @@ import (
 	"sort"
 	"strconv"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var gqlQueryPartiesELS string = `query ($pagination: Pagination!) {
@@ -82,80 +80,33 @@ func (s *Service) sortByELS() ([]Participant, error) {
 	participants := []Participant{}
 	// if participant in JSON, PNL = json data, otherwise starting PnL 0
 	for _, party := range partyEdges {
-		transfer := 1000.0
-		deposit := 0.0
-		if len(party.TransfersConnection.Edges) != 0 {
-			for _, w := range party.TransfersConnection.Edges {
+		ELS := 0.0
+		dataFormatted := ""
+		if len(party.Party.LPsConnection.Edges) != 0 {
+			for _, w := range party.Party.LPsConnection.Edges {
 				if err != nil {
 					fmt.Errorf("failed to convert Transfer amount to string", err)
 				}
-				if w.Transfer.Asset.Id == s.cfg.VegaAssets[0] &&
-					w.Transfer.Timestamp.After(s.cfg.StartTime) &&
-					w.Transfer.Timestamp.Before(s.cfg.EndTime) {
-					transfer, err = strconv.ParseFloat(w.Transfer.Amount, 64)
-				}
+				ELS = w.LP.Market.Data.EquitLikeShare
 			}
 		}
 
-		for _, d := range party.DepositsConnection.Edges {
-			if err != nil {
-				fmt.Errorf("failed to convert Withdrawal amount to string", err)
-			}
 
-			if d.Deposit.Asset.Id == s.cfg.VegaAssets[0] &&
-				d.Deposit.Status == "STATUS_FINALIZED" &&
-				d.Deposit.CreatedAt.After(s.cfg.StartTime) &&
-				d.Deposit.CreatedAt.Before(s.cfg.EndTime) {
-				deposit, err = strconv.ParseFloat(d.Deposit.Amount, 64)
-			}
-		}
-		PnL := 0.0
-		realisedPnL := 0.0
-		unrealisedPnL := 0.0
-		openVolume := 0.0
-		dataFormatted := ""
-		if err == nil {
-			for _, acc := range party.PositionsConnection.Edges {
-				for _, marketID := range s.cfg.MarketIDs {
-					if acc.Position.Market.ID == marketID {
-						if s, err := strconv.ParseFloat(acc.Position.RealisedPNL, 32); err == nil {
-							realisedPnL += s
-						}
-						if t, err := strconv.ParseFloat(acc.Position.UnrealisedPNL, 32); err == nil {
-							unrealisedPnL += t
-						}
-						if u, err := strconv.ParseFloat(acc.Position.OpenVolume, 32); err == nil {
-							openVolume += u
-						}
-						PnL = (realisedPnL + unrealisedPnL) - transfer - deposit
-						dataFormatted = strconv.FormatFloat(PnL, 'f', 10, 32)
-					}
-				}
 
-			}
-		}
-
-		if (realisedPnL != 0.0) || (unrealisedPnL != 0.0) || (openVolume != 0.0) {
-			if party.blacklisted {
-				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
-			}
+		if (ELS != 0.0) {
 
 			t := time.Now().UTC()
-			if PnL != 0 {
 				dpMultiplier := math.Pow(10, decimalPlaces)
-				total := PnL / dpMultiplier
+				total := ELS / dpMultiplier
 				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
-			}
+		
 
 			participants = append(participants, Participant{
-				PublicKey:     party.ID,
-				TwitterUserID: party.twitterID,
-				TwitterHandle: party.social,
-				Data:          []string{dataFormatted},
-				sortNum:       PnL,
-				CreatedAt:     t,
-				UpdatedAt:     t,
-				isBlacklisted: party.blacklisted,
+				PublicKey: party.Party.ID,
+				Data:      []string{dataFormatted},
+				sortNum:   ELS,
+				CreatedAt: t,
+				UpdatedAt: t,
 			})
 		}
 	}
