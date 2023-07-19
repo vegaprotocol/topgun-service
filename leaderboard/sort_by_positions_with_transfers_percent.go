@@ -220,8 +220,6 @@ func (s *Service) sortByPartyPositionsWithTransfersPercentage(socials map[string
 
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterUserID: party.twitterID,
-				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
 				sortNum:       percentagePnL,
 				CreatedAt:     t,

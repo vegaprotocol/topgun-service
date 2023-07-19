@@ -87,8 +87,6 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterUserID: party.twitterID,
-				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
 				sortNum:       lpFees,
 				CreatedAt:     t,
@@ -101,7 +99,7 @@ func (s *Service) sortByLPFees(socials map[string]verifier.Social) ([]Participan
 	}
 
 	sortFunc := func(i, j int) bool {
-		return participants[i].TwitterHandle < participants[j].TwitterHandle
+		return participants[i].sortNum < participants[j].sortNum
 	}
 	sort.Slice(participants, sortFunc)
 

@@ -198,8 +198,6 @@ func (s *Service) sortByPartyPositionsMedianDay3(socials map[string]verifier.Soc
 
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterUserID: party.twitterID,
-				TwitterHandle: party.social,
 				Data:          []string{dataFormatted},
 				sortNum:       NewTotal,
 				CreatedAt:     t,

@@ -83,8 +83,6 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 			utcNow := time.Now().UTC()
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterHandle: party.social,
-				TwitterUserID: party.twitterID,
 				Data:          []string{"Provided Liquidity"},
 				CreatedAt:     utcNow,
 				UpdatedAt:     utcNow,
@@ -96,7 +94,7 @@ func (s *Service) sortByLPCommittedList(socials map[string]verifier.Social) ([]P
 	}
 
 	sortFunc := func(i, j int) bool {
-		return participants[i].TwitterHandle < participants[j].TwitterHandle
+		return participants[i].sortNum < participants[j].sortNum
 	}
 	sort.Slice(participants, sortFunc)
 

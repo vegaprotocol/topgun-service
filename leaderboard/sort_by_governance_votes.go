@@ -48,8 +48,6 @@ func (s *Service) sortByPartyGovernanceVotes(socials map[string]verifier.Social)
 		utcNow := time.Now().UTC()
 		participants = append(participants, Participant{
 			PublicKey:     party.ID,
-			TwitterHandle: party.social,
-			TwitterUserID: party.twitterID,
 			Data:          []string{fmt.Sprintf("%d", voteCount)},
 			sortNum:       float64(voteCount),
 			CreatedAt:     utcNow,

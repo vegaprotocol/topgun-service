@@ -104,8 +104,6 @@ func (s *Service) sortByPartyAccountGeneralBalanceAndLP(socials map[string]verif
 					utcNow := time.Now().UTC()
 					participants = append(participants, Participant{
 						PublicKey:     party.ID,
-						TwitterHandle: party.social,
-						TwitterUserID: party.twitterID,
 						Data:          []string{balanceGeneralStr},
 						sortNum:       sortNum,
 						CreatedAt:     utcNow,
