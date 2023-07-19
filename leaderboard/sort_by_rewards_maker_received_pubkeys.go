@@ -100,6 +100,7 @@ func (s *Service) sortByPartyRewardsMakerReceivedPubkeys(socials map[string]veri
 						return nil, fmt.Errorf("failed to convert reward amount into float: %w", err)
 					}
 					rewards += rewards1
+					fmt.Println(rewards)
 				}
 			}
 		}
@@ -113,7 +114,9 @@ func (s *Service) sortByPartyRewardsMakerReceivedPubkeys(socials map[string]veri
 			if rewards != 0 {
 				dpMultiplier := math.Pow(10, decimalPlaces)
 				total := rewards / dpMultiplier
-				dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
+				fmt.Println("Total is")
+				fmt.Println(total)
+				dataFormatted = strconv.FormatFloat(rewards, 'f', 10, 32)
 			}
 
 			participants = append(participants, Participant{
