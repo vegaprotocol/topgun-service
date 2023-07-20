@@ -25,13 +25,11 @@ func (s *Service) sortBySocialRegistration(socials []verifier.Social) ([]Partici
 			existing[handle] = 0xF
 			count++
 			participants = append(participants, Participant{
-				PublicKey:     s.PartyID,
-				TwitterHandle: s.TwitterHandle,
-				TwitterUserID: s.TwitterUserID,
-				CreatedAt:     util.TimeFromUnixTimeStamp(s.CreatedAt),
-				UpdatedAt:     util.TimeFromUnixTimeStamp(s.UpdatedAt),
-				Data:          []string{"Registered"},
-				sortNum:       float64(count),
+				PublicKey: s.PartyID,
+				CreatedAt: util.TimeFromUnixTimeStamp(s.CreatedAt),
+				UpdatedAt: util.TimeFromUnixTimeStamp(s.UpdatedAt),
+				Data:      []string{"Registered"},
+				sortNum:   float64(count),
 			})
 		}
 	}

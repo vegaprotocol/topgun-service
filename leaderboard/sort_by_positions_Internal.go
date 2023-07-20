@@ -99,13 +99,11 @@ func (s *Service) sortByPartyPositionsInternal(socials map[string]verifier.Socia
 					dataFormatted = strconv.FormatFloat(total, 'f', 10, 32)
 				}
 				participants = append(participants, Participant{
-					PublicKey:     party.ID,
-					TwitterUserID: party.twitterID,
-					TwitterHandle: party.social,
-					Data:          []string{dataFormatted},
-					sortNum:       PnL,
-					CreatedAt:     t,
-					UpdatedAt:     t,
+					PublicKey: party.ID,
+					Data:      []string{dataFormatted},
+					sortNum:   PnL,
+					CreatedAt: t,
+					UpdatedAt: t,
 				})
 			}
 		}

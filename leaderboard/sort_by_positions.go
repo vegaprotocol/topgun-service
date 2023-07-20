@@ -93,8 +93,6 @@ func (s *Service) sortByPartyPositions(socials map[string]verifier.Social) ([]Pa
 			}
 			participants = append(participants, Participant{
 				PublicKey:     position.Party.ID,
-				TwitterUserID: position.Party.twitterID,
-				TwitterHandle: position.Party.social,
 				Data:          []string{dataFormatted},
 				sortNum:       PnL,
 				CreatedAt:     t,

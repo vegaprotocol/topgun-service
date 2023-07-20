@@ -12,7 +12,7 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-var gqlQueryPartiesAccountsMakerPaid string = `query ($pagination: Pagination!) {
+var gqlQueryPartiesAccountsMakerReceivedPubkeys string = `query ($pagination: Pagination!) {
 	partiesConnection(pagination: $pagination) {
 	  edges {
 		node {
@@ -41,7 +41,7 @@ var gqlQueryPartiesAccountsMakerPaid string = `query ($pagination: Pagination!) 
 	}
   }`
 
-func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social) ([]Participant, error) {
+func (s *Service) sortByPartyRewardsMakerReceivedPubkeys(socials map[string]verifier.Social) ([]Participant, error) {
 
 	// Grab the DP we're targeting (for the asset we're interested in for the market specified
 	decimalPlacesStr, err := s.getAlgorithmConfig("decimalPlaces")
@@ -61,7 +61,7 @@ func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social
 		connection, err := getPartiesConnection(
 			ctx,
 			s.cfg.VegaGraphQLURL.String(),
-			gqlQueryPartiesAccountsMakerPaid,
+			gqlQueryPartiesAccountsMakerReceived,
 			map[string]interface{}{"pagination": pagination},
 			nil,
 		)
@@ -81,23 +81,20 @@ func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social
 		}
 
 	}
-
-	// filter parties and add social handles
-	sParties := socialParties(socials, partyEdges)
 	participants := []Participant{}
 	// if participant in JSON, PNL = json data, otherwise starting PnL 0
-	for _, party := range sParties {
+	for _, party := range partyEdges {
 		rewards := 0.0
 		dataFormatted := "0.0"
-		if len(party.RewardsConnection.Edges) != 0 {
-			for _, w := range party.RewardsConnection.Edges {
+		if len(party.Party.RewardsConnection.Edges) != 0 {
+			for _, w := range party.Party.RewardsConnection.Edges {
 				if err != nil {
 					fmt.Errorf("failed to convert Transfer amount to string", err)
 				}
 				if w.Reward.Asset.Id == s.cfg.VegaAssets[0] &&
 					w.Reward.ReceivedAt.After(s.cfg.StartTime) &&
 					w.Reward.ReceivedAt.Before(s.cfg.EndTime) &&
-					w.Reward.RewardType == "ACCOUNT_TYPE_REWARD_MAKER_PAID_FEES" {
+					w.Reward.RewardType == "ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES" {
 					rewards1, err := strconv.ParseFloat(w.Reward.Amount, 64)
 					if err != nil {
 						return nil, fmt.Errorf("failed to convert reward amount into float: %w", err)
@@ -108,8 +105,8 @@ func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social
 		}
 
 		if rewards != 0.0 {
-			if party.blacklisted {
-				log.Infof("Blacklisted party added: %d, %s, %s", party.twitterID, party.social, party.ID)
+			if party.Party.blacklisted {
+				log.Infof("Blacklisted party added: %d, %s, %s", party.Party.ID)
 			}
 
 			t := time.Now().UTC()
@@ -120,12 +117,12 @@ func (s *Service) sortByPartyRewardsMakerPaid(socials map[string]verifier.Social
 			}
 
 			participants = append(participants, Participant{
-				PublicKey:     party.ID,
+				PublicKey:     party.Party.ID,
 				Data:          []string{dataFormatted},
 				sortNum:       rewards,
 				CreatedAt:     t,
 				UpdatedAt:     t,
-				isBlacklisted: party.blacklisted,
+				isBlacklisted: party.Party.blacklisted,
 			})
 		}
 	}

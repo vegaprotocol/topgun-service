@@ -25,13 +25,11 @@ type PricingEngine interface {
 }
 
 type Participant struct {
-	Position      int       `json:"position" bson:"position,omitempty"`
-	PublicKey     string    `json:"publicKey" bson:"pub_key,omitempty"`
-	TwitterHandle string    `json:"twitterHandle" bson:"twitter_handle,omitempty"`
-	TwitterUserID int64     `json:"twitterUserID" bson:"twitter_userid,omitempty"`
-	CreatedAt     time.Time `json:"createdAt" bson:"created,omitempty"`
-	UpdatedAt     time.Time `json:"updatedAt" bson:"last_modified,omitempty"`
-	Data          []string  `json:"data" bson:"data,omitempty"`
+	Position  int       `json:"position" bson:"position,omitempty"`
+	PublicKey string    `json:"publicKey" bson:"pub_key,omitempty"`
+	CreatedAt time.Time `json:"createdAt" bson:"created,omitempty"`
+	UpdatedAt time.Time `json:"updatedAt" bson:"last_modified,omitempty"`
+	Data      []string  `json:"data" bson:"data,omitempty"`
 
 	isBlacklisted bool
 	sortNum       float64
@@ -207,6 +205,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyRewardsMakerPaid(socials)
 	case "ByPartyRewardsMakerReceived":
 		p, err = s.sortByPartyRewardsMakerReceived(socials)
+	case "ByPartyRewardsMakerReceivedPubkeys":
+		p, err = s.sortByPartyRewardsMakerReceivedPubkeys(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
@@ -280,9 +280,8 @@ func (s *Service) CsvLeaderboard(q string, skip int64, size int64, blacklisted b
 		q = strings.ToLower(q)
 		for _, p := range target {
 			pubKey := strings.ToLower(p.PublicKey)
-			twitterHandle := strings.ToLower(p.TwitterHandle)
 			// case insensitive comparison
-			if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
+			if pubKey == q || strings.Contains(pubKey, q) {
 				participants = append(participants, p)
 			}
 		}
@@ -323,9 +322,8 @@ func (s *Service) JsonLeaderboard(q string, skip int64, size int64, blacklisted 
 		q = strings.ToLower(q)
 		for _, p := range target {
 			pubKey := strings.ToLower(p.PublicKey)
-			twitterHandle := strings.ToLower(p.TwitterHandle)
 			// case insensitive comparison
-			if pubKey == q || twitterHandle == q || strings.Contains(pubKey, q) || strings.Contains(twitterHandle, q) {
+			if pubKey == q || strings.Contains(pubKey, q) {
 				participants = append(participants, p)
 			}
 		}
@@ -369,12 +367,10 @@ func (s *Service) WriteParticipantsToCsvBytes(participants []Participant) (resul
 		csvData := make([]util.ParticipantCsvEntry, 0)
 		for _, p := range participants {
 			csv := util.ParticipantCsvEntry{
-				Position:      p.Position,
-				TwitterHandle: p.TwitterHandle,
-				TwitterID:     p.TwitterUserID,
-				VegaPubKey:    p.PublicKey,
-				CreatedAt:     p.CreatedAt,
-				UpdatedAt:     p.UpdatedAt,
+				Position:   p.Position,
+				VegaPubKey: p.PublicKey,
+				CreatedAt:  p.CreatedAt,
+				UpdatedAt:  p.UpdatedAt,
 			}
 			for i, d := range p.Data {
 				if i > 0 {

@@ -119,8 +119,6 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 			utcNow := time.Now().UTC()
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterHandle: party.social,
-				TwitterUserID: party.twitterID,
 				Data:          []string{"Deposit and Withdrawal Completed"},
 				CreatedAt:     utcNow,
 				UpdatedAt:     utcNow,
@@ -131,7 +129,7 @@ func (s *Service) sortByAssetDepositWithdrawal(socials map[string]verifier.Socia
 	}
 
 	sortFunc := func(i, j int) bool {
-		return participants[i].TwitterHandle < participants[j].TwitterHandle
+		return participants[i].sortNum < participants[j].sortNum
 	}
 	sort.Slice(participants, sortFunc)
 

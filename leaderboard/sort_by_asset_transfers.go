@@ -82,8 +82,6 @@ func (s *Service) sortByAssetTransfers(socials map[string]verifier.Social) ([]Pa
 			utcNow := time.Now().UTC()
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterHandle: party.social,
-				TwitterUserID: party.twitterID,
 				Data:          []string{transferCountStr},
 				sortNum:       sortNum,
 				CreatedAt:     utcNow,

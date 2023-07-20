@@ -69,8 +69,6 @@ func (s *Service) sortByPartyAccountMultipleBalance(socials map[string]verifier.
 			t := time.Now().UTC()
 			participants = append(participants, Participant{
 				PublicKey:     party.ID,
-				TwitterUserID: party.twitterID,
-				TwitterHandle: party.social,
 				Data:          []string{strconv.FormatFloat(balanceMultiAsset, 'f', 10, 32)},
 				sortNum:       balanceMultiAsset,
 				CreatedAt:     t,
