@@ -12,7 +12,7 @@ import (
 	"github.com/vegaprotocol/topgun-service/verifier"
 )
 
-var gqlQueryPartiesAccountsPositionsPubkeys string = `query ($pagination: Pagination!) {
+var gqlQueryPartiesPositionsPubkeys string = `query ($pagination: Pagination!) {
 	partiesConnection(pagination: $pagination) {
 	  edges {
 		node {
@@ -95,7 +95,7 @@ func (s *Service) sortByPartyPositionsPubkeys(socials map[string]verifier.Social
 		connection, err := getPartiesConnection(
 			ctx,
 			s.cfg.VegaGraphQLURL.String(),
-			gqlQueryPartiesAccountsMakerReceived,
+			gqlQueryPartiesPositionsPubkeys,
 			map[string]interface{}{"pagination": pagination},
 			nil,
 		)
