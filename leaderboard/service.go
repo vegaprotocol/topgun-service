@@ -209,6 +209,8 @@ func (s *Service) update() {
 		p, err = s.sortByPartyRewardsMakerReceivedPubkeys(socials)
 	case "ByPartyPositionsPubkeys":
 		p, err = s.sortByPartyPositionsPubkeys(socials)
+	case "ByPartyDepositWithdrawalPubkeys":
+		p, err = s.sortByPartyDepositWithdrawalPubkeys(socials)
 	default:
 		err = fmt.Errorf("invalid algorithm: %s", s.cfg.Algorithm)
 	}
