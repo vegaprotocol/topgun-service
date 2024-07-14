@@ -14,7 +14,6 @@ require (
 	github.com/matryer/is v1.3.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/objx v0.1.1 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.9.0
 	go.mongodb.org/mongo-driver v1.7.1
 )
